@@ -8,8 +8,7 @@ import CampaignCard from "@/components/CampaignCard";
 import SampleNote from "@/components/SampleNote";
 import { SERVICES, CAMPAIGNS, ACTIVITIES, EVENTS } from "@/lib/data";
 
-const STATS = [[12500, "+", "भोजन वितरण"], [3200, "+", "परिवारों तक सहायता"], [48, "", "स्वास्थ्य/रक्तदान शिविर"], [350, "+", "स्वयंसेवक"]];
-const SHLOK = "॥ सेवा परमो धर्मः ॥   ॥ परोपकाराय पुण्याय ॥   ॥ सर्वे भवन्तु सुखिनः ॥   ॥ नर सेवा ही नारायण सेवा ॥   ";
+const SHLOK = "॥ सेवा परमो धर्मः ॥  ॐ  ॥ परोपकाराय पुण्याय ॥  ॐ ॥ सर्वे भवन्तु सुखिनः ॥  ॐ ॥ नर सेवा ही नारायण सेवा ॥ ॐ  ";
 
 export default function Home() {
   return (
@@ -32,8 +31,8 @@ export default function Home() {
 
       <section className="py-16 rangoli bg-sandal">
         <div className="px-4 mx-auto max-w-7xl">
-          <SectionTitle title="हमारी प्रमुख सेवाएं" sub="जरूरतमंदों तक पहुँचती दस सेवा श्रेणियाँ" />
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+          <SectionTitle title="हमारी प्रमुख सेवाएं" sub="हर हाथ तक सहारा, हर दिल तक अपनापन" />
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-4">
             {SERVICES.map((s, k) => (
               <Reveal key={s.id} delay={(k % 5) * 80}>
                 <Link href="/services" className="block h-full text-center card card-hover">
@@ -54,20 +53,10 @@ export default function Home() {
         <div className="mt-8 text-center"><Link href="/campaigns" className="btn btn-navy">सभी अभियान देखें</Link></div>
       </section>
 
-      <section className="relative py-16 overflow-hidden text-white bg-gradient-to-br from-navy-dark via-navy to-saffron-deep">
-        <div className="absolute inset-0 rangoli opacity-40" />
-        <div className="relative px-4 mx-auto max-w-7xl">
-          <Reveal><h2 className="mb-10 text-3xl text-center font-head sm:text-4xl">हमारा प्रभाव</h2></Reveal>
-          <div className="grid gap-8 text-center sm:grid-cols-2 lg:grid-cols-4">
-            {STATS.map(([n, s, l]) => (
-              <div key={l}><p className="text-5xl font-head text-saffron-light"><CountUp to={n} suffix={s} /></p><p className="mt-1 text-lg text-sandal">{l}</p></div>
-            ))}
-          </div>
-        </div>
-      </section>
+      
 
-      <section className="px-4 py-16 mx-auto max-w-7xl">
-        <SectionTitle title="हाल के सामाजिक कार्य" />
+      <section className="px-4 pt-2 pb-16 mx-auto max-w-7xl">
+  <SectionTitle title="हाल के सामाजिक कार्य" />
         <div className="grid gap-6 md:grid-cols-3">
           {ACTIVITIES.slice(0, 3).map((a, k) => (
             <Reveal key={a.title} delay={k * 120}>

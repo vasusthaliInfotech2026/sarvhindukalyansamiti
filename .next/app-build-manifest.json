@@ -21,25 +21,10 @@
       "static/chunks/main-app.js",
       "static/chunks/app/services/page.js"
     ],
-    "/donate/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/donate/page.js"
-    ],
-    "/social-work/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/social-work/page.js"
-    ],
     "/campaigns/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/campaigns/page.js"
-    ],
-    "/campaigns/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/campaigns/[id]/page.js"
     ],
     "/events/page": [
       "static/chunks/webpack.js",

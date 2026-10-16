@@ -1,10 +1,10 @@
 export const MAIN = [
   { href: "/", label: "मुख्य पृष्ठ" },
   { href: "/about", label: "हमारे बारे में" },
-  { href: "/services", label: "हमारी सेवाएं" },
-  { href: "/campaigns", label: "सहयोग अभियान" },
-  { href: "/events", label: "कार्यक्रम" },
+  { href: "/services", label: "हमारे कार्य" },
+  { href: "/join", label: "सदस्य बनें" },
   { href: "/gallery", label: "गैलरी" },
+  { href: "/contact", label: "संपर्क करें" },
 ];
 export const MORE = [
   { href: "/social-work", label: "सामाजिक कार्य" },

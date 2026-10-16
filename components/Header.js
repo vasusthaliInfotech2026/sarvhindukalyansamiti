@@ -19,17 +19,29 @@ export default function Header() {
   const cls = (a) => `whitespace-nowrap rounded-full px-2 py-2 text-[13px] font-semibold transition xl:px-3 xl:text-[15px] ${a ? "bg-saffron text-white" : "text-navy hover:bg-sandal"}`;
 
   return (
-    <header className={`sticky top-0 z-50 border-b-2 border-gold bg-cream/95 backdrop-blur transition-all duration-300 ${scrolled ? "shadow-lg" : ""}`}>
+    
+    <>
+      <div className="bg-gradient-to-r from-saffron-deep via-saffron to-saffron-light py-2 text-center text-sm tracking-[0.2em] text-white">
+        <span className="text-sandal">✺</span>
+        <span className="mx-3 font-head">धर्म</span>
+        <span className="text-sandal">•</span>
+        <span className="mx-3 font-head">संस्कृति</span>
+        <span className="text-sandal">•</span>
+        <span className="mx-3 font-head">समर्पण</span>
+        <span className="text-sandal">✺</span>
+      </div>
+
+      <header className="sticky top-0 z-50 border-b shadow-sm border-saffron/20 bg-cream/95 backdrop-blur">
       <div className={`mx-auto flex max-w-7xl items-center justify-between px-4 transition-all duration-300 ${scrolled ? "h-[62px]" : "h-[76px]"}`}>
         <Link href="/" className="flex items-center gap-3">
           <span className="grid text-2xl bg-white border-2 rounded-full shadow-inner h-11 w-11 place-items-center border-saffron font-head text-saffron">ॐ</span>
-          <span className="text-lg leading-tight font-head text-navy lg:text-base xl:text-xl">सर्व समाज<br className="sm:hidden" /> कल्याण समिति</span>
+          <span className="text-lg leading-tight font-head text-navy lg:text-base xl:text-xl">सर्व हिन्दू <br className="sm:hidden" /> कल्याण समिति</span>
         </Link>
 
         <nav className="hidden items-center gap-0.5 lg:flex" aria-label="मुख्य मेनू">
           {MAIN.map((n) => <Link key={n.href} href={n.href} className={cls(path === n.href)}>{n.label}</Link>)}
           <div className="relative group">
-            <button className={cls(moreActive)}>और देखें ▾</button>
+            {/* <button className={cls(moreActive)}>और देखें ▾</button> */}
             <div className="absolute right-0 invisible w-56 pt-2 transition-all duration-200 translate-y-2 opacity-0 top-full group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
               <div className="overflow-hidden bg-white border shadow-xl rounded-xl border-saffron/30">
                 {MORE.map((m) => (
@@ -52,5 +64,6 @@ export default function Header() {
         <Link href="/donate" className="mt-2 btn btn-saffron">दान करें</Link>
       </nav>
     </header>
+    </>
   );
 }
