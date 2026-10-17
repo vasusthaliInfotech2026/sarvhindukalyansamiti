@@ -1,12 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import HeroSlider from "@/components/HeroSlider";
-import SectionTitle from "@/components/SectionTitle";
 import Reveal from "@/components/Reveal";
-import CountUp from "@/components/CountUp";
-import CampaignCard from "@/components/CampaignCard";
-import SampleNote from "@/components/SampleNote";
-import { SERVICES, CAMPAIGNS, ACTIVITIES, EVENTS } from "@/lib/data";
+import ServicesShowcase from "@/components/ServicesShowcase";
 
 const SHLOK = "॥ सेवा परमो धर्मः ॥  ॐ  ॥ परोपकाराय पुण्याय ॥  ॐ ॥ सर्वे भवन्तु सुखिनः ॥  ॐ ॥ नर सेवा ही नारायण सेवा ॥ ॐ  ";
 
@@ -21,7 +17,7 @@ export default function Home() {
       <section className="max-w-4xl px-4 py-16 mx-auto text-center">
         <Reveal>
           <h2 className="text-3xl font-head text-navy sm:text-4xl">विश्वास · पारदर्शिता · आसान सहयोग</h2>
-          <p className="mt-4 text-lg leading-relaxed text-navy/80">सर्व समाज कल्याण समिति सामाजिक, मानवीय, स्वास्थ्य, शिक्षा, बुजुर्ग सहायता, निर्धन कन्या विवाह, रक्तदान और मंदिर सेवा से जुड़े कार्यों को एक व्यवस्थित डिजिटल मंच के माध्यम से समाज तक पहुँचाती है।</p>
+          <p className="mt-4 text-lg leading-relaxed text-navy/80">सर्व हिन्दू  कल्याण समिति सामाजिक, मानवीय, स्वास्थ्य, शिक्षा,  और मंदिर सेवा से जुड़े कार्यों को एक व्यवस्थित डिजिटल मंच के माध्यम से समाज तक पहुँचाती है।</p>
           <div className="flex flex-wrap justify-center gap-3 mt-7">
             <Link href="/donate" className="btn btn-saffron">अभी सहयोग करें</Link>
             <Link href="/social-work" className="btn btn-navy">हमारे कार्य देखें</Link>
@@ -29,50 +25,43 @@ export default function Home() {
         </Reveal>
       </section>
 
-      <section className="py-16 rangoli bg-sandal">
-        <div className="px-4 mx-auto max-w-7xl">
-          <SectionTitle title="हमारी प्रमुख सेवाएं" sub="हर हाथ तक सहारा, हर दिल तक अपनापन" />
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-4">
-            {SERVICES.map((s, k) => (
-              <Reveal key={s.id} delay={(k % 5) * 80}>
-                <Link href="/services" className="block h-full text-center card card-hover">
-                  <span className="grid mx-auto text-3xl rounded-full h-14 w-14 place-items-center bg-sandal">{s.icon}</span>
-                  <p className="mt-3 font-semibold text-navy">{s.title}</p>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
+            <section className="pt-4 pb-20 bg-cream">
+        <div className="grid items-center gap-10 px-4 mx-auto max-w-7xl lg:grid-cols-2 lg:gap-14">
+          <Reveal from="left">
+            <div className="relative group">
+              <div className="absolute w-full h-full -bottom-3 -right-3 rounded-3xl bg-saffron/10" aria-hidden />
+              <div className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-2xl lg:aspect-[5/4]">
+                <Image src="/images/about.jpg" alt="घाट पर स्थित प्राचीन मंदिर" fill sizes="(min-width:1024px) 50vw, 100vw" className="object-cover transition duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-navy-dark/40 via-transparent to-transparent" />
+                <span className="absolute bottom-4 left-4 rounded-full bg-white/90 px-4 py-1.5 font-head text-navy shadow">ॐ सेवा परमो धर्मः</span>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal from="right" className="lg:-mt-12">
+            <p className="text-4xl font-semibold text-saffron-deep">हमारे बारे में</p>
+            <h2 className="mt-2 text-xl leading-tight font-head text-navy sm:text-2xl lg:text-3xl">सेवा से समाज का निर्माण, विश्वास के साथ</h2>
+            <p className="mt-5 text-lg leading-relaxed text-navy/80">
+              सर्व हिन्दू  कल्याण समिति का उद्देश्य मानव सेवा, शिक्षा, स्वास्थ्य, और मंदिर सेवा जैसे कार्यों को एक व्यवस्थित मंच के माध्यम से समाज तक पहुँचाना है।
+            </p>
+            <p className="mt-3 text-navy/75">
+              हम वास्तविक सेवा कार्य दिखाते हैं, दान का हिसाब पारदर्शी रखते हैं और हर सहयोगी तक आसान तरीके से पहुँचते हैं।
+            </p>
+            <div className="flex flex-wrap gap-2 mt-5">
+              {["सेवा", "मानवता", "पारदर्शिता", "जिम्मेदारी", "सामाजिक सहयोग"].map((v) => (
+                <span key={v} className="px-4 py-1 text-sm font-semibold border rounded-full border-saffron/40 bg-sandal text-navy">{v}</span>
+              ))}
+            </div>
+
+            <Link href="/about" className="btn btn-saffron mt-7">पूरा परिचय पढ़ें</Link>
+          </Reveal>
         </div>
       </section>
 
-      <section className="px-4 py-16 mx-auto max-w-7xl">
-        <SectionTitle title="सक्रिय सहयोग अभियान" sub="अपनी पसंद के अभियान में योगदान करें" />
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {CAMPAIGNS.slice(0, 3).map((c, k) => <Reveal key={c.id} delay={k * 120}><CampaignCard c={c} /></Reveal>)}
-        </div>
-        <div className="mt-8 text-center"><Link href="/campaigns" className="btn btn-navy">सभी अभियान देखें</Link></div>
-      </section>
-
+<ServicesShowcase />
       
 
-      <section className="px-4 pt-2 pb-16 mx-auto max-w-7xl">
-  <SectionTitle title="हाल के सामाजिक कार्य" />
-        <div className="grid gap-6 md:grid-cols-3">
-          {ACTIVITIES.slice(0, 3).map((a, k) => (
-            <Reveal key={a.title} delay={k * 120}>
-              <div className="h-full border-l-4 card card-hover border-l-saffron">
-                <span className="text-4xl">{a.icon}</span>
-                <h3 className="mt-2 text-xl font-head text-navy">{a.title}</h3>
-                <p className="text-sm font-semibold text-saffron-deep">{a.date} · {a.place}</p>
-                <p className="mt-2 text-navy/75">{a.sum}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-        <SampleNote />
-      </section>
-
-      <section className="py-16 bg-sandal">
+     <section className="py-16 bg-cream/95">
         <div className="grid items-center gap-10 px-4 mx-auto max-w-7xl md:grid-cols-2">
           <Reveal from="left">
             <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border-4 border-gold shadow-2xl">
@@ -89,24 +78,17 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-4 py-16 mx-auto max-w-7xl">
-        <SectionTitle title="आगामी कार्यक्रम एवं शिविर" />
-        <div className="grid gap-5 md:grid-cols-3">
-          {EVENTS.filter((e) => e.up).map((e, k) => (
-            <Reveal key={e.title} delay={k * 120}>
-              <div className="h-full card card-hover">
-                <p className="inline-block px-3 py-1 text-sm font-semibold text-white rounded-full bg-saffron">{e.date}</p>
-                <h3 className="mt-3 text-xl font-head text-navy">{e.title}</h3>
-                <p className="mt-1 text-navy/75">🕒 {e.time}</p><p className="text-navy/75">📍 {e.place}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
+      
 
-      <section className="grid gap-6 px-4 mx-auto max-w-7xl md:grid-cols-2">
-        <Reveal from="left"><div className="h-full card bg-gradient-to-br from-white to-sandal"><h3 className="text-2xl font-head text-navy">🤝 हमारे साथ जुड़ें</h3><p className="mt-2 text-lg text-navy/80">Volunteer, रक्तदाता या सहयोगी बनकर सेवा में भागीदार बनें।</p><Link href="/join" className="mt-4 btn btn-navy">अभी जुड़ें</Link></div></Reveal>
-        <Reveal from="right"><div className="h-full card bg-gradient-to-br from-white to-sandal"><h3 className="text-2xl font-head text-navy">🔍 पारदर्शिता</h3><p className="mt-2 text-lg text-navy/80">पंजीकरण, रिपोर्ट और दस्तावेज – सब सार्वजनिक रूप से उपलब्ध।</p><Link href="/transparency" className="mt-4 btn btn-navy">दस्तावेज देखें</Link></div></Reveal>
+      <section className="grid max-w-5xl gap-6 px-4 mx-auto ">
+        <Reveal from="left"><div className="h-full card bg-gradient-to-br from-white to-sandal">
+          <h2 className="relative mt-3 text-3xl text-center font-head text-navy sm:text-4xl">🤝 हमारे साथ जुड़ें 🤝</h2>
+          <p className="mt-2 text-lg text-center text-navy/80">Volunteer, रक्तदाता या सहयोगी बनकर सेवा में भागीदार बनें।</p>
+          <div className="flex justify-center">
+          <Link href="/join" className="relative mt-4 text-center btn btn-navy">अभी जुड़ें</Link>
+          </div>
+        </div></Reveal>
+    
       </section>
 
       <section className="max-w-5xl px-4 mx-auto mt-16">

@@ -1,15 +1,15 @@
 import Link from "next/link";
 
-// ⬇️ अपनी असली जानकारी यहाँ भरो – बाकी सब अपने आप जुड़ जाएगा
+
 const CONTACT = {
-  phone: "+91 98765 43210",        // जो दिखेगा
-  phoneRaw: "919876543210",        // देश कोड (91) के साथ, बिना + और space के
+  phone: "+91 98765 43210",        
+  phoneRaw: "919876543210",        
   email: "info@yourdomain.org",
   address: "लखनऊ, उत्तर प्रदेश",
-  mapQuery: "Lucknow, Uttar Pradesh", // Google Maps में यही खोजा जाएगा (पूरा पता लिखो तो बेहतर)
+  mapQuery: "Lucknow, Uttar Pradesh", 
   instagram: "https://www.instagram.com/yourpage",
   facebook: "https://www.facebook.com/yourpage",
-  waText: "नमस्ते, मुझे सर्व समाज कल्याण समिति के बारे में जानकारी चाहिए।",
+  waText: "नमस्ते, मुझे सर्व हिन्दू  कल्याण समिति के बारे में जानकारी चाहिए।",
 };
 
 const LINKS = [
@@ -39,16 +39,16 @@ export default function Footer() {
       <div className="mx-auto grid max-w-5xl gap-6 px-4 py-6 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1.2fr] lg:gap-10">
         {/* परिचय + Support Our Work */}
         <div>
-          <p className="text-xl text-white font-head sm:text-2xl">ॐ सर्व समाज कल्याण समिति</p>
+          <p className="text-xl text-white font-head sm:text-2xl">ॐ सर्व हिन्दू  कल्याण समिति</p>
           <p className="mt-1.5 max-w-sm text-sm leading-relaxed sm:text-base">
-            विश्वास, पारदर्शिता और आसान सहयोग – मानव सेवा, शिक्षा, स्वास्थ्य, बुजुर्ग सेवा, कन्या विवाह और धर्म सेवा के लिए समर्पित।
+            विश्वास, पारदर्शिता और आसान सहयोग – मानव सेवा, शिक्षा, स्वास्थ्य, और धर्म सेवा के लिए समर्पित।
           </p>
           <Link href="/donate" className="btn btn-saffron mt-5 animate-ring !px-5 !py-2 text-sm shadow-lg shadow-saffron/40">
             सहयोग करें
           </Link>
         </div>
 
-        {/* पृष्ठ */}
+        
         <div>
           <p className="mb-1.5 font-semibold text-white">पृष्ठ</p>
           <ul className="space-y-1 text-sm sm:text-base">
@@ -58,7 +58,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* संपर्क */}
+        
         <div className="text-sm sm:text-base">
           <p className="mb-1.5 font-semibold text-white">संपर्क</p>
           <div className="space-y-1.5">
@@ -76,7 +76,7 @@ export default function Footer() {
             </a>
           </div>
 
-          {/* सोशल मीडिया */}
+          
           <div className="mt-3 flex gap-2.5">
             <a href={CONTACT.instagram} {...ext} aria-label="Instagram" className={socialCls}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-[18px] w-[18px]"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg>
@@ -91,7 +91,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <p className="border-t border-white/10 bg-black/10 py-2.5 text-center text-sm text-white">© 2026 सर्व समाज कल्याण समिति। सर्वाधिकार सुरक्षित।</p>
+      <p className="border-t border-white/10 bg-black/10 py-2.5 text-center text-sm text-white">© 2026 सर्व हिन्दू कल्याण समिति। सर्वाधिकार सुरक्षित।</p>
     </footer>
   );
 }

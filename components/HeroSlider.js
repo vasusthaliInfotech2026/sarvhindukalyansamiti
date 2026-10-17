@@ -4,11 +4,10 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 const SLIDES = [
-  { pos: "50% 62%", a: "आइए, मिलकर बनाएँ मंदिर सर्व समाज कल्याण समिति बचाएँ संस्कृति और करें समाज की सेवा।", b: "धर्म, सेवा और समाज कल्याण की दिशा में – सर्व हिन्दू कल्याण समिति धर्म, सेवा और समाज कल्याण की दिशा में कल्याण समिति धर्म, सेवा और समाज कल्याण की दिशा में हिन्दू कल्याण समिति ।", c1: ["दान करें", "/donate"], c2: ["हमारे कार्य देखें", "/social-work"] },
-  { pos: "50% 62%", a: "सेवा से समाज का निर्माण", b: "सर्व समाज कल्याण समिति – मानव सेवा, शिक्षा, स्वास्थ्य और धर्म सेवा के कार्यों को पारदर्शिता के साथ आप तक पहुँचाने का मंच।", c1: ["दान करें", "/donate"], c2: ["हमारे कार्य देखें", "/social-work"] },
-  { pos: "50% 30%", a: "आपका सहयोग, किसी के जीवन में नई उम्मीद", b: "अन्न सेवा, चिकित्सा, कन्या विवाह, शिक्षा और बुजुर्ग सेवा – अपनी पसंद के अभियान में सहयोग करें।", c1: ["सहयोग अभियान देखें", "/campaigns"], c2: ["अभी दान करें", "/donate"] },
-  { pos: "88% 55%", a: "मंदिर एवं सनातन धर्म सेवा", b: "मंदिर सेवा, स्वच्छता अभियान और सांस्कृतिक कार्यक्रमों से अपनी परंपरा को सँजोएँ।", c1: ["हमारी सेवाएं", "/services"], c2: ["हमारे साथ जुड़ें", "/join"] },
-
+  { img: "/images/mandi.jpg", pos: "50% 62%", a: "आइए, मिलकर बनाएँ मंदिर। सर्व समाज कल्याण समिति बचाएँ संस्कृति और करें समाज की सेवा।", b: "धर्म, सेवा और समाज कल्याण की दिशा में – सर्व हिन्दू कल्याण समिति धर्म , हिन्दू कल्याण समिति ।", c1: ["दान करें", "/donate"], c2: ["हमारे कार्य देखें", "/social-work"] },
+  { img: "/images/temple-2.jpg", pos: "50% 50%", a: "सेवा से समाज का निर्माण", b: "सर्व हिन्दू  कल्याण समिति – मानव सेवा, शिक्षा, स्वास्थ्य और धर्म सेवा के कार्यों को पारदर्शिता के साथ आप तक पहुँचाने का मंच।", c1: ["दान करें", "/donate"], c2: ["हमारे कार्य देखें", "/social-work"] },
+  { img: "/images/Temple-2.png", pos: "50% 42%", a: "आपका सहयोग, किसी के जीवन में नई उम्मीद", b: "अन्न सेवा, चिकित्सा, शिक्षा – अपनी पसंद के अभियान में सहयोग करें।", c1: ["सहयोग अभियान देखें", "/campaigns"], c2: ["अभी दान करें", "/donate"] },
+  { img: "/images/Temple-3.png", pos: "88% 55%", a: "मंदिर एवं सनातन धर्म सेवा", b: "मंदिर सेवा, स्वच्छता अभियान और सांस्कृतिक कार्यक्रमों से अपनी परंपरा को सँजोएँ।", c1: ["हमारी सेवाएं", "/services"], c2: ["हमारे साथ जुड़ें", "/join"] },
 ];
 
 export default function HeroSlider() {
@@ -17,16 +16,16 @@ export default function HeroSlider() {
   const go = useCallback((n) => setI((n + SLIDES.length) % SLIDES.length), []);
   useEffect(() => {
     if (paused) return;
-    const t = setTimeout(() => go(i + 1), 6500);
+    const t = setTimeout(() => go(i + 1), 4000);
     return () => clearTimeout(t);
-  }, [i, paused, go]);
+  }, [i, paused, go])
 
   return (
     <section className="relative overflow-hidden bg-navy-dark" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} aria-roledescription="carousel">
       <div className="relative h-[560px] sm:h-[640px]">
         {SLIDES.map((s, n) => (
           <div key={n} aria-hidden={n !== i} className={`absolute inset-0 transition-opacity duration-1000 ${n === i ? "opacity-100" : "pointer-events-none opacity-0"}`}>
-            <Image src="/images/mandi.jpg" alt="भव्य मंदिर" fill priority={n === 0} sizes="100vw"
+            <Image src={s.img} alt="भव्य मंदिर" fill priority={n === 0} sizes="100vw"
               style={{ objectPosition: s.pos }} className={`object-cover ${n === i ? "animate-kenburns" : ""}`} />
             <div className="absolute inset-0 bg-gradient-to-r from-navy-dark/90 via-navy-dark/55 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-t from-saffron-deep/40 via-transparent to-navy-dark/30" />
