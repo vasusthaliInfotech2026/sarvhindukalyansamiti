@@ -4,6 +4,7 @@ export const MAIN = [
   { href: "/services", label: "हमारे कार्य" },
   { href: "/join", label: "सदस्य बनें" },
   { href: "/gallery", label: "गैलरी" },
+  { href: "#", label: "Coding" },
   { href: "/contact", label: "संपर्क करें" },
 ];
 export const MORE = [
