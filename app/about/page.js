@@ -93,9 +93,10 @@ export default function About() {
                 <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-xs font-bold text-saffron-deep">
                   <span>✦</span>
                   <span>एक दृष्टि</span>
+                  <span>✦</span>
                 </div>
 
-                <h2 className="mt-3 font-head text-3xl font-extrabold text-navy sm:text-4xl">
+                <h2 className="mt-4 font-head text-3xl font-extrabold text-navy sm:text-4xl">
                   समिति का परिचय
                 </h2>
 
@@ -308,12 +309,8 @@ export default function About() {
               </div>
 
               <div>
-                <Link
-                  href="/donate"
-                  className="relative mt-6 bg-amber-200 btn text-saffron-deep hover:bg-navy hover:text-white"
-                >
-                  दान करें
-                </Link>
+                 <Link href="/donate" className="btn text-saffron-deep bg-white ml-1 animate-ring !px-4 !py-2 text-sm xl:ml-2 xl:!px-6 xl:text-base">दान करें</Link>
+
               </div>
             </div>
           </div>
@@ -336,14 +333,7 @@ export default function About() {
               </div>
 
               <div className="btnDiv flex flex-col gap-3 sm:flex-row sm:gap-4">
-                <Link
-                  href="/join"
-                  className="relative mt-6 bg-amber-200 btn text-saffron-deep hover:bg-navy hover:text-white"
-                >
-                  <span>सदस्य बनें</span>
-                </Link>
-
-                {/* <Link href="/donate" className="relative mt-6 bg-white btn text-saffron-deep hover:bg-navy hover:text-white">दान करें</Link> */}
+                 <Link href="/join" className="btn btn-saffron ml-1 animate-ring !px-4 !py-2 text-sm xl:ml-2 xl:!px-6 xl:text-base">सदस्य बनें</Link>
               </div>
             </div>
           </div>

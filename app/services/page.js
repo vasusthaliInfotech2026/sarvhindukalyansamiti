@@ -45,7 +45,24 @@ export default function Services() {
         sub="समिति क्या करती है – श्रेणी अनुसार कार्य"
       />
 
-      <section className="max-w-5xl px-4 py-10 mx-auto sm:px-6 sm:py-14">
+      <section className="max-w-7xl px-4 py-10 mx-auto sm:px-6 sm:py-14">
+
+        <div className="max-w-2xl mx-auto mb-12 text-center sm:mb-16">
+
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-xs font-bold text-saffron-deep">
+                  <span>✦</span>
+                  <span>सेवा ही परमो धर्मः</span>
+                  <span>✦</span>
+                </div>
+
+          <h2 className="mt-4 text-2xl font-bold font-head text-navy sm:text-3xl md:text-4xl">
+            समाज उत्थान के हमारे मुख्य प्रकल्प
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-navy/70 sm:text-base">
+            हम समाज के अंतिम व्यक्ति तक सहायता पहुँचाने और सनातन मूल्यों के संरक्षण के लिए विभिन्न क्षेत्रों में निरंतर कार्यरत हैं।
+          </p>
+        </div>
+
         {/* 2-2 Columns Simple Grid */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
           {SERVICES.map((s, k) => {
@@ -85,7 +102,7 @@ export default function Services() {
 
                     {/* Simple Action Button */}
                     <Link
-                      href="/campaigns"
+                      href="/donate"
                       className="btn btn-saffron w-full !py-2.5 text-center text-sm font-medium rounded-xl"
                     >
                       इस सेवा में सहयोग करें →
@@ -122,12 +139,7 @@ export default function Services() {
               </div>
 
               <div>
-                <Link
-                  href="/donate"
-                  className="relative mt-6 bg-amber-200 btn text-saffron-deep hover:bg-navy hover:text-white"
-                >
-                  दान करें
-                </Link>
+             <Link href="/donate" className="btn text-saffron-deep bg-white ml-1 animate-ring !px-4 !py-2 text-sm xl:ml-2 xl:!px-6 xl:text-base">दान करें</Link>
               </div>
             </div>
           </div>
@@ -150,14 +162,7 @@ export default function Services() {
               </div>
 
               <div className="btnDiv flex flex-col gap-3 sm:flex-row sm:gap-4">
-                <Link
-                  href="/join"
-                  className="relative mt-6 bg-amber-200 btn text-saffron-deep hover:bg-navy hover:text-white"
-                >
-                  <span>सदस्य बनें</span>
-                </Link>
-
-                {/* <Link href="/donate" className="relative mt-6 bg-white btn text-saffron-deep hover:bg-navy hover:text-white">दान करें</Link> */}
+               <Link href="/join" className="btn btn-saffron ml-1 animate-ring !px-4 !py-2 text-sm xl:ml-2 xl:!px-6 xl:text-base">सदस्य बनें</Link>
               </div>
             </div>
           </div>
