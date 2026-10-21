@@ -22,8 +22,13 @@ body { @apply bg-cream text-navy-dark font-body pb-16 lg:pb-0; }
 
 
 
+.contentJustify{
+  text-align: justify;
+}
 
-
+.lAlign{
+  text-align: left;
+}
 @media (max-width: 767px) {
 
  .ctaBlock .btnDiv{
