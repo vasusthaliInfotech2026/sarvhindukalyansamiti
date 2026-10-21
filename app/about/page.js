@@ -292,7 +292,7 @@ export default function About() {
             </p>
             </div>
 
-            <div className="mt-8">
+            <div>
               <Link
                 href="/donate"
                 className="relative mt-6 bg-amber-200 btn text-saffron-deep hover:bg-navy hover:text-white"
