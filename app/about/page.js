@@ -5,7 +5,6 @@ import Reveal from "@/components/Reveal";
 
 export const metadata = { title: "हमारे बारे में | सर्व समाज कल्याण समिति" };
 
-
 const valuesData = [
   {
     image: "/images/temple.png",
@@ -66,7 +65,6 @@ export default function About() {
       <section className="px-4 mx-auto max-w-7xl py-16 md:py-24">
         <div className="rounded-3xl border border-amber-200/60 bg-gradient-to-br from-white via-amber-50/30 to-white p-6 shadow-xl sm:p-10 lg:p-12">
           <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
-            
             {/* Left Image Box UI (Layered Frame, Zero Text on Image) */}
             <div className="lg:col-span-5">
               <Reveal from="left">
@@ -103,12 +101,12 @@ export default function About() {
 
                 <div className="mt-4 rounded-2xl border border-amber-100 bg-white/90 p-5 shadow-sm">
                   <p className="text-lg leading-relaxed text-navy/90">
-                    सर्व समाज कल्याण समिति का उद्देश्य मानव सेवा, शिक्षा, स्वास्थ्य,
-                    बुजुर्ग सहायता, निर्धन कन्या विवाह, रक्तदान और मंदिर सेवा जैसे
-                    कार्यों को संगठित रूप से समाज तक पहुँचाना है। हम सेवा के साथ
-                    विश्वास और पारदर्शिता को सबसे ऊपर रखते हैं।
+                    सर्व समाज कल्याण समिति का उद्देश्य मानव सेवा, शिक्षा,
+                    स्वास्थ्य, बुजुर्ग सहायता, निर्धन कन्या विवाह, रक्तदान और
+                    मंदिर सेवा जैसे कार्यों को संगठित रूप से समाज तक पहुँचाना
+                    है। हम सेवा के साथ विश्वास और पारदर्शिता को सबसे ऊपर रखते
+                    हैं।
                   </p>
-                 
                 </div>
 
                 {/* सेवा के सिद्धांत UI Box */}
@@ -134,7 +132,6 @@ export default function About() {
                 </div>
               </Reveal>
             </div>
-
           </div>
         </div>
       </section>
@@ -142,10 +139,8 @@ export default function About() {
       {/* Section 2: हमारा विजन, हमारा मिशन with Background Images & हमारे मूल्य */}
       <section className="rangoli bg-sandal py-16">
         <div className="mx-auto px-4 max-w-7xl">
-          
           {/* विजन & मिशन Cards with Background Images */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            
             {/* Vision Card */}
             <Reveal from="left">
               <div className="group relative h-full overflow-hidden rounded-2xl border border-amber-200/60 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -171,7 +166,19 @@ export default function About() {
                     </h3>
                   </div>
                   <p className="contentJustify mt-4 text-lg font-medium leading-relaxed text-navy/90">
-                    हमारी दूरदृष्टि एक ऐसे समाज का निर्माण करना है, जहाँ प्रत्येक जरूरतमंद व्यक्ति को बिना किसी भेदभाव के सही जानकारी, आवश्यक सहायता और जनकल्याणकारी योजनाओं का लाभ प्राप्त हो सके। हम एक ऐसे भविष्य की कल्पना करते हैं, जहाँ तकनीक, पारदर्शिता और सामाजिक सहयोग के माध्यम से लोगों का जीवन सरल और बेहतर बनाया जा सके। हमारा लक्ष्य ग्रामीण एवं शहरी क्षेत्रों के नागरिकों तक आवश्यक सेवाओं और सुविधाओं की जानकारी पहुँचाना तथा उन्हें आत्मनिर्भर बनने के लिए प्रोत्साहित करना है। हम चाहते हैं कि कोई भी व्यक्ति जानकारी या संसाधनों की कमी के कारण अपने अधिकारों और अवसरों से वंचित न रहे। हमारा विश्वास है कि जागरूकता, समान अवसर और सामूहिक प्रयासों से एक सशक्त, समावेशी और खुशहाल समाज का निर्माण संभव है।
+                    हमारी दूरदृष्टि एक ऐसे समाज का निर्माण करना है, जहाँ
+                    प्रत्येक जरूरतमंद व्यक्ति को बिना किसी भेदभाव के सही
+                    जानकारी, आवश्यक सहायता और जनकल्याणकारी योजनाओं का लाभ
+                    प्राप्त हो सके। हम एक ऐसे भविष्य की कल्पना करते हैं, जहाँ
+                    तकनीक, पारदर्शिता और सामाजिक सहयोग के माध्यम से लोगों का
+                    जीवन सरल और बेहतर बनाया जा सके। हमारा लक्ष्य ग्रामीण एवं
+                    शहरी क्षेत्रों के नागरिकों तक आवश्यक सेवाओं और सुविधाओं की
+                    जानकारी पहुँचाना तथा उन्हें आत्मनिर्भर बनने के लिए
+                    प्रोत्साहित करना है। हम चाहते हैं कि कोई भी व्यक्ति जानकारी
+                    या संसाधनों की कमी के कारण अपने अधिकारों और अवसरों से वंचित
+                    न रहे। हमारा विश्वास है कि जागरूकता, समान अवसर और सामूहिक
+                    प्रयासों से एक सशक्त, समावेशी और खुशहाल समाज का निर्माण संभव
+                    है।
                   </p>
                 </div>
               </div>
@@ -202,63 +209,71 @@ export default function About() {
                     </h3>
                   </div>
                   <p className="contentJustify mt-4 text-lg font-medium leading-relaxed text-navy/90">
-                   हमारा उद्देश्य वास्तविक सेवा कार्यों और सही जानकारी के माध्यम से जरूरतमंद लोगों तक पारदर्शी एवं आसान सहायता पहुँचाना है। हम नागरिकों को सरकारी योजनाओं, जनकल्याणकारी सेवाओं और आवश्यक सुविधाओं से संबंधित उपयोगी जानकारी उपलब्ध कराने के लिए प्रतिबद्ध हैं। हमारा प्रयास है कि प्रत्येक व्यक्ति बिना अनावश्यक परेशानियों के उपलब्ध सेवाओं का लाभ उठा सके। हम तकनीक के माध्यम से सेवाओं को सरल, सुलभ और प्रभावी बनाना चाहते हैं। साथ ही, लोगों को उनके अधिकारों के प्रति जागरूक करना, जरूरतमंद परिवारों का सहयोग करना और समाज में सेवा एवं सहयोग की भावना को बढ़ावा देना हमारा प्रमुख लक्ष्य है।
+                    हमारा उद्देश्य वास्तविक सेवा कार्यों और सही जानकारी के
+                    माध्यम से जरूरतमंद लोगों तक पारदर्शी एवं आसान सहायता
+                    पहुँचाना है। हम नागरिकों को सरकारी योजनाओं, जनकल्याणकारी
+                    सेवाओं और आवश्यक सुविधाओं से संबंधित उपयोगी जानकारी उपलब्ध
+                    कराने के लिए प्रतिबद्ध हैं। हमारा प्रयास है कि प्रत्येक
+                    व्यक्ति बिना अनावश्यक परेशानियों के उपलब्ध सेवाओं का लाभ उठा
+                    सके। हम तकनीक के माध्यम से सेवाओं को सरल, सुलभ और प्रभावी
+                    बनाना चाहते हैं। साथ ही, लोगों को उनके अधिकारों के प्रति
+                    जागरूक करना, जरूरतमंद परिवारों का सहयोग करना और समाज में
+                    सेवा एवं सहयोग की भावना को बढ़ावा देना हमारा प्रमुख लक्ष्य
+                    है।
                   </p>
                 </div>
               </div>
             </Reveal>
-
           </div>
 
-<div className="rangoli bg-sandal py-16">
-      <div className="mx-auto max-w-7xl">
-        {/* Section Heading */}
-        <div className="text-center">
-          <span className="inline-block rounded-full bg-amber-100/80 px-4 py-1 text-xs font-bold uppercase tracking-widest text-saffron-deep">
-            ✦ हमारे आदर्श ✦
-          </span>
-          <h2 className="mt-3 font-head text-3xl font-extrabold text-navy sm:text-4xl">
-            हमारे मूल्य
-          </h2>
-          <div className="mx-auto mt-2 flex items-center justify-center gap-2 text-saffron">
-            <span className="h-px w-12 bg-amber-300" />
-            <span className="text-lg">ॐ</span>
-            <span className="h-px w-12 bg-amber-300" />
-          </div>
-        </div>
-
-        {/* 2 Rows & 3 Columns Grid with Full-Width Image Cards */}
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {valuesData.map((item, index) => (
-            <Reveal key={item.title} delay={index * 80}>
-              <div className="group relative h-full overflow-hidden rounded-2xl border border-amber-200/70 bg-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-saffron hover:shadow-xl">
-                
-                {/* Upar Full-Width Image Container */}
-                <div className="relative h-48 w-full overflow-hidden bg-amber-50">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                </div>
-
-                {/* Content Container (Title + Description) */}
-                <div className="p-6 text-center">
-                  <h3 className="font-head text-2xl font-bold text-navy">
-                    {item.title}
-                  </h3>
-
-                  <p className="mt-2.5 text-sm font-medium leading-relaxed text-navy/75">
-                    {item.desc}
-                  </p>
+          <div className="rangoli bg-sandal py-16">
+            <div className="mx-auto max-w-7xl">
+              {/* Section Heading */}
+              <div className="text-center">
+                <span className="inline-block rounded-full bg-amber-100/80 px-4 py-1 text-xs font-bold uppercase tracking-widest text-saffron-deep">
+                  ✦ हमारे आदर्श ✦
+                </span>
+                <h2 className="mt-3 font-head text-3xl font-extrabold text-navy sm:text-4xl">
+                  हमारे मूल्य
+                </h2>
+                <div className="mx-auto mt-2 flex items-center justify-center gap-2 text-saffron">
+                  <span className="h-px w-12 bg-amber-300" />
+                  <span className="text-lg">ॐ</span>
+                  <span className="h-px w-12 bg-amber-300" />
                 </div>
               </div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </div>
+
+              {/* 2 Rows & 3 Columns Grid with Full-Width Image Cards */}
+              <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {valuesData.map((item, index) => (
+                  <Reveal key={item.title} delay={index * 80}>
+                    <div className="group relative h-full overflow-hidden rounded-2xl border border-amber-200/70 bg-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-saffron hover:shadow-xl">
+                      {/* Upar Full-Width Image Container */}
+                      <div className="relative h-48 w-full overflow-hidden bg-amber-50">
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                      </div>
+
+                      {/* Content Container (Title + Description) */}
+                      <div className="p-6 text-center">
+                        <h3 className="font-head text-2xl font-bold text-navy">
+                          {item.title}
+                        </h3>
+
+                        <p className="mt-2.5 text-sm font-medium leading-relaxed text-navy/75">
+                          {item.desc}
+                        </p>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </div>
 
           {/* CTA Button */}
           <div className="mt-0 text-center">
@@ -266,80 +281,74 @@ export default function About() {
               हमारे मिशन में सहयोग करें
             </Link>
           </div>
-
         </div>
       </section>
 
-<section className="mx-auto my-12">
-      <Reveal className="mx-auto max-w-7xl px-4">
-        <div className=" relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-700 via-saffron-deep to-saffron px-6 py-12 text-center shadow-xl sm:px-12 md:py-12">
-          {/* Decorative Background Watermark / Elements */}
-          <div className="absolute -left-10 -top-10 text-9xl font-bold text-white/10 select-none pointer-events-none">
-            ॐ
-          </div>
-          <div className="absolute -right-10 -bottom-10 text-9xl font-bold text-white/10 select-none pointer-events-none">
-            ॐ
-          </div>
-
-          <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center">
-            <div>
-            <h2 className="lAlign font-head text-2xl font-extrabold tracking-wide text-white sm:text-3xl md:text-4xl">
-              आपका छोटा सहयोग, किसी का बड़ा सहारा
-            </h2>
-            
-            <p className="lAlign mt-3 text-sm text-white/90 sm:text-base">
-              आपकी दी गई हर छोटी मदद समाज के जरूरतमंदों के जीवन में एक बड़ा बदलाव ला सकती है। आइए, इस पुण्य कार्य में अपना योगदान दें।
-            </p>
+      <section className="mx-auto my-12">
+        <Reveal className="mx-auto max-w-7xl px-4">
+          <div className=" relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-700 via-saffron-deep to-saffron px-6 py-12 text-center shadow-xl sm:px-12 md:py-12">
+            {/* Decorative Background Watermark / Elements */}
+            <div className="absolute -left-10 -top-10 text-9xl font-bold text-white/10 select-none pointer-events-none">
+              ॐ
+            </div>
+            <div className="absolute -right-10 -bottom-10 text-9xl font-bold text-white/10 select-none pointer-events-none">
+              ॐ
             </div>
 
-            <div>
-              <Link
-                href="/donate"
-                className="relative mt-6 bg-amber-200 btn text-saffron-deep hover:bg-navy hover:text-white"
-              >
-                दान करें
-              </Link>
+            <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center">
+              <div>
+                <h2 className="lAlign font-head text-2xl font-extrabold tracking-wide sm:text-3xl text-white">
+                  आपका छोटा सहयोग, किसी का बड़ा सहारा
+                </h2>
+
+                <p className="lAlign mt-3 text-sm text-white/90 sm:text-base">
+                  आपकी दी गई हर छोटी मदद समाज के जरूरतमंदों के जीवन में एक बड़ा
+                  बदलाव ला सकती है। आइए, इस पुण्य कार्य में अपना योगदान दें।
+                </p>
+              </div>
+
+              <div>
+                <Link
+                  href="/donate"
+                  className="relative mt-6 bg-amber-200 btn text-saffron-deep hover:bg-navy hover:text-white"
+                >
+                  दान करें
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-      </Reveal>
-    </section>
+        </Reveal>
+      </section>
 
       {/* Section 3: Bottom CTA Banner above Footer */}
       <section className="mx-auto my-12">
-      <Reveal className="mx-auto max-w-7xl px-4">
-      <div className="ctaBlock shadow-xl relative overflow-hidden max-w-7xl mx-auto rounded-3xl bg-gradient-to-r from-navy via-saffron-deep to-saffron px-6 py-12 text-white">
+        <Reveal className="mx-auto max-w-7xl px-4">
+          <div className="h-full card bg-gradient-to-br from-white to-sandal ctaBlock shadow-xl relative overflow-hidden max-w-7xl mx-auto rounded-3xl px-6 py-12">
+            <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center">
+              <div>
+                <h2 className="font-head text-2xl font-extrabold tracking-wide sm:text-3xl">
+                  हमारे साथ सहभागी बनें
+                </h2>
+                <p className="mt-2 text-sm text-black/85 sm:text-base">
+                  समिति की वर्तमान गतिविधियों और सदस्यता विकल्पों के बारे में
+                  जानें।
+                </p>
+              </div>
 
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center">
-          <div>
-            <h2 className="font-head text-2xl font-extrabold tracking-wide sm:text-3xl">
-              हमारे साथ सहभागी बनें
-            </h2>
-            <p className="mt-2 text-sm text-white/85 sm:text-base">
-              समिति की वर्तमान गतिविधियों और सदस्यता विकल्पों के बारे में जानें।
-            </p>
+              <div className="btnDiv flex flex-col gap-3 sm:flex-row sm:gap-4">
+                <Link
+                  href="/join"
+                  className="relative mt-6 bg-amber-200 btn text-saffron-deep hover:bg-navy hover:text-white"
+                >
+                  <span>सदस्य बनें</span>
+                </Link>
+
+                {/* <Link href="/donate" className="relative mt-6 bg-white btn text-saffron-deep hover:bg-navy hover:text-white">दान करें</Link> */}
+              </div>
+            </div>
           </div>
-
-
-<div className="btnDiv flex flex-col gap-3 sm:flex-row sm:gap-4">
-          <Link
-            href="/join"
-            className="relative mt-6 bg-amber-200 btn text-saffron-deep hover:bg-navy hover:text-white"
-          >
-            <span>सदस्य बनें</span>
-           
-          </Link>
-
-          {/* <Link href="/donate" className="relative mt-6 bg-white btn text-saffron-deep hover:bg-navy hover:text-white">दान करें</Link> */}
-</div>
-
-
-        </div>
-        
-      </div>
-      </Reveal>
-    </section>
-    
+        </Reveal>
+      </section>
     </>
   );
 }

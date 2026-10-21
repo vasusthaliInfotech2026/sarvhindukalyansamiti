@@ -7,27 +7,32 @@ import { SERVICES } from "@/lib/data";
 
 export const metadata = { title: "हमारे कार्य | सर्व समाज कल्याण समिति" };
 
-// अगर लोकल फोल्डर में फोटो नहीं है, तो ये High-Quality Real Images अपने आप दिखेंगी (Index या ID के हिसाब से)
+// Agar local folder (/public/images/services/) mein photo nahi hai, to ye real photos dikhengi
 const FALLBACK_IMAGES = [
-  "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1000&q=85", // 1. अन्न सेवा एवं भोजन वितरण
-  "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=1000&q=85", // 2. मानव सेवा एवं परिवार सहायता
-  "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1000&q=85", // 3. अनाथ एवं जरूरतमंद बच्चों की सहायता
-  "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=1000&q=85", // 4. स्वास्थ्य एवं चिकित्सा सेवा
-  "https://images.unsplash.com/photo-1615461066841-6116e61058f4?auto=format&fit=crop&w=1000&q=85", // 5. रक्तदान एवं स्वास्थ्य जागरूकता
-  "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=1000&q=85", // 6. शिक्षा सहायता
-  "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=1000&q=85", // 7. मंदिर एवं सनातन धर्म सेवा
-  "https://images.unsplash.com/photo-1542884748-2b87b36c6b90?auto=format&fit=crop&w=1000&q=85", // 8. आपदा एवं आपातकालीन सहायता
+  "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80", // 1. अन्न सेवा एवं भोजन वितरण
+  "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?auto=format&fit=crop&w=800&q=80", // 2. मानव सेवा एवं परिवार सहायता
+  "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=800&q=80", // 3. अनाथ एवं जरूरतमंद बच्चों की सहायता
+  "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80", // 4. स्वास्थ्य एवं चिकित्सा सेवा
+  "https://images.unsplash.com/photo-1615461066841-6116e61058f4?auto=format&fit=crop&w=800&q=80", // 5. रक्तदान एवं स्वास्थ्य जागरूकता
+  "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80", // 6. शिक्षा सहायता
+  "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80", // 7. मंदिर एवं सनातन धर्म सेवा
+  "https://images.unsplash.com/photo-1542884748-2b87b36c6b90?auto=format&fit=crop&w=800&q=80", // 8. आपदा एवं आपातकालीन सहायता
 ];
 
-// चेक करता है कि लोकल इमेज मौजूद है या नहीं, वरना Fallback Image देता है
 const getServiceImage = (id, index) => {
   try {
-    const localPath = path.join(process.cwd(), "public", "images", "services", `${id}.jpg`);
+    const localPath = path.join(
+      process.cwd(),
+      "public",
+      "images",
+      "services",
+      `${id}.jpg`,
+    );
     if (fs.existsSync(localPath)) {
       return `/images/services/${id}.jpg`;
     }
   } catch (e) {
-    // Server fs check fallback
+    // Fallback if fs check fails
   }
   return FALLBACK_IMAGES[index % FALLBACK_IMAGES.length];
 };
@@ -35,173 +40,124 @@ const getServiceImage = (id, index) => {
 export default function Services() {
   return (
     <>
-      <PageBanner title="हमारे कार्य" sub="समिति क्या करती है – श्रेणी अनुसार कार्य" />
+      <PageBanner
+        title="हमारे कार्य"
+        sub="समिति क्या करती है – श्रेणी अनुसार कार्य"
+      />
 
-      <section className="max-w-7xl px-4 py-12 mx-auto overflow-x-clip sm:px-6 sm:py-16">
-        {/* सेक्शन इंट्रो हेडर */}
-        <div className="max-w-2xl mx-auto mb-12 text-center sm:mb-16">
-          <span className="inline-block px-4 py-1.5 mb-3 text-xs font-bold tracking-wider uppercase rounded-full bg-saffron/15 text-saffron-deep border border-saffron/20">
-            सेवा ही परमो धर्मः
-          </span>
-          <h2 className="text-2xl font-bold font-head text-navy sm:text-3xl md:text-4xl">
-            समाज उत्थान के हमारे मुख्य प्रकल्प
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-navy/70 sm:text-base">
-            हम समाज के अंतिम व्यक्ति तक सहायता पहुँचाने और सनातन मूल्यों के संरक्षण के लिए विभिन्न क्षेत्रों में निरंतर कार्यरत हैं।
-          </p>
-        </div>
-
-        {/* सर्विसेज लिस्ट */}
-        <div className="space-y-8 sm:space-y-12">
+      <section className="max-w-5xl px-4 py-10 mx-auto sm:px-6 sm:py-14">
+        {/* 2-2 Columns Simple Grid */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
           {SERVICES.map((s, k) => {
-            const flip = k % 2 === 1;
             const imgSrc = getServiceImage(s.id, k);
-            const num = String(k + 1).padStart(2, "0");
 
             return (
-              <Reveal key={s.id} from={flip ? "right" : "left"}>
-                <article
-                  className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white border border-stone-200/80 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:border-saffron/30 md:flex-row ${
-                    flip ? "md:flex-row-reverse" : ""
-                  }`}
-                >
-                  {/* ================= IMAGE SECTION (No Icons) ================= */}
-                  <div className="relative h-64 w-full overflow-hidden sm:h-72 md:h-auto md:min-h-[320px] md:w-[44%] md:shrink-0">
+              <Reveal key={s.id} from="bottom">
+                <article className="flex flex-col h-full overflow-hidden transition duration-300 bg-white border shadow-sm rounded-2xl border-stone-200/80 hover:shadow-md">
+                  {/* 1. Upar Image (No Icons) */}
+                  <div className="relative w-full overflow-hidden h-52 sm:h-60 bg-stone-100">
                     <img
                       src={imgSrc}
                       alt={s.title}
                       loading={k < 2 ? "eager" : "lazy"}
-                      className="object-cover w-full h-full transition-transform duration-700 ease-out group-hover:scale-105"
+                      className="object-cover w-full h-full transition-transform duration-500 hover:scale-105"
                     />
-
-                    {/* Subtle Gradient Overlay for Depth */}
-                    <div className="absolute inset-0 transition-opacity duration-500 bg-gradient-to-t from-navy-dark/70 via-navy-dark/15 to-transparent md:bg-gradient-to-tr md:from-navy-dark/50 md:via-transparent md:to-transparent group-hover:opacity-80" />
-
-                    {/* Decorative Inner Frame */}
-                    <div className="absolute inset-3 border rounded-xl border-white/25 pointer-events-none" />
-
-                    {/* Clean Number Badge on Image */}
-                    <div
-                      className={`absolute top-5 ${
-                        flip ? "right-5" : "left-5"
-                      } flex items-center gap-1.5 rounded-full bg-white/95 backdrop-blur-md px-3.5 py-1 text-xs font-bold text-navy shadow-md`}
-                    >
-                      <span className="w-2 h-2 rounded-full bg-saffron animate-pulse" />
-                      <span>प्रकल्प #{num}</span>
-                    </div>
                   </div>
 
-                  {/* ================= CONTENT SECTION ================= */}
-                  <div className="relative flex flex-col justify-between flex-1 min-w-0 p-6 sm:p-8 md:p-10">
-                    {/* Background Watermark Number */}
-                    <span
-                      aria-hidden="true"
-                      className={`pointer-events-none select-none absolute top-4 ${
-                        flip ? "left-6" : "right-6"
-                      } font-head text-6xl font-extrabold text-stone-100 transition-colors duration-500 group-hover:text-saffron/10 sm:text-7xl`}
+                  {/* 2. Niche Simple Content */}
+                  <div className="flex flex-col flex-1 p-5 sm:p-6">
+                    <h2 className="text-lg font-bold font-head text-navy sm:text-xl">
+                      {s.title}
+                    </h2>
+
+                    {/* Simple Saffron Line */}
+                    <div className="w-12 h-1 mt-2 rounded bg-saffron" />
+
+                    {/* Easy to Read Bullet Points */}
+                    <ul className="mt-4 mb-6 space-y-2 text-sm text-navy/85 sm:text-[15px] flex-1">
+                      {s.items.map((t) => (
+                        <li key={t} className="flex items-start gap-2.5">
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-saffron" />
+                          <span className="leading-relaxed">{t}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Simple Action Button */}
+                    <Link
+                      href="/campaigns"
+                      className="btn btn-saffron w-full !py-2.5 text-center text-sm font-medium rounded-xl"
                     >
-                      {num}
-                    </span>
-
-                    <div className="relative z-10">
-                      {/* Title & Animated Underline */}
-                      <h3 className="text-xl font-bold transition-colors duration-300 font-head text-navy group-hover:text-saffron-deep sm:text-2xl md:text-[26px] leading-snug">
-                        {s.title}
-                      </h3>
-                      <div className="flex items-center gap-1.5 mt-3">
-                        <span className="h-1 transition-all duration-500 rounded-full w-14 bg-saffron group-hover:w-24" />
-                        <span className="w-2 h-1 rounded-full bg-saffron/40" />
-                        <span className="w-1 h-1 rounded-full bg-saffron/20" />
-                      </div>
-
-                      {/* Clean 2-Column Checklist Grid */}
-                      <ul className="grid grid-cols-1 gap-2.5 mt-6 sm:grid-cols-2 sm:gap-3">
-                        {s.items.map((t) => (
-                          <li
-                            key={t}
-                            className="flex items-start gap-2.5 rounded-xl bg-stone-50/90 border border-stone-200/60 p-3 text-sm text-navy/90 transition-colors duration-300 group-hover:bg-orange-50/40 group-hover:border-saffron/20 sm:text-[14.5px]"
-                          >
-                            {/* Clean SVG Checkmark */}
-                            <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-saffron/15 text-saffron-deep">
-                              <svg
-                                className="w-3.5 h-3.5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth={2.5}
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
-                            </span>
-                            <span className="font-medium leading-snug">{t}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Bottom Action Bar */}
-                    <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 pt-5 mt-7 border-t border-stone-100">
-                      <Link
-                        href="/campaigns"
-                        className="btn btn-saffron inline-flex w-full items-center justify-center gap-2 rounded-xl !px-6 !py-2.5 text-sm font-semibold shadow-sm transition-all duration-300 hover:gap-3 hover:shadow-md sm:w-auto"
-                      >
-                        <span>इस सेवा में सहयोग करें</span>
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M17 8l4 4m0 0l-4 4m4-4H3"
-                          />
-                        </svg>
-                      </Link>
-
-                      <Link
-                        href="/contact"
-                        className="hidden text-xs font-semibold transition-colors text-navy/50 hover:text-saffron-deep sm:inline-block"
-                      >
-                        स्वयंसेवक बनें →
-                      </Link>
-                    </div>
+                      इस सेवा में सहयोग करें →
+                    </Link>
                   </div>
                 </article>
               </Reveal>
             );
           })}
         </div>
+      </section>
 
-        {/* ================= BOTTOM CALL TO ACTION BANNER ================= */}
-        <Reveal from="bottom">
-          <div className="relative p-8 mt-16 overflow-hidden text-center text-white rounded-2xl bg-gradient-to-r from-navy-dark via-navy to-saffron-deep sm:p-12 shadow-lg">
-            <div className="relative z-10 max-w-2xl mx-auto">
-              <h3 className="text-2xl font-bold font-head sm:text-3xl">
-                आपका एक छोटा सा सहयोग किसी का जीवन बदल सकता है
-              </h3>
-              <p className="mt-2.5 text-sm text-white/80 sm:text-base">
-                अन्न दान, शिक्षा सहायता या चिकित्सा सेवा में भागीदार बनकर पुण्य के भागी बनें।
-              </p>
-              <div className="flex flex-wrap justify-center gap-4 mt-6">
+      <section className="mx-auto my-12">
+        <Reveal className="mx-auto max-w-7xl px-4">
+          <div className=" relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-700 via-saffron-deep to-saffron px-6 py-12 text-center shadow-xl sm:px-12 md:py-12">
+            {/* Decorative Background Watermark / Elements */}
+            <div className="absolute -left-10 -top-10 text-9xl font-bold text-white/10 select-none pointer-events-none">
+              ॐ
+            </div>
+            <div className="absolute -right-10 -bottom-10 text-9xl font-bold text-white/10 select-none pointer-events-none">
+              ॐ
+            </div>
+
+            <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center">
+              <div>
+                <h2 className="lAlign font-head text-2xl font-extrabold tracking-wide sm:text-3xl text-white">
+                  आपका छोटा सहयोग, किसी का बड़ा सहारा
+                </h2>
+
+                <p className="lAlign mt-3 text-sm text-white/90 sm:text-base">
+                  आपकी दी गई हर छोटी मदद समाज के जरूरतमंदों के जीवन में एक बड़ा
+                  बदलाव ला सकती है। आइए, इस पुण्य कार्य में अपना योगदान दें।
+                </p>
+              </div>
+
+              <div>
                 <Link
-                  href="/campaigns"
-                  className="btn btn-saffron !px-7 !py-2.5 text-sm font-semibold shadow-lg"
+                  href="/donate"
+                  className="relative mt-6 bg-amber-200 btn text-saffron-deep hover:bg-navy hover:text-white"
                 >
-                  दान करें →
+                  दान करें
                 </Link>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
+      {/* Section 3: Bottom CTA Banner above Footer */}
+      <section className="mx-auto my-12">
+        <Reveal className="mx-auto max-w-7xl px-4">
+          <div className="h-full card bg-gradient-to-br from-white to-sandal ctaBlock shadow-xl relative overflow-hidden max-w-7xl mx-auto rounded-3xl px-6 py-12">
+            <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center">
+              <div>
+                <h2 className="font-head text-2xl font-extrabold tracking-wide sm:text-3xl">
+                  हमारे साथ सहभागी बनें
+                </h2>
+                <p className="mt-2 text-sm text-black/85 sm:text-base">
+                  समिति की वर्तमान गतिविधियों और सदस्यता विकल्पों के बारे में
+                  जानें।
+                </p>
+              </div>
+
+              <div className="btnDiv flex flex-col gap-3 sm:flex-row sm:gap-4">
                 <Link
-                  href="/contact"
-                  className="px-6 py-2.5 text-sm font-semibold text-white transition border rounded-full border-white/30 bg-white/10 hover:bg-white/20"
+                  href="/join"
+                  className="relative mt-6 bg-amber-200 btn text-saffron-deep hover:bg-navy hover:text-white"
                 >
-                  हमसे संपर्क करें
+                  <span>सदस्य बनें</span>
                 </Link>
+
+                {/* <Link href="/donate" className="relative mt-6 bg-white btn text-saffron-deep hover:bg-navy hover:text-white">दान करें</Link> */}
               </div>
             </div>
           </div>
