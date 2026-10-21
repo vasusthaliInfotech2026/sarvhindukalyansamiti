@@ -15,7 +15,7 @@ const FALLBACK_IMAGES = [
   "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80", // 4. स्वास्थ्य एवं चिकित्सा सेवा
   "https://images.unsplash.com/photo-1615461066841-6116e61058f4?auto=format&fit=crop&w=800&q=80", // 5. रक्तदान एवं स्वास्थ्य जागरूकता
   "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80", // 6. शिक्षा सहायता
-  "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80", // 7. मंदिर एवं सनातन धर्म सेवा
+  "/images/mahabodhi-temple.jpg", // 7. मंदिर एवं सनातन धर्म सेवा
   "https://images.unsplash.com/photo-1542884748-2b87b36c6b90?auto=format&fit=crop&w=800&q=80", // 8. आपदा एवं आपातकालीन सहायता
 ];
 
@@ -114,6 +114,28 @@ export default function Services() {
           })}
         </div>
       </section>
+
+      {/* छोटा और सादगी भरा संकल्प सेक्शन (3-4 Lines) */}
+<section className="max-w-7xl px-4 py-8 mx-auto my-6 text-center">
+  <div className="px-6 py-8 ">
+    
+    <span className="inline-block px-3 py-1 mb-2 text-xs font-semibold rounded-full bg-saffron/15 text-saffron-deep">
+      ✦ हमारा संकल्प ✦
+    </span>
+
+    <h2 className="text-xl font-bold font-head text-navy sm:text-2xl">
+      सनातन संस्कृति का संरक्षण एवं निस्वार्थ जन-सेवा
+    </h2>
+
+    <div className="w-12 h-1 mx-auto my-3 rounded bg-saffron" />
+
+    <p className="max-w-2xl mx-auto text-sm leading-relaxed text-navy/85 sm:text-base">
+      सर्व समाज कल्याण समिति का ध्येय मंदिर निर्माण एवं सनातन मूल्यों के उत्थान के साथ-साथ समाज के प्रत्येक वंचित व्यक्ति तक अन्न, शिक्षा और चिकित्सा सहायता पहुँचाना है। हम पूर्ण पारदर्शिता और समर्पण भाव के साथ धर्म एवं मानवता की सेवा में निरंतर कार्यरत हैं। आइए, इस पावन कार्य में जुड़कर समाज में सकारात्मक बदलाव लाएँ।
+    </p>
+
+  </div>
+</section>
+
 
       <section className="mx-auto my-12">
         <Reveal className="mx-auto max-w-7xl px-4">
