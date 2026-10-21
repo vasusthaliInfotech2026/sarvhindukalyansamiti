@@ -36,7 +36,7 @@ export default function Footer() {
     <footer className="mt-10 bg-navy-dark text-sandal">
       <div className="h-1 bg-gradient-to-r from-saffron via-gold to-saffron" />
 
-      <div className="mx-auto grid max-w-5xl gap-6 px-4 py-6 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1.2fr] lg:gap-10">
+      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1.2fr] lg:gap-10">
         {/* परिचय + Support Our Work */}
         <div>
           <p className="text-xl text-white font-head sm:text-2xl">ॐ सर्व हिन्दू  कल्याण समिति</p>

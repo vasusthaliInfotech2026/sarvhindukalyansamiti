@@ -17,3 +17,27 @@ body { @apply bg-cream text-navy-dark font-body pb-16 lg:pb-0; }
   .scallop { background: radial-gradient(circle at 50% 0, transparent 13px, #FFF8EE 14px) 0 0 / 34px 18px repeat-x; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+
+
+
+
+.contentJustify{
+  text-align: justify;
+}
+
+.lAlign{
+  text-align: left;
+}
+@media (max-width: 767px) {
+
+ .ctaBlock .btnDiv{
+display: flex;
+align-items: center;  
+justify-content: center;
+}
+
+}
+
+
+
