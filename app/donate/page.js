@@ -6,7 +6,7 @@ const steps = ["अभियान/उद्देश्य चुनें", "�
 export default function Donate() {
   return (
     <>
-      <PageBanner title="दान करें" sub="आसान, सुरक्षित और पारदर्शी सहयोग" />
+      <PageBanner title="दान करें" sub="आपका सहयोग – हमारी शक्ति। आपका हर छोटा-बड़ा योगदान मंदिर निर्माण, शिक्षा, गो सेवा और समाज कल्याण के लिए अमूल्य है।" />
       <section className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-5">
         <Reveal from="left" className="md:col-span-2">
           <h2 className="font-head text-3xl">सहयोग की प्रक्रिया</h2>

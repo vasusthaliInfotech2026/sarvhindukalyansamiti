@@ -1,6 +1,7 @@
 import PageBanner from "@/components/PageBanner";
 import Reveal from "@/components/Reveal";
-import ContactForm from "./ContactForm";
+//import ContactForm from "./ContactForm";
+import ContactForm from "./ContactForm-new";
 export const metadata = { title: "संपर्क करें | सर्व समाज कल्याण समिति" };
 export default function Contact() {
   return (
