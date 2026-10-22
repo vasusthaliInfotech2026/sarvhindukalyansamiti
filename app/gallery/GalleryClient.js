@@ -215,10 +215,7 @@ function AutoImageSlider({ images, title, onImageClick }) {
         </>
       )}
 
-      {/* Zoom Badge */}
-      {/* <div className="pointer-events-none absolute right-2 top-2 z-10 rounded-full bg-black/45 px-2.5 py-1 text-xs text-white backdrop-blur-sm opacity-85 group-hover:opacity-100">
-        🔍 Zoom
-      </div> */}
+     
     </div>
   );
 }
