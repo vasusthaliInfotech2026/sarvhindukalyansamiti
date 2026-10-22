@@ -2,11 +2,11 @@ import Link from "next/link";
 
 
 const CONTACT = {
-  phone: "+91 98765 43210",        
-  phoneRaw: "919876543210",        
-  email: "info@yourdomain.org",
-  address: "लखनऊ, उत्तर प्रदेश",
-  mapQuery: "Lucknow, Uttar Pradesh", 
+  phone: "+91  84333 88888",        
+  phoneRaw: "918433388888",        
+  email: "info@sarvhindukalyansamiti.org",
+  address: "1/104, विक्रांत खंड, गोमती नगर, लखनऊ।",
+  mapQuery: "1/104, Vikrant Khand GomtiNagar Lucknow", 
   instagram: "https://www.instagram.com/yourpage",
   facebook: "https://www.facebook.com/yourpage",
   waText: "नमस्ते, मुझे सर्व हिन्दू  कल्याण समिति के बारे में जानकारी चाहिए।",
@@ -15,7 +15,7 @@ const CONTACT = {
 const LINKS = [
   ["मुख्य पृष्ठ", "/"],
   ["हमारे बारे में", "/about"],
-  ["हमारे कार्य", "/social-work"],
+  ["हमारे कार्य", "/services"],
   ["सदस्य बनें", "/join"],
   ["गैलरी", "/gallery"],
   ["संपर्क करें", "/contact"],
@@ -39,9 +39,13 @@ export default function Footer() {
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1.2fr] lg:gap-10">
         {/* परिचय + Support Our Work */}
         <div>
-          <p className="text-xl text-white font-head sm:text-2xl">ॐ सर्व हिन्दू  कल्याण समिति</p>
+          <Link href="/" className="flex items-center gap-3 mb-5">
+          <span className="grid text-2xl bg-white border-2 rounded-full shadow-inner h-11 w-11 place-items-center border-saffron font-head text-saffron">ॐ</span>
+          <span className="text-lg leading-tight font-head text-white lg:text-base xl:text-xl">सर्व हिन्दू <br className="sm:hidden" /> कल्याण समिति</span>
+        </Link>
+
           <p className="mt-1.5 max-w-sm text-sm leading-relaxed sm:text-base">
-            विश्वास, पारदर्शिता और आसान सहयोग – मानव सेवा, शिक्षा, स्वास्थ्य, और धर्म सेवा के लिए समर्पित।
+            सेवा, समर्पण और विश्वास — समाज कल्याण के लिए हमारा संकल्प।
           </p>
           <Link href="/donate" className="btn btn-saffron mt-5 animate-ring !px-5 !py-2 text-sm shadow-lg shadow-saffron/40">
             सहयोग करें
@@ -91,7 +95,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <p className="border-t border-white/10 bg-black/10 py-2.5 text-center text-sm text-white">© 2026 सर्व हिन्दू कल्याण समिति। सर्वाधिकार सुरक्षित।</p>
+      <p className="border-t border-white/10 bg-black/10 py-2.5 text-center text-sm text-white">© 2026 <span className="mx-2"></span> सर्व हिन्दू कल्याण समिति। <span className="mx-2"></span> सर्वाधिकार सुरक्षित।</p>
     </footer>
   );
 }

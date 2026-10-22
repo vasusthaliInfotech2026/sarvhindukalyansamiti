@@ -22,13 +22,17 @@ export default function Header() {
     
     <>
       <div className="bg-gradient-to-r from-saffron-deep via-saffron to-saffron-light py-2 text-center text-sm tracking-[0.1em] text-white">
-        <span className="text-navy">✺</span>
+        {/* <span className="text-navy">✺</span> */}
+        <span>✦</span>
         <span className="mx-3 font-head">धर्म</span>
-        <span className="text-sandal">•</span>
+        {/* <span className="text-sandal">•</span> */}
+        <span>✦</span>
         <span className="mx-3 font-head">संस्कृति</span>
-        <span className="text-sandal">•</span>
+        {/* <span className="text-sandal">•</span> */}
+        <span>✦</span>
         <span className="mx-3 font-head">समर्पण</span>
-        <span className="text-navy">✺</span>
+        {/* <span className="text-navy">✺</span> */}
+        <span>✦</span>
       </div>
 
       <header className="sticky top-0 z-50 border-b shadow-sm border-saffron/20 bg-cream/95 backdrop-blur">

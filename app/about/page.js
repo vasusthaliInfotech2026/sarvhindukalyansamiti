@@ -92,7 +92,7 @@ export default function About() {
               <Reveal from="right">
                 <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-xs font-bold text-saffron-deep">
                   <span>✦</span>
-                  <span>एक दृष्टि</span>
+                  <span>एक नजर</span>
                   <span>✦</span>
                 </div>
 
@@ -324,11 +324,10 @@ export default function About() {
             <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center">
               <div>
                 <h2 className="font-head text-2xl font-extrabold tracking-wide sm:text-3xl">
-                  हमारे साथ सहभागी बनें
+                  हमारे सेवा कार्यों से जुड़ें
                 </h2>
                 <p className="mt-2 text-sm text-black/85 sm:text-base">
-                  समिति की वर्तमान गतिविधियों और सदस्यता विकल्पों के बारे में
-                  जानें।
+                 समाज सेवा, सनातन संस्कृति के संरक्षण और जनकल्याण के कार्यों में हमारा साथ दें।
                 </p>
               </div>
 
