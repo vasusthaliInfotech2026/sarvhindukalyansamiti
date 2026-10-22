@@ -8,7 +8,7 @@ export default function ContactForm() {
       <input required placeholder="आपका नाम" className="input" />
       <div className="grid gap-4 sm:grid-cols-2"><input required type="tel" placeholder="मोबाइल" className="input" /><input required type="email" placeholder="ईमेल" className="input" /></div>
       <textarea required rows={5} placeholder="आपकी जिज्ञासा / संदेश" className="input" />
-      <button className="btn btn-saffron w-full">संदेश भेजें</button>
+      <button className="btn btn-saffron w-40 mx-auto block">संदेश भेजें</button>
     </form>
   );
 }

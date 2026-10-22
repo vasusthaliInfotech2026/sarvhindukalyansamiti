@@ -12,7 +12,7 @@ export default function VolunteerForm() {
       <div><p className="mb-2 font-semibold">सेवा क्षेत्रों में रुचि</p><div className="flex flex-wrap gap-3">{AREAS.map((a) => <label key={a} className="flex items-center gap-1.5"><input type="checkbox" className="accent-saffron" />{a}</label>)}</div></div>
       <div className="grid gap-4 sm:grid-cols-2"><input placeholder="उपलब्ध समय" className="input" /><input placeholder="Skills / Profession" className="input" /></div>
       <textarea rows={3} placeholder="संदेश" className="input" />
-      <button className="btn btn-saffron w-full">Volunteer आवेदन भेजें</button>
+      <button className="btn btn-saffron w-60 mx-auto block">Volunteer आवेदन भेजें</button>
     </form>
   );
 }
