@@ -92,7 +92,7 @@ export default function About() {
               <Reveal from="right">
                 <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-xs font-bold text-saffron-deep">
                   <span>✦</span>
-                  <span>एक दृष्टि</span>
+                  <span>एक नजर</span>
                   <span>✦</span>
                 </div>
 
