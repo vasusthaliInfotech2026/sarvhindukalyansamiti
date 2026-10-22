@@ -75,7 +75,7 @@ export default function Contact() {
               </div>
 
               <div className="relative z-10">
-                <span className="inline-block rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-amber-500 bg-saffron-light/20 backdrop-blur-sm">
+                <span className="inline-block rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-saffron bg-saffron/15 backdrop-blur-sm">
                   ✦ केंद्रीय कार्यालय एवं हेल्पलाइन ✦
                 </span>
 
@@ -92,11 +92,11 @@ export default function Contact() {
                   {CONTACT_ITEMS.map((item) => {
                     const CardContent = (
                       <div className="group flex h-full items-start gap-3 rounded-2xl border border-saffron/15 bg-white/10 p-3.5 backdrop-blur-sm transition duration-200 hover:bg-white/20">
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/95 text-lg text-saffron-deep shadow-sm">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/95 text-lg text-saffron shadow-sm">
                           <item.icon />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-[11px] font-semibold text-amber-500">
+                          <p className="text-[11px] font-semibold text-saffron ">
                             {item.label}
                           </p>
                           <p className="mt-0.5 truncate font-head text-sm font-bold text-black">
@@ -129,10 +129,10 @@ export default function Contact() {
                 <div className="mt-5 rounded-2xl border border-saffron/15 bg-white/10 p-4 backdrop-blur-sm">
                   <div className="flex items-start gap-3.5">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
-                      <PlaceIcon className="text-saffron-deep" />
+                      <PlaceIcon className="text-saffron" />
                     </div>
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-wider text-amber-500">
+                      <p className="text-xs font-bold uppercase tracking-wider text-saffron">
                         प्रधान कार्यालय का पता
                       </p>
                       <p className="mt-1 font-head text-base font-bold text-black sm:text-lg">
@@ -161,7 +161,7 @@ export default function Contact() {
 
               <div>
                 <div className="mb-5 border-b border-stone-100 pb-4">
-                  <span className="text-xs font-bold uppercase tracking-wider text-saffron-deep">
+                  <span className="text-xs font-bold uppercase tracking-wider text-saffron">
                     संदेश फॉर्म
                   </span>
                   <h3 className="mt-1 font-head text-2xl font-bold text-navy sm:text-3xl">

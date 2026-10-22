@@ -154,7 +154,7 @@ export default function Join() {
                 </div>
 
                 <div className="relative z-10">
-                  <span className="inline-block rounded-full bg-saffron/15 px-3 py-1 text-xs font-semibold tracking-wide text-saffron-deep backdrop-blur-sm">
+                  <span className="inline-block rounded-full bg-saffron/15 px-3 py-1 text-xs font-semibold tracking-wide text-saffron backdrop-blur-sm">
                     ✦ राष्ट्र एवं धर्म सेवा ✦
                   </span>
 
@@ -172,8 +172,8 @@ export default function Join() {
                         key={point.title}
                         className="rounded-2xl border border-saffron/15 bg-white/10 p-3.5 backdrop-blur-sm"
                       >
-                        <h3 className="flex items-center gap-2 font-head text-sm font-bold  sm:text-base">
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-saffron-deep">
+                        <h3 className="flex items-center gap-2 font-head text-sm font-bold  sm:text-base text-saffron">
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-saffron">
                             ✓
                           </span>
                           {point.title}
@@ -215,7 +215,7 @@ export default function Join() {
                 <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-amber-600 via-saffron to-amber-500" />
 
                 <div className="mb-6 border-b border-stone-100 pb-4">
-                  <span className="text-xs font-bold uppercase tracking-wider text-saffron-deep">
+                  <span className="text-xs font-bold uppercase tracking-wider text-saffron">
                     पंजीकरण फॉर्म
                   </span>
                   <h2 className="mt-1 font-head text-2xl font-bold text-navy sm:text-3xl">

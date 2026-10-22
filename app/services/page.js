@@ -163,7 +163,7 @@ export default function Services() {
 
                     {/* Simple Action Button */}
                     <Link
-                      href="/donate"
+                      href="/donate?services=mandir-seva"
                       className="btn btn-saffron w-full !py-2.5 text-center text-sm font-medium rounded-xl"
                     >
                       इस सेवा में सहयोग करें →
