@@ -102,7 +102,7 @@ export default function Services() {
     <>
       <PageBanner
         title="हमारे कार्य"
-        sub="समिति क्या करती है – श्रेणी अनुसार कार्य"
+        sub="समाज सेवा के क्षेत्र – हमारे प्रमुख कार्य"
       />
 
       <section className="max-w-7xl px-4 py-10 mx-auto sm:px-6 sm:py-14">
@@ -116,7 +116,7 @@ export default function Services() {
           </div>
 
           <h2 className="mt-4 text-2xl font-bold font-head text-navy sm:text-3xl md:text-4xl">
-            समाज उत्थान के हमारे मुख्य प्रकल्प
+            समाज उत्थान हेतु हमारे प्रमुख कार्य
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-navy/70 sm:text-base">
             हम समाज के अंतिम व्यक्ति तक सहायता पहुँचाने और सनातन मूल्यों के संरक्षण के लिए विभिन्न क्षेत्रों में निरंतर कार्यरत हैं।
@@ -214,11 +214,10 @@ export default function Services() {
             <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 sm:flex-row sm:items-center">
               <div>
                 <h2 className="font-head text-2xl font-extrabold tracking-wide sm:text-3xl">
-                  हमारे साथ सहभागी बनें
+                  हमारे सेवा कार्यों से जुड़ें
                 </h2>
                 <p className="mt-2 text-sm text-black/85 sm:text-base">
-                  समिति की वर्तमान गतिविधियों और सदस्यता विकल्पों के बारे में
-                  जानें।
+                  समाज सेवा, सनातन संस्कृति के संरक्षण और जनकल्याण के कार्यों में हमारा साथ दें।
                 </p>
               </div>
 

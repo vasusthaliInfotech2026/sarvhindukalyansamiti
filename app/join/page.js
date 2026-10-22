@@ -8,7 +8,7 @@ export const metadata = { title: "हमारे साथ जुड़ें |
 const OPTS = [
   {
     icon: "🪔",
-    title: "अर्थ सहयोग (Donate)",
+    title: "अर्थ सहयोग",
     sub: "आर्थिक सहयोग",
     desc: "अन्न सेवा, शिक्षा, चिकित्सा और मंदिर सेवा के पुण्य प्रकल्पों में अपना आर्थिक योगदान दें।",
     href: "/donate",
@@ -16,7 +16,7 @@ const OPTS = [
   },
   {
     icon: "🙏",
-    title: "स्वयंसेवक (Volunteer)",
+    title: "स्वयंसेवक",
     sub: "समय और कौशल से सेवा",
     desc: "ज़मीनी स्तर पर सेवा कार्यों, वितरण अभियानों और शिविरों में अपना अमूल्य समय दें।",
     href: "#volunteer",
@@ -24,7 +24,7 @@ const OPTS = [
   },
   {
     icon: "🩸",
-    title: "रक्तदाता (Blood Donor)",
+    title: "रक्तदाता",
     sub: "रक्तदान / डोनर नेटवर्क",
     desc: "आपातकालीन स्थिति में किसी का जीवन बचाने के लिए हमारे रक्तदाता नेटवर्क से जुड़ें।",
     href: "#volunteer",
@@ -147,21 +147,21 @@ export default function Join() {
           <div className="grid items-stretch gap-8 lg:grid-cols-12">
             {/* Left Column: Trust Info & Spiritual Motivation (5 Cols) */}
             <Reveal className="lg:col-span-5" from="bottom">
-              <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-3xl bg-gradient-to-br from-amber-700 via-saffron-deep to-saffron p-6 text-white shadow-lg sm:p-8">
+              <div className="rangoli bg-sandal relative flex h-full flex-col justify-between overflow-hidden rounded-3xl p-6 shadow-lg sm:p-8">
                 {/* Decorative Om Watermark */}
                 <div className="pointer-events-none absolute -bottom-10 -right-8 select-none text-[150px] font-bold leading-none text-white/10">
                   ॐ
                 </div>
 
                 <div className="relative z-10">
-                  <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide text-amber-100 backdrop-blur-sm">
+                  <span className="inline-block rounded-full bg-saffron/25 px-3 py-1 text-xs font-semibold tracking-wide text-amber-500 backdrop-blur-sm">
                     ✦ राष्ट्र एवं धर्म सेवा ✦
                   </span>
 
                   <h2 className="mt-4 font-head text-2xl font-extrabold leading-snug sm:text-3xl">
                     समिति परिवार का हिस्सा क्यों बनें?
                   </h2>
-                  <p className="mt-2.5 text-sm leading-relaxed text-white/90">
+                  <p className="mt-2.5 text-sm leading-relaxed text-black/90">
                     आपका थोड़ा सा समय या एक यूनिट रक्त किसी असहाय परिवार के चेहरे पर मुस्कान और जीवन की नई किरण ला सकता है।
                   </p>
 
@@ -170,15 +170,15 @@ export default function Join() {
                     {WHY_JOIN.map((point) => (
                       <div
                         key={point.title}
-                        className="rounded-2xl border border-white/15 bg-white/10 p-3.5 backdrop-blur-sm"
+                        className="rounded-2xl border border-saffron/15 bg-white/10 p-3.5 backdrop-blur-sm"
                       >
-                        <h3 className="flex items-center gap-2 font-head text-sm font-bold text-white sm:text-base">
+                        <h3 className="flex items-center gap-2 font-head text-sm font-bold  sm:text-base">
                           <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-saffron-deep">
                             ✓
                           </span>
                           {point.title}
                         </h3>
-                        <p className="mt-1 pl-7 text-xs leading-relaxed text-white/85 sm:text-[13px]">
+                        <p className="mt-1 pl-7 text-xs leading-relaxed text-black/85 sm:text-[13px]">
                           {point.desc}
                         </p>
                       </div>
@@ -216,10 +216,10 @@ export default function Join() {
 
                 <div className="mb-6 border-b border-stone-100 pb-4">
                   <span className="text-xs font-bold uppercase tracking-wider text-saffron-deep">
-                    पंजीकरण फॉर्म (Registration Form)
+                    पंजीकरण फॉर्म
                   </span>
                   <h2 className="mt-1 font-head text-2xl font-bold text-navy sm:text-3xl">
-                    Volunteer / Blood Donor आवेदन
+                    स्वयंसेवक / रक्तदाता बनने के लिए आवेदन
                   </h2>
                   <p className="mt-1 text-xs text-navy/70 sm:text-sm">
                     कृपया नीचे अपनी जानकारी भरें, हमारी टीम जल्द ही आपसे संपर्क करेगी।

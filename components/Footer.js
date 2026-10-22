@@ -2,11 +2,11 @@ import Link from "next/link";
 
 
 const CONTACT = {
-  phone: "+91 98765 43210",        
-  phoneRaw: "919876543210",        
-  email: "info@yourdomain.org",
-  address: "लखनऊ, उत्तर प्रदेश",
-  mapQuery: "Lucknow, Uttar Pradesh", 
+  phone: "+91  84333 88888",        
+  phoneRaw: "918433388888",        
+  email: "info@sarvhindukalyansamiti.org",
+  address: "1/104, विक्रांत खंड, गोमती नगर, लखनऊ।",
+  mapQuery: "1/104, Vikrant Khand GomtiNagar Lucknow", 
   instagram: "https://www.instagram.com/yourpage",
   facebook: "https://www.facebook.com/yourpage",
   waText: "नमस्ते, मुझे सर्व हिन्दू  कल्याण समिति के बारे में जानकारी चाहिए।",
