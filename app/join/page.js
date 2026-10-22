@@ -8,7 +8,7 @@ export const metadata = { title: "हमारे साथ जुड़ें |
 const OPTS = [
   {
     icon: "🪔",
-    title: "अर्थ सहयोग",
+    title: "आर्थिक सहयोग",
     sub: "आर्थिक सहयोग",
     desc: "अन्न सेवा, शिक्षा, चिकित्सा और मंदिर सेवा के पुण्य प्रकल्पों में अपना आर्थिक योगदान दें।",
     href: "/donate",
@@ -80,7 +80,7 @@ export default function Join() {
         <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
           <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-xs font-bold text-saffron-deep">
             <span>✦</span>
-            <span>संगच्छध्वं संवदध्वं</span>
+            <span>एक साथ, एक विचार</span>
             <span>✦</span>
           </div>
           <h2 className="mt-3 font-head text-2xl font-bold text-navy sm:text-3xl">
@@ -95,7 +95,7 @@ export default function Join() {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {OPTS.map((item, k) => (
             <Reveal key={item.title} delay={k * 80} from="bottom">
-              <Link
+              <div
                 href={item.href}
                 className="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-amber-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-saffron hover:shadow-md"
               >
@@ -117,9 +117,9 @@ export default function Join() {
                   <h3 className="mt-4 font-head text-lg font-bold text-navy group-hover:text-saffron-deep">
                     {item.title}
                   </h3>
-                  <p className="mt-0.5 text-xs font-semibold text-saffron-deep">
+                  {/* <p className="mt-0.5 text-xs font-semibold text-saffron-deep">
                     {item.sub}
-                  </p>
+                  </p> */}
 
                   {/* Divider */}
                   <div className="my-3 h-px w-full bg-amber-100" />
@@ -131,10 +131,10 @@ export default function Join() {
                 </div>
 
                 {/* Bottom Action Text */}
-                <div className="mt-4 pt-2 text-xs font-bold text-saffron-deep transition-transform duration-200 group-hover:translate-x-1">
+                {/* <div className="mt-4 pt-2 text-xs font-bold text-saffron-deep transition-transform duration-200 group-hover:translate-x-1">
                   {item.cta}
-                </div>
-              </Link>
+                </div> */}
+              </div>
             </Reveal>
           ))}
         </div>
@@ -147,14 +147,14 @@ export default function Join() {
           <div className="grid items-stretch gap-8 lg:grid-cols-12">
             {/* Left Column: Trust Info & Spiritual Motivation (5 Cols) */}
             <Reveal className="lg:col-span-5" from="bottom">
-              <div className="rangoli bg-sandal relative flex h-full flex-col justify-between overflow-hidden rounded-3xl p-6 shadow-lg sm:p-8">
+              <div className="border border-amber-500/80 rangoli bg-saffron-100 relative flex h-full flex-col justify-between overflow-hidden rounded-3xl p-6 shadow-lg sm:p-8">
                 {/* Decorative Om Watermark */}
                 <div className="pointer-events-none absolute -bottom-10 -right-8 select-none text-[150px] font-bold leading-none text-white/10">
                   ॐ
                 </div>
 
                 <div className="relative z-10">
-                  <span className="inline-block rounded-full bg-saffron/25 px-3 py-1 text-xs font-semibold tracking-wide text-amber-500 backdrop-blur-sm">
+                  <span className="inline-block rounded-full bg-saffron/15 px-3 py-1 text-xs font-semibold tracking-wide text-saffron-deep backdrop-blur-sm">
                     ✦ राष्ट्र एवं धर्म सेवा ✦
                   </span>
 
@@ -219,7 +219,7 @@ export default function Join() {
                     पंजीकरण फॉर्म
                   </span>
                   <h2 className="mt-1 font-head text-2xl font-bold text-navy sm:text-3xl">
-                    स्वयंसेवक / रक्तदाता बनने के लिए आवेदन
+                    स्वयंसेवक बनने के लिए आवेदन
                   </h2>
                   <p className="mt-1 text-xs text-navy/70 sm:text-sm">
                     कृपया नीचे अपनी जानकारी भरें, हमारी टीम जल्द ही आपसे संपर्क करेगी।

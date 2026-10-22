@@ -1,33 +1,38 @@
 import PageBanner from "@/components/PageBanner";
 import Reveal from "@/components/Reveal";
 import ContactForm from "./ContactForm";
+import PhoneIcon from "@mui/icons-material/Phone";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import EmailIcon from "@mui/icons-material/Email";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import PlaceIcon from '@mui/icons-material/Place';
 
 export const metadata = { title: "संपर्क करें | सर्व समाज कल्याण समिति" };
 
 const CONTACT_ITEMS = [
   {
-    icon: "📞",
+    icon: PhoneIcon,
     label: "मोबाइल नंबर",
     value: "+91 84333 88888",
     sub: "सीधे कॉल पर बात करें",
     href: "tel:+918433388888",
   },
   {
-    icon: "💬",
+    icon: WhatsAppIcon,
     label: "WhatsApp सेवा",
     value: "+91 84333 88888",
     sub: "त्वरित संदेश भेजें",
     href: "https://wa.me/918433388888",
   },
   {
-    icon: "✉️",
+    icon: EmailIcon,
     label: "आधिकारिक ईमेल",
     value: "info@sarvhindukalyansamiti.org",
     sub: "सुझाव एवं संस्थागत पत्र",
     href: "mailto:info@sarvhindukalyansamiti.org",
   },
   {
-    icon: "🕒",
+    icon: AccessTimeIcon,
     label: "कार्यालय समय",
     value: "सोम – शनि (9 AM - 6 PM)",
     sub: "आपातकालीन सेवा 24×7 उपलब्ध",
@@ -63,14 +68,14 @@ export default function Contact() {
         <div className="grid items-stretch gap-8 lg:grid-cols-12">
           {/* Left Column: Structured Contact Info Panel (6 Cols) */}
           <Reveal from="left" className="lg:col-span-6">
-            <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-amber-500/80 rangoli bg-slate-100 p-6 text-white shadow-lg sm:p-8">
+            <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-amber-500/80 rangoli bg-saffron-100 p-6 text-white shadow-lg sm:p-8">
               {/* Subtle Om Watermark */}
               <div className="pointer-events-none absolute -bottom-10 -right-6 select-none text-[140px] font-bold leading-none text-white/10">
                 ॐ
               </div>
 
               <div className="relative z-10">
-                <span className="inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide text-amber-500 backdrop-blur-sm">
+                <span className="inline-block rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-amber-500 bg-saffron-light/20 backdrop-blur-sm">
                   ✦ केंद्रीय कार्यालय एवं हेल्पलाइन ✦
                 </span>
 
@@ -88,7 +93,7 @@ export default function Contact() {
                     const CardContent = (
                       <div className="group flex h-full items-start gap-3 rounded-2xl border border-saffron/15 bg-white/10 p-3.5 backdrop-blur-sm transition duration-200 hover:bg-white/20">
                         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/95 text-lg text-saffron-deep shadow-sm">
-                          {item.icon}
+                          <item.icon />
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="text-[11px] font-semibold text-amber-500">
@@ -123,8 +128,8 @@ export default function Contact() {
                  {/* Main Address Card */}
                 <div className="mt-5 rounded-2xl border border-saffron/15 bg-white/10 p-4 backdrop-blur-sm">
                   <div className="flex items-start gap-3.5">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl bg-saffron shadow-sm">
-                      📍
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
+                      <PlaceIcon className="text-saffron-deep" />
                     </div>
                     <div>
                       <p className="text-xs font-bold uppercase tracking-wider text-amber-500">
@@ -141,8 +146,8 @@ export default function Contact() {
               </div>
 
               {/* Bottom Note Strip */}
-              <div className="relative z-10 mt-6 flex items-center justify-between gap-3 rounded-2xl border border-white/20 bg-black/15 px-4 py-3 text-xs text-black/80">
-                <span>🙏 जनसेवा एवं सहायता हेतु सदैव तत्पर</span>
+              <div className="relative z-10 mt-6 flex items-center justify-between gap-3 rounded-2xl border border-saffron/10 bg-saffron-light/20 px-4 py-3 text-xs text-black/80">
+                <span>जनसेवा एवं सहायता हेतु सदैव तत्पर 🙏</span>
                 <span className="font-bold text-black">लखनऊ, उ.प्र.</span>
               </div>
             </div>
