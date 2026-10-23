@@ -51,7 +51,7 @@ export default function Contact() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
         {/* Section Intro Header */}
         <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-xs font-bold text-saffron-deep">
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-sm font-bold text-saffron-deep">
             <span>✦</span>
             <span>सेवा • संवाद • सहयोग</span>
             <span>✦</span>
@@ -75,7 +75,7 @@ export default function Contact() {
               </div>
 
               <div className="relative z-10">
-                <span className="inline-block rounded-full px-3 py-1 text-xs font-semibold tracking-wide text-saffron bg-saffron/15 backdrop-blur-sm">
+                <span className="inline-block rounded-full px-3 py-1 text-sm font-semibold tracking-wide text-saffron bg-saffron/15 backdrop-blur-sm">
                   ✦ केंद्रीय कार्यालय एवं हेल्पलाइन ✦
                 </span>
 
