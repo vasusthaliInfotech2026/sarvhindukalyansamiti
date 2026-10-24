@@ -3,16 +3,31 @@ import Razorpay from "razorpay";
 
 export const runtime = "nodejs";
 
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
-
 export async function POST(request) {
   try {
+    const razorpayKeyId = process.env.RAZORPAY_KEY_ID;
+    const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!razorpayKeyId || !razorpayKeySecret) {
+      console.error("Razorpay credentials are missing");
+
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Razorpay configuration is missing",
+        },
+        { status: 500 }
+      );
+    }
+
+    const razorpay = new Razorpay({
+      key_id: razorpayKeyId,
+      key_secret: razorpayKeySecret,
+    });
+
     const { amount } = await request.json();
 
-    if (!amount || amount <= 50) {
+    if (!amount || amount <= 50) {  
       return NextResponse.json(
         { success: false, message: "Invalid amount! Please enter atleast 50" },
         { status: 400 }
