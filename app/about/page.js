@@ -90,7 +90,7 @@ export default function About() {
             {/* Right Content Box UI */}
             <div className="lg:col-span-7">
               <Reveal from="right">
-                <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-xs font-bold text-saffron-deep">
+                <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-sm font-bold text-saffron-deep">
                   <span>✦</span>
                   <span>एक नजर</span>
                   <span>✦</span>
@@ -231,7 +231,7 @@ export default function About() {
             <div className="mx-auto max-w-7xl">
               {/* Section Heading */}
               <div className="text-center">
-                <span className="inline-block rounded-full bg-amber-100/80 px-4 py-1 text-xs font-bold uppercase tracking-widest text-saffron-deep">
+                <span className="inline-block rounded-full bg-amber-100/80 px-4 py-1 text-sm font-bold uppercase tracking-widest text-saffron-deep">
                   ✦ हमारे आदर्श ✦
                 </span>
                 <h2 className="mt-3 font-head text-3xl font-extrabold text-navy sm:text-4xl">

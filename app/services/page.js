@@ -19,7 +19,7 @@ const FALLBACK_IMAGES = [
   "https://images.unsplash.com/photo-1542884748-2b87b36c6b90?auto=format&fit=crop&w=800&q=80", // 8. आपदा एवं आपातकालीन सहायता
 ];
 
-// सभी 8 सेवाओं के लिए फिक्स 4-4 बुलेट पॉइंट्स
+
 const FOUR_BULLETS_PER_SERVICE = [
   // 1. अन्न सेवा एवं भोजन वितरण
   [
@@ -109,7 +109,7 @@ export default function Services() {
 
         <div className="max-w-2xl mx-auto mb-12 text-center sm:mb-16">
 
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-xs font-bold text-saffron-deep">
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-sm font-bold text-saffron-deep">
             <span>✦</span>
             <span>सेवा ही परमो धर्मः</span>
             <span>✦</span>
@@ -163,7 +163,7 @@ export default function Services() {
 
                     {/* Simple Action Button */}
                     <Link
-                      href="/donate?services=mandir-seva"
+                      href={s.link}
                       className="btn btn-saffron w-full !py-2.5 text-center text-sm font-medium rounded-xl"
                     >
                       इस सेवा में सहयोग करें →

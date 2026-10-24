@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Script from "next/script";
 import PageBanner from "@/components/PageBanner";
 import Reveal from "@/components/Reveal";
 import VolunteerForm from "./VolunteerForm";
@@ -70,6 +71,11 @@ const WHY_JOIN = [
 export default function Join() {
   return (
     <>
+    <Script 
+        src="https://checkout.razorpay.com/v1/checkout.js" 
+        strategy="lazyOnload" 
+      />
+      
       <PageBanner
         title="हमारे साथ जुड़ें"
         sub="सेवा के कई तरीके – अपने लिए चुनें"
@@ -78,7 +84,7 @@ export default function Join() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
         {/* Section Intro Header */}
         <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-xs font-bold text-saffron-deep">
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-sm font-bold text-saffron-deep">
             <span>✦</span>
             <span>एक साथ, एक विचार</span>
             <span>✦</span>
@@ -154,7 +160,7 @@ export default function Join() {
                 </div>
 
                 <div className="relative z-10">
-                  <span className="inline-block rounded-full bg-saffron/15 px-3 py-1 text-xs font-semibold tracking-wide text-saffron backdrop-blur-sm">
+                  <span className="inline-block rounded-full bg-saffron/15 px-3 py-1 text-sm font-semibold tracking-wide text-saffron backdrop-blur-sm">
                     ✦ राष्ट्र एवं धर्म सेवा ✦
                   </span>
 
@@ -186,23 +192,7 @@ export default function Join() {
                   </div>
                 </div>
 
-                {/* Bottom Quick Help Box */}
-                {/* <div className="relative z-10 mt-8 rounded-2xl border border-white/20 bg-black/15 p-4">
-                  <p className="text-xs font-medium text-amber-100">
-                    किसी अन्य जानकारी या संस्थागत सहयोग के लिए:
-                  </p>
-                  <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-sm font-bold text-white">
-                      📍 लखनऊ, उत्तर प्रदेश
-                    </span>
-                    <Link
-                      href="/contact"
-                      className="rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-saffron-deep transition hover:bg-amber-50"
-                    >
-                      संपर्क करें →
-                    </Link>
-                  </div>
-                </div> */}
+          
 
 
               </div>
