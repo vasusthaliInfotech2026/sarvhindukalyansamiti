@@ -29,13 +29,13 @@ export async function POST(request) {
 
     if (!amount || amount <= 50) {  
       return NextResponse.json(
-        { success: false, message: "Invalid amount! Please enter atleast 50" },
+        { success: false, message: "Invalid amount! Please enter at least 1" },
         { status: 400 }
       );
     }
 
     const options = {
-      amount: Math.round(amount * 100), // ₹ → paise
+      amount: Math.round(amount * 100),
       currency: "INR",
       receipt: `donation_${Date.now()}`,
     };
@@ -48,16 +48,8 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error("Razorpay order error:", error);
-
     return NextResponse.json(
-      {
-        success: false,
-        message:
-        error?.error?.description ||
-        error?.description ||
-        error?.message ||
-        "Unable to create Razorpay order",
-      },
+      { success: false, message: error?.message || "Unable to create Razorpay order" },
       { status: 500 }
     );
   }
