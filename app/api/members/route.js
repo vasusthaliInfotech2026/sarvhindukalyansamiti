@@ -20,13 +20,6 @@ export async function POST(request) {
     const razorpay_payment_id = body.razorpay_payment_id || "manual_payment";
     const razorpay_signature = body.razorpay_signature || "";
 
-    // Check karein ki yeh QR manual payment hai ya Razorpay Gateway payment
-    const isQRManual = razorpay_signature === "qr_manual_verified";
-    
-    const paymentStatus = isQRManual ? "pending" : "paid";
-    const memberStatus = isQRManual ? "Pending" : "Active";
-    const paymentMethodName = isQRManual ? "UPI QR (Verification Pending)" : "Razorpay Gateway";
-
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST || "127.0.0.1",
       user: process.env.DB_USER || "root",
@@ -35,9 +28,30 @@ export async function POST(request) {
     });
 
     try {
+      // 1. Email check: Pehle se registered hai ya nahi
+      if (email) {
+        const [existingUsers] = await connection.execute(
+          `SELECT id FROM members WHERE email = ?`,
+          [email]
+        );
+
+        if (existingUsers.length > 0) {
+          await connection.end();
+          return NextResponse.json(
+            { success: false, alreadyRegistered: true, error: "तुम पहले से ही इस ईमेल आईडी से रजिस्टर्ड हो!" },
+            { status: 400 }
+          );
+        }
+      }
+
+      const isQRManual = razorpay_signature === "qr_manual_verified";
+      const paymentStatus = isQRManual ? "pending" : "paid";
+      const memberStatus = isQRManual ? "Pending" : "Active";
+      const paymentMethodName = isQRManual ? "UPI QR (Verification Pending)" : "Razorpay Gateway";
+
       await connection.beginTransaction();
 
-      // A. Members table mein status save karein ('Pending' ya 'Active')
+      // A. Members table mein save karein (Bina password ke)
       const [memberResult] = await connection.execute(
         `INSERT INTO members 
         (full_name, email, phone, address, city, state, pincode, membership_type, role, membership_fee, status) 
@@ -59,7 +73,7 @@ export async function POST(request) {
       await connection.commit();
       await connection.end();
 
-      // 3. Email Notifications
+      // 3. Email Notifications (Bina password ke normal receipts)
       if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
         const transporter = nodemailer.createTransport({
           service: "gmail",
@@ -70,9 +84,7 @@ export async function POST(request) {
         });
 
         if (isQRManual) {
-          // --- QR MODE: Payment Verification Pending Email ---
-          
-          // Admin Email (Notification ki payment verify karni hai)
+          // --- QR MODE: Pending Verification Email ---
           await transporter.sendMail({
             from: `"सर्व हिन्दू कल्याण समिति" <${process.env.EMAIL_USER}>`,
             to: process.env.RECEIVER_EMAIL || process.env.EMAIL_USER,
@@ -85,23 +97,21 @@ export async function POST(request) {
                 <p><strong>ईमेल:</strong> ${email || "N/A"}</p>
                 <p><strong>राशि:</strong> ₹${membership_fee}</p>
                 <p><strong>रसीद संख्या:</strong> ${receiptNo}</p>
-                <p style="color: red; font-weight: bold;">कृपया बैंक खाते में राशि चेक करके इस सदस्य का भुगतान वेरीफाई करें।</p>
               </div>
             `,
           });
 
-          // User Email (Verification Pending Message)
           if (email) {
             await transporter.sendMail({
               from: `"सर्व हिन्दू कल्याण समिति" <${process.env.EMAIL_USER}>`,
               to: email,
-              subject: `⏳ पंजीकरण प्राप्त हुआ - भुगतान सत्यापन लंबित है (Sarv Hindu Kalyan Samiti)`,
+              subject: `⏳ पंजीकरण प्राप्त हुआ - भुगतान सत्यापन लंबित (Sarv Hindu Kalyan Samiti)`,
               html: `
                 <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e6d5b8; border-radius: 10px; background-color: #faf3e8;">
                   <h2 style="color: #c86428; text-align: center;">जय श्री राम! 🙏</h2>
                   <p>प्रिय <strong>${full_name} जी</strong>,</p>
                   <p>सर्व हिन्दू कल्याण समिति में आपका पंजीकरण अनुरोध मिल गया है और आपका भुगतान <strong>सत्यापन के लिए लंबित (Verification Pending)</strong> है।</p>
-                  <p>हमारी टीम आपके बैंक ट्रांसफर/UPI भुगतान की जाँच कर रही है। भुगतान सत्यापित होते ही आपकी आधिकारिक रसीद आपके ईमेल पर भेज दी जाएगी।</p>
+                  
                   <div style="background: #fff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #d97706;">
                     <p style="margin: 5px 0;"><strong>सदस्यता प्रकार:</strong> ${membership_type}</p>
                     <p style="margin: 5px 0;"><strong>राशि:</strong> ₹${membership_fee}</p>
@@ -116,9 +126,7 @@ export async function POST(request) {
           }
 
         } else {
-          // --- RAZORPAY GATEWAY MODE: Direct Payment Confirmed & Received Email ---
-
-          // Admin Email
+          // --- RAZORPAY GATEWAY MODE ---
           await transporter.sendMail({
             from: `"सर्व हिन्दू कल्याण समिति" <${process.env.EMAIL_USER}>`,
             to: process.env.RECEIVER_EMAIL || process.env.EMAIL_USER,
@@ -135,7 +143,6 @@ export async function POST(request) {
             `,
           });
 
-          // User Email (Payment Confirmed & Received)
           if (email) {
             await transporter.sendMail({
               from: `"सर्व हिन्दू कल्याण समिति" <${process.env.EMAIL_USER}>`,
@@ -145,7 +152,8 @@ export async function POST(request) {
                 <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e6d5b8; border-radius: 10px; background-color: #faf3e8;">
                   <h2 style="color: #c86428; text-align: center;">जय श्री राम! 🙏</h2>
                   <p>प्रिय <strong>${full_name} जी</strong>,</p>
-                  <p>आपका भुगतान सफलताપूर्वक प्राप्त हो गया है! सर्व हिन्दू कल्याण समिति परिवार में आपका हार्दिक स्वागत है।</p>
+                  <p>आपका भुगतान सफलतापूर्वक प्राप्त हो गया है! सर्व हिन्दू कल्याण समिति परिवार में आपका हार्दिक स्वागत है।</p>
+                  
                   <div style="background: #fff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #16a34a;">
                     <h3 style="margin-top: 0; color: #333;">भुगतान एवं रसीद विवरण:</h3>
                     <p style="margin: 5px 0;"><strong>सदस्यता प्रकार:</strong> ${membership_type}</p>
@@ -154,7 +162,6 @@ export async function POST(request) {
                     <p style="margin: 5px 0;"><strong>रसीद संख्या:</strong> ${receiptNo}</p>
                     <p style="margin: 5px 0;"><strong>Payment ID:</strong> ${razorpay_payment_id}</p>
                   </div>
-                  <p>हमारी टीम जल्द ही आपसे संपर्क करेगी।</p>
                   <p style="margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
                     <strong>सर्व हिन्दू कल्याण समिति</strong>
                   </p>
@@ -167,8 +174,10 @@ export async function POST(request) {
 
       return NextResponse.json({ success: true }, { status: 200 });
     } catch (dbError) {
-      await connection.rollback();
-      await connection.end();
+      if (connection) {
+        await connection.rollback();
+        await connection.end();
+      }
       throw dbError;
     }
   } catch (error) {
@@ -176,6 +185,5 @@ export async function POST(request) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
-
 
 

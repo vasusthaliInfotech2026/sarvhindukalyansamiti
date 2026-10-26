@@ -1,34 +1,41 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 
-export async function POST(request) {
+export async function POST(req) {
   try {
-    const { username, password } = await request.json();
+    const { username, password } = await req.json();
 
-    const ADMIN_USER = process.env.ADMIN_USERNAME;
-    const ADMIN_PASS = process.env.ADMIN_PASSWORD;
+    const validUser = process.env.ADMIN_USERNAME || "admin";
+    const validPass = process.env.ADMIN_PASSWORD || "admin123";
+    const sessionToken =
+      process.env.ADMIN_SECRET_TOKEN || "shks_admin_authenticated";
 
-    if (username === ADMIN_USER && password === ADMIN_PASS) {
-      cookies().set({
-        name: "admin_token",
-        value: "authenticated_true_session",
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        path: "/",
-        maxAge: 60 * 60 * 24,
+    if (username === validUser && password === validPass) {
+      const response = NextResponse.json({
+        success: true,
+        message: "लॉगिन सफल रहा!",
       });
 
-      return NextResponse.json({ success: true, message: "लॉगिन सफल!" });
+      // Set HTTP-Only Cookie for 7 days
+      response.cookies.set("admin_token", sessionToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7, // 7 Days
+      });
+
+      return response;
     }
 
     return NextResponse.json(
-      { success: false, error: "अमान्य यूजरनेम या पासवर्ड!" },
+      { success: false, error: "ईमेल/यूजरनेम या पासवर्ड गलत है।" },
       { status: 401 }
     );
-  } catch (err) {
+  } catch (error) {
     return NextResponse.json(
-      { success: false, error: "सर्वर त्रुटि" },
+      { success: false, error: "लॉगिन प्रोसेस करने में सर्वर एरर आया।" },
       { status: 500 }
     );
   }
 }
+
