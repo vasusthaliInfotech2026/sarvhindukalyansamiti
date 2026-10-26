@@ -29,7 +29,7 @@ export async function POST(request) {
 
     if (!amount || amount <= 50) {  
       return NextResponse.json(
-        { success: false, message: "Invalid amount! Please enter at least 1" },
+        { success: false, message: "Invalid amount! Please enter at least 50" },
         { status: 400 }
       );
     }
