@@ -217,8 +217,8 @@ export default function VolunteerForm() {
           </div>
         </div>
 
-        <button type="submit" disabled={loading} className="w-full rounded-xl bg-[#c86428] hover:bg-[#b05520] text-white font-semibold py-4 text-lg transition-colors shadow-sm">
-          {loading ? "प्रतीक्षा करें..." : "Register & Pay"}
+        <button type="submit" disabled={loading} className="btn btn-saffron w-fit block mx-auto text-lg py-3 mt-4">
+          {loading ? "प्रतीक्षा करें..." : "पंजीकरण और भुगतान करें"}
         </button>
       </form>
 
