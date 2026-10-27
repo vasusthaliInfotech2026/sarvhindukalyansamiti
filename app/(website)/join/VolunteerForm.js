@@ -28,8 +28,10 @@ export default function VolunteerForm() {
     setError("");
 
     // --- STRICT PAYMENT MODE VALIDATION ---
-    const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE?.trim();
+    //const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE?.trim();
+    const paymentMode = "qr";
     if (paymentMode !== "qr" && paymentMode !== "razorpay") {
+      console.log("LIVE PAYMENT MODE:", paymentMode);
       setError(`अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए हमारी टीम से संपर्क करें।`);
       setLoading(false);
       return;
