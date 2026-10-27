@@ -1,8 +1,10 @@
 "use client";
+
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function SuccessPage() {
+function SuccessContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("order_id");
 
@@ -15,8 +17,10 @@ export default function SuccessPage() {
       <h3 className="font-head text-3xl font-bold text-orange-700">
         पंजीकरण और अनुरोध सफल!
       </h3>
+
       <p className="mt-3 text-slate-600 text-base">
-        सर्व हिन्दू कल्याण समिति परिवार में आपका स्वागत है। आपका डेटा सुरक्षित दर्ज कर लिया गया है।
+        सर्व हिन्दू कल्याण समिति परिवार में आपका स्वागत है। आपका डेटा सुरक्षित
+        दर्ज कर लिया गया है।
       </p>
 
       {orderId && (
@@ -25,24 +29,22 @@ export default function SuccessPage() {
             <span className="text-slate-500">ऑर्डर आईडी:</span>
             <span className="font-semibold text-slate-800">{orderId}</span>
           </div>
+
           <div className="flex justify-between text-sm">
             <span className="text-slate-500">स्थिति:</span>
-            <span className="font-semibold text-emerald-600">सफलतापूर्वक प्रोसेस किया गया</span>
+            <span className="font-semibold text-emerald-600">
+              सफलतापूर्वक प्रोसेस किया गया
+            </span>
           </div>
         </div>
       )}
 
       <p className="mt-4 text-xs text-slate-500">
-        इस पंजीकरण की पुष्टि आपके ईमेल पर भेज दी गई है। हमारी टीम जल्द ही आपसे संपर्क करेगी।
+        इस पंजीकरण की पुष्टि आपके ईमेल पर भेज दी गई है। हमारी टीम जल्द ही आपसे
+        संपर्क करेगी।
       </p>
 
       <div className="mt-6 flex flex-col sm:flex-row gap-3">
-        {/* <button
-          onClick={() => window.print()}
-          className="flex-1 rounded-xl border border-orange-600 text-orange-700 hover:bg-orange-50 font-semibold py-3 transition-colors text-sm"
-        >
-          🖨️ रसीद प्रिंट करें
-        </button> */}
         <Link
           href="/"
           className="flex-1 rounded-xl bg-[#c86428] hover:bg-[#b05520] text-white font-semibold py-3 transition-colors shadow-sm text-sm inline-block text-center leading-normal"
@@ -51,5 +53,19 @@ export default function SuccessPage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function SuccessPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-lg mx-auto mt-16 p-8 text-center">
+          <p className="text-slate-600">कृपया प्रतीक्षा करें...</p>
+        </div>
+      }
+    >
+      <SuccessContent />
+    </Suspense>
   );
 }
