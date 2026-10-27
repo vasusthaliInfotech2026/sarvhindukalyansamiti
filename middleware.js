@@ -21,6 +21,7 @@ export function middleware(req) {
     const dashUrl = new URL("/admin/dashboard", req.url);
     return NextResponse.redirect(dashUrl);
   }
+  
 
   return NextResponse.next();
 }

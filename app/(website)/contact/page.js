@@ -13,16 +13,16 @@ const CONTACT_ITEMS = [
   {
     icon: PhoneIcon,
     label: "मोबाइल नंबर",
-    value: "+91 84333 88888",
+    value: "+91 7275000028",
     sub: "सीधे कॉल पर बात करें",
-    href: "tel:+918433388888",
+    href: "tel:+917275000028",
   },
   {
     icon: WhatsAppIcon,
     label: "WhatsApp सेवा",
-    value: "+91 84333 88888",
+    value: "+91 7275000028",
     sub: "त्वरित संदेश भेजें",
-    href: "https://wa.me/918433388888",
+    href: "https://wa.me/917275000028",
   },
   {
     icon: EmailIcon,
@@ -135,8 +135,8 @@ export default function Contact() {
                       <p className="text-xs font-bold uppercase tracking-wider text-saffron">
                         प्रधान कार्यालय का पता
                       </p>
-                      <p className="mt-1 font-head text-base font-bold text-black sm:text-lg">
-                        1/104, विक्रांत खंड, गोमती नगर, लखनऊ।
+                      <p className="mt-1 font-head text-base font-bold text-black sm:text-base">
+                       616/111 K VIHAR COLONY, MADIYAON, SITAPUR ROAD, LUCKNOW
                       </p>
                      
                     </div>

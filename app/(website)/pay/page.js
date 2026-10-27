@@ -207,7 +207,7 @@ function QRCheckoutContent() {
       >
         {loading
           ? "प्रोसेस हो रहा है..."
-          : "✅ मैंने भुगतान कर दिया है (I have made the payment)"}
+          : "✅ मैंने भुगतान कर दिया है|"}
       </button>
 
       <button
