@@ -57,6 +57,7 @@ export default function DonateForm() {
 
     // --- STRICT PAYMENT MODE VALIDATION ---
     const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE?.trim();
+    console.log("LIVE PAYMENT MODE:", JSON.stringify(paymentMode));
     if (paymentMode !== "qr" && paymentMode !== "razorpay") {
       setError(`अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए हमारी टीम से संपर्क करें।`);
       setLoading(false);
