@@ -18,7 +18,7 @@ export default function DonateForm() {
   const [purpose, setPurpose] = useState("सामान्य दान");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(null);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(""); // Popup ke liye error message state
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -56,12 +56,13 @@ export default function DonateForm() {
     setLoading(true);
     setError("");
 
-    // हर बार क्लिक करने पर .env.local की ताज़ा वैल्यू चेक होगी
-    const paymentMode = (
-      process.env.NEXT_PUBLIC_PAYMENT_MODE ||
-      process.env.NEXT_PUBLIC_PAYMENT_GATEWAY ||
-      "razorpay"
-    ).toLowerCase();
+    // --- STRICT PAYMENT MODE VALIDATION ---
+    const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE?.trim();
+    if (paymentMode !== "qr" && paymentMode !== "razorpay") {
+      setError(`अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए हमारी टीम से संपर्क करें।`);
+      setLoading(false);
+      return;
+    }
 
     const formData = new FormData(e.currentTarget);
     const donorData = {
@@ -90,78 +91,80 @@ export default function DonateForm() {
       // ==========================================
       // मोड 2: अगर .env.local में Razorpay मोड सेट है ('razorpay')
       // ==========================================
-      const resScript = await loadRazorpayScript();
-      if (!resScript) {
-        setError("Razorpay SDK लोड होने में समस्या आई।");
-        setLoading(false);
-        return;
-      }
+      if (paymentMode === "razorpay") {
+        const resScript = await loadRazorpayScript();
+        if (!resScript) {
+          setError("Razorpay SDK लोड होने में समस्या आई।");
+          setLoading(false);
+          return;
+        }
 
-      const orderRes = await fetch("/api/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: Number(amount) }),
-      });
+        const orderRes = await fetch("/api/create-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: Number(amount) }),
+        });
 
-      const orderData = await orderRes.json();
-      if (!orderData.success) {
-        throw new Error(orderData.message || "Order creation failed");
-      }
+        const orderData = await orderRes.json();
+        if (!orderData.success) {
+          throw new Error(orderData.message || "Order creation failed");
+        }
 
-      const order = orderData.order;
+        const order = orderData.order;
 
-      const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: order.amount,
-        currency: order.currency,
-        name: "सर्व हिन्दू कल्याण समिति",
-        description: `सहयोग - ${purpose}`,
-        order_id: order.id,
-        handler: async function (response) {
-          try {
-            const saveRes = await fetch("/api/donate", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                ...donorData,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-              }),
-            });
-
-            const saveResult = await saveRes.json();
-            if (saveRes.ok && saveResult.success) {
-              setDone({
-                name: donorData.donor_name,
-                amount: Number(amount),
-                id:
-                  saveResult.receipt_number ||
-                  "SSKS-" + Date.now().toString().slice(-7),
-                method: "Razorpay (Secure)",
+        const options = {
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+          amount: order.amount,
+          currency: order.currency,
+          name: "सर्व हिन्दू कल्याण समिति",
+          description: `सहयोग - ${purpose}`,
+          order_id: order.id,
+          handler: async function (response) {
+            try {
+              const saveRes = await fetch("/api/donate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  ...donorData,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                }),
               });
-            } else {
-              setError(saveResult.error || "डेटा सेव करने में त्रुटि हुई।");
-            }
-          } catch (err) {
-            setError("सर्वर से संपर्क नहीं हो सका।");
-          } finally {
-            setLoading(false);
-          }
-        },
-        prefill: {
-          name: donorData.donor_name,
-          email: donorData.donor_email,
-          contact: donorData.donor_phone,
-        },
-        theme: {
-          color: "#c86428",
-        },
-      };
 
-      const paymentWindow = new window.Razorpay(options);
-      paymentWindow.open();
-      setLoading(false);
+              const saveResult = await saveRes.json();
+              if (saveRes.ok && saveResult.success) {
+                setDone({
+                  name: donorData.donor_name,
+                  amount: Number(amount),
+                  id:
+                    saveResult.receipt_number ||
+                    "SSKS-" + Date.now().toString().slice(-7),
+                  method: "Razorpay (Secure)",
+                });
+              } else {
+                setError(saveResult.error || "डेटा सेव करने में त्रुटि हुई।");
+              }
+            } catch (err) {
+              setError("सर्वर से संपर्क नहीं हो सका।");
+            } finally {
+              setLoading(false);
+            }
+          },
+          prefill: {
+            name: donorData.donor_name,
+            email: donorData.donor_email,
+            contact: donorData.donor_phone,
+          },
+          theme: {
+            color: "#c86428",
+          },
+        };
+
+        const paymentWindow = new window.Razorpay(options);
+        paymentWindow.open();
+        setLoading(false);
+      }
     } catch (err) {
       setError(err.message || "कुछ गड़बड़ी हो गई।");
       setLoading(false);
@@ -234,94 +237,116 @@ export default function DonateForm() {
     );
 
   return (
-    <form onSubmit={handleDonate} className="card space-y-4 w-full">
-      <h2 className="font-head text-2xl font-bold text-navy mb-4">
-        दान करें / सहयोग दें
-      </h2>
+    <>
+      <form onSubmit={handleDonate} className="card space-y-4 w-full">
+        <h2 className="font-head text-2xl font-bold text-navy mb-4">
+          दान करें / सहयोग दें
+        </h2>
 
-      <div>
-        <label className="block text-sm font-semibold mb-1">
-          दानदाता का नाम *
-        </label>
-        <input
-          name="donor_name"
-          required
-          placeholder="अपना पूरा नाम दर्ज करें"
-          className="input"
-        />
-      </div>
+        <div>
+          <label className="block text-sm font-semibold mb-1">
+            दानदाता का नाम *
+          </label>
+          <input
+            name="donor_name"
+            required
+            placeholder="अपना पूरा नाम दर्ज करें"
+            className="input"
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-semibold mb-1">ईमेल पता</label>
-        <input
-          name="donor_email"
-          type="email"
-          placeholder="अपना ईमेल दर्ज करें"
-          className="input"
-        />
-      </div>
+        <div>
+          <label className="block text-sm font-semibold mb-1">ईमेल पता</label>
+          <input
+            name="donor_email"
+            type="email"
+            placeholder="अपना ईमेल दर्ज करें"
+            className="input"
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-semibold mb-1">
-          मोबाइल नंबर *
-        </label>
-        <input
-          name="donor_phone"
-          required
-          type="tel"
-          maxLength={10}
-          placeholder="10 अंकों का मोबाइल नंबर दर्ज करें"
-          className="input"
-        />
-      </div>
+        <div>
+          <label className="block text-sm font-semibold mb-1">
+            मोबाइल नंबर *
+          </label>
+          <input
+            name="donor_phone"
+            required
+            type="tel"
+            maxLength={10}
+            placeholder="10 अंकों का मोबाइल नंबर दर्ज करें"
+            className="input"
+          />
+        </div>
 
-      <div>
-        <label className="block text-sm font-semibold mb-1">
-          दान राशि (₹50 - ₹10,000) *
-        </label>
-        <input
-          type="number"
-          min="50"
-          max="10000"
-          required
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder="राशि दर्ज करें (जैसे: 500)"
-          className="input"
-        />
-        <p className="text-xs text-slate-500 mt-1">
-          न्यूनतम दान ₹50 और अधिकतम ₹10,000 हो सकता है।
-        </p>
-      </div>
+        <div>
+          <label className="block text-sm font-semibold mb-1">
+            दान राशि (₹50 - ₹10,000) *
+          </label>
+          <input
+            type="number"
+            min="50"
+            max="10000"
+            required
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="राशि दर्ज करें (जैसे: 500)"
+            className="input"
+          />
+          <p className="text-xs text-slate-500 mt-1">
+            न्यूनतम दान ₹50 और अधिकतम ₹10,000 हो सकता है।
+          </p>
+        </div>
 
-      <div>
-        <label className="block text-sm font-semibold mb-1">
-          दान का उद्देश्य / प्रकल्प *
-        </label>
-        <select
-          value={purpose}
-          onChange={(e) => setPurpose(e.target.value)}
-          className="input"
+        <div>
+          <label className="block text-sm font-semibold mb-1">
+            दान का उद्देश्य / प्रकल्प *
+          </label>
+          <select
+            value={purpose}
+            onChange={(e) => setPurpose(e.target.value)}
+            className="input"
+          >
+            {DONATION_PURPOSES.map((p) => (
+              <option key={p} value={p}>
+                {p}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="btn btn-saffron w-fit block mx-auto text-lg py-3 mt-4"
         >
-          {DONATION_PURPOSES.map((p) => (
-            <option key={p} value={p}>
-              {p}
-            </option>
-          ))}
-        </select>
-      </div>
+          {loading
+            ? "प्रतीक्षा करें..."
+            : `सुरक्षित रूप से दान करें (₹${Number(amount || 0).toLocaleString("en-IN")})`}
+        </button>
+      </form>
 
-      {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="btn btn-saffron w-fit block mx-auto text-lg py-3 mt-4"
-      >
-        {loading
-          ? "प्रतीक्षा करें..."
-          : `सुरक्षित रूप से दान करें (₹${Number(amount || 0).toLocaleString("en-IN")})`}
-      </button>
-    </form>
+      {/* --- ERROR POPUP MODAL --- */}
+      {error && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border border-amber-200 space-y-4 animate-in fade-in zoom-in duration-200">
+            <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto text-xl font-bold">
+              ⚠️
+            </div>
+            <h3 className="text-xl font-bold text-slate-900">सहयोग सूचना</h3>
+            <p className="text-sm text-slate-600 font-medium">
+              {error}
+            </p>
+            <button
+              onClick={() => setError("")}
+              className="w-full py-3 rounded-xl bg-[#c86428] hover:bg-[#b05520] text-white font-semibold transition cursor-pointer shadow-sm"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
+

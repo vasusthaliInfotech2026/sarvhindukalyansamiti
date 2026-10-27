@@ -9,7 +9,7 @@ export default function VolunteerForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [processingPayment, setProcessingPayment] = useState(false);
-  const [error, setError] = useState(""); // Popup ke liye error message state
+  const [error, setError] = useState("");
   const [selectedFee, setSelectedFee] = useState(1);
 
   const loadRazorpayScript = () => {
@@ -22,10 +22,18 @@ export default function VolunteerForm() {
     });
   };
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
+    // --- STRICT PAYMENT MODE VALIDATION ---
+    const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE?.trim();
+    if (paymentMode !== "qr" && paymentMode !== "razorpay") {
+      setError(`अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए हमारी टीम से संपर्क करें।`);
+      setLoading(false);
+      return;
+    }
 
     const formData = new FormData(e.currentTarget);
     const emailInput = formData.get("email");
@@ -41,9 +49,9 @@ const handleSubmit = async (e) => {
         const checkData = await checkRes.json();
 
         if (checkData.success && checkData.exists) {
-          setError("तुम पहले से ही इस ईमेल आईडी से रजिस्टर्ड हो!");
+          setError("यह ईमेल आईडी पहले से ही पंजीकृत है। कृपया किसी अन्य ईमेल आईडी का उपयोग करें या अपने मौजूदा खाते से लॉगिन करें।");
           setLoading(false);
-          return; // Yahin rok dega, aage payment par nahi jane dega
+          return;
         }
       } catch (err) {
         console.error("Email verification failed:", err);
@@ -76,7 +84,6 @@ const handleSubmit = async (e) => {
       }
 
       const order = orderData.order;
-      const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE || "qr";
 
       if (paymentMode === "razorpay") {
         const resScript = await loadRazorpayScript();
@@ -131,7 +138,7 @@ const handleSubmit = async (e) => {
         const paymentWindow = new window.Razorpay(options);
         paymentWindow.open();
         setLoading(false);
-      } else {
+      } else if (paymentMode === "qr") {
         localStorage.setItem("pending_volunteer_data", JSON.stringify(formValues));
         localStorage.setItem("pending_order_id", order.id);
         localStorage.setItem("pending_amount", selectedFee);
@@ -238,4 +245,5 @@ const handleSubmit = async (e) => {
     </>
   );
 }
+
 
