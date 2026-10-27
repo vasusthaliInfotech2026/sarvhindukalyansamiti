@@ -9,7 +9,6 @@ const DONATION_PURPOSES = [
   "अनाथ/बाल सहायता अभियान",
   "मंदिर एवं धर्म सेवा",
   "निःशुल्क स्वास्थ्य जांच शिविर",
-  "मंदिर स्वच्छता अभियान",
 ];
 
 export default function DonateForm() {
