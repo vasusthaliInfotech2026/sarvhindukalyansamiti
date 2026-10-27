@@ -20,19 +20,11 @@ export default function DonateForm() {
   const [done, setDone] = useState(null);
   const [error, setError] = useState("");
 
-  // .env.local से पेमेंट मोड पढ़ें ('qr' या 'razorpay')
-  const paymentMode = (
-    process.env.NEXT_PUBLIC_PAYMENT_MODE ||
-    process.env.NEXT_PUBLIC_PAYMENT_GATEWAY ||
-    "razorpay"
-  ).toLowerCase();
-
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const c = params.get("campaign");
     if (c) setPurpose(c);
 
-    // अगर QR पेज से पेमेंट सफल होकर वापस आया हो, तो रसीद दिखाएं
     const completedReceipt = localStorage.getItem("completed_donation_receipt");
     if (completedReceipt) {
       try {
@@ -56,13 +48,20 @@ export default function DonateForm() {
 
   const handleDonate = async (e) => {
     e.preventDefault();
-    if (!amount || amount < 1 || amount > 10000) {
+    if (!amount || amount < 50 || amount > 10000) {
       setError("कृपया ₹50 से ₹10,000 के बीच की वैध राशि दर्ज करें।");
       return;
     }
 
     setLoading(true);
     setError("");
+
+    // हर बार क्लिक करने पर .env.local की ताज़ा वैल्यू चेक होगी
+    const paymentMode = (
+      process.env.NEXT_PUBLIC_PAYMENT_MODE ||
+      process.env.NEXT_PUBLIC_PAYMENT_GATEWAY ||
+      "razorpay"
+    ).toLowerCase();
 
     const formData = new FormData(e.currentTarget);
     const donorData = {
@@ -75,14 +74,13 @@ export default function DonateForm() {
 
     try {
       // ==========================================
-      // मोड 1: अगर .env.local में QR मोड सेट है
+      // मोड 1: अगर .env.local में QR मोड सेट है ('qr')
       // ==========================================
       if (paymentMode === "qr") {
         const qrOrderId = "DON_QR_" + Date.now();
         localStorage.setItem("pending_donation_data", JSON.stringify(donorData));
         localStorage.setItem("pending_order_id", qrOrderId);
 
-        // QR पेज पर रीडायरेक्ट करें (type=donate के साथ)
         router.push(
           `/pay?order_id=${qrOrderId}&amount=${Number(amount)}&type=donate`
         );
@@ -90,7 +88,7 @@ export default function DonateForm() {
       }
 
       // ==========================================
-      // मोड 2: अगर .env.local में Razorpay मोड सेट है
+      // मोड 2: अगर .env.local में Razorpay मोड सेट है ('razorpay')
       // ==========================================
       const resScript = await loadRazorpayScript();
       if (!resScript) {
@@ -99,7 +97,6 @@ export default function DonateForm() {
         return;
       }
 
-      // 1. Backend से Razorpay Order बनाएं
       const orderRes = await fetch("/api/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -113,7 +110,6 @@ export default function DonateForm() {
 
       const order = orderData.order;
 
-      // 2. Razorpay Popup खोलें
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: order.amount,
@@ -165,6 +161,7 @@ export default function DonateForm() {
 
       const paymentWindow = new window.Razorpay(options);
       paymentWindow.open();
+      setLoading(false);
     } catch (err) {
       setError(err.message || "कुछ गड़बड़ी हो गई।");
       setLoading(false);
@@ -284,7 +281,7 @@ export default function DonateForm() {
         </label>
         <input
           type="number"
-          min="1"
+          min="50"
           max="10000"
           required
           value={amount}
@@ -328,4 +325,3 @@ export default function DonateForm() {
     </form>
   );
 }
-

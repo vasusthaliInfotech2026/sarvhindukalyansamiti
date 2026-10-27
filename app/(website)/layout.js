@@ -1,4 +1,4 @@
-import "./globals.css";
+import "@/app/globals.css";
 import { Mukta, Tiro_Devanagari_Hindi } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -8,7 +8,7 @@ const body = Mukta({ subsets: ["devanagari", "latin"], weight: ["400", "500", "6
 const head = Tiro_Devanagari_Hindi({ subsets: ["devanagari", "latin"], weight: "400", variable: "--font-head" });
 
 export const metadata = {
-  title: "सर्व समाज कल्याण समिति",
+  title: "सर्व हिन्दू कल्याण समिति",
   description: "सेवा से समाज का निर्माण – विश्वास, पारदर्शिता और आसान सहयोग",
 };
 

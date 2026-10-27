@@ -1,14 +1,19 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 
 export async function POST() {
-  // admin_token कुकी को तुरंत एक्सपायर (delete) करें
-  cookies().set({
-    name: "admin_token",
-    value: "",
-    path: "/",
-    maxAge: 0, 
+  const response = NextResponse.json({
+    success: true,
+    message: "सफलतापूर्वक लॉगआउट हो गया।",
   });
 
-  return NextResponse.json({ success: true, message: "सफलतापूर्वक लॉगआउट हो गए" });
+  // Clear the admin_token cookie
+  response.cookies.set("admin_token", "", {
+    httpOnly: true,
+    expires: new Date(0),
+    path: "/",
+  });
+
+  return response;
 }
+
+
