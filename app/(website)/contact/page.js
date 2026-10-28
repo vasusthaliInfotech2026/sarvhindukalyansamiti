@@ -136,7 +136,7 @@ export default function Contact() {
                         प्रधान कार्यालय का पता
                       </p>
                       <p className="mt-1 font-head text-base font-bold text-black sm:text-base">
-                       616/111 K VIHAR COLONY, MADIYAON, SITAPUR ROAD, LUCKNOW
+                       616/111 के विहार कॉलोनी, मड़ियाव, सीतापुर रोड, लखनऊ
                       </p>
                      
                     </div>
