@@ -22,17 +22,36 @@ export default function VolunteerForm() {
     });
   };
 
+  // PayU गेटवे पर फॉर्म ऑटोमैटिक सबमिट करने के लिए
+  const submitToPayU = (params) => {
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = params.action;
+
+    Object.keys(params).forEach((key) => {
+      if (key !== "action") {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = params[key];
+        form.appendChild(input);
+      }
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    // --- PAYMENT MODE VALIDATION ---
-    // .env.local se NEXT_PUBLIC_PAYMENT_MODE ('qr' | 'razorpay' | 'paypal') uthayein
-    const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE?.trim() || "paypal";
+    // .env.local से पेमेंट मोड लोड करें
+    const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE?.trim() || "payu";
 
-    if (!["qr", "razorpay", "paypal"].includes(paymentMode)) {
-      setError("अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए हमारी टीम से संपर्क करें।");
+    if (!["qr", "razorpay", "payu"].includes(paymentMode)) {
+      setError("अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए संपर्क करें।");
       setLoading(false);
       return;
     }
@@ -40,7 +59,7 @@ export default function VolunteerForm() {
     const formData = new FormData(e.currentTarget);
     const emailInput = formData.get("email");
 
-    // 1. PAYMENT SE PEHLE EMAIL CHECK KAREIN
+    // 1. ईमेल सत्यापन (HTML 404 क्रैश से सुरक्षित)
     if (emailInput) {
       try {
         const checkRes = await fetch("/api/check-email", {
@@ -48,15 +67,20 @@ export default function VolunteerForm() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: emailInput }),
         });
-        const checkData = await checkRes.json();
 
-        if (checkData.success && checkData.exists) {
-          setError("यह ईमेल आईडी पहले से ही पंजीकृत है। कृपया किसी अन्य ईमेल आईडी का उपयोग करें या अपने मौजूदा खाते से लॉगिन करें।");
-          setLoading(false);
-          return;
+        if (checkRes.ok) {
+          const contentType = checkRes.headers.get("content-type");
+          if (contentType && contentType.includes("application/json")) {
+            const checkData = await checkRes.json();
+            if (checkData.success && checkData.exists) {
+              setError("यह ईमेल आईडी पहले से ही पंजीकृत है। कृपया लॉगिन करें या किसी अन्य ईमेल आईडी का उपयोग करें।");
+              setLoading(false);
+              return;
+            }
+          }
         }
       } catch (err) {
-        console.error("Email verification failed:", err);
+        console.warn("ईमेल चेक स्किप किया गया:", err);
       }
     }
 
@@ -75,37 +99,42 @@ export default function VolunteerForm() {
 
     try {
       // ==========================================
-      // मोड 1: PAYPAL
+      // मोड 1: PayU Payment
       // ==========================================
-      if (paymentMode === "paypal") {
-        // पेमेंट पूरा होने के बाद इस्तेमाल के लिए डेटा को LocalStorage में सुरक्षित रखें
+      if (paymentMode === "payu") {
         localStorage.setItem("pending_volunteer_data", JSON.stringify(formValues));
 
-        const res = await fetch("/api/paypal-checkout", {
+        const res = await fetch("/api/payu/create-payment", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             amount: selectedFee,
             purpose: `सदस्यता शुल्क - ${formValues.membership_type || "स्वयंसेवक"}`,
-            donor_name: formValues.full_name,
-            donor_email: formValues.email,
-            donor_phone: formValues.phone,
+            full_name: formValues.full_name,
+            email: formValues.email,
+            phone: formValues.phone,
           }),
         });
 
+        // यदि API फ़ाइल नहीं मिली (404) या सर्वर एरर (500)
+        if (!res.ok) {
+          const rawText = await res.text();
+          console.error("API Response HTML/Text:", rawText);
+          throw new Error(`सर्वर एरर (${res.status}): /api/payu/create-payment फ़ाइल नहीं मिली या क्रैश हुई।`);
+        }
+
         const data = await res.json();
 
-        if (data.success && data.redirect_url) {
-          // PayPal पेज पर रीडायरेक्ट करें
-          window.location.href = data.redirect_url;
+        if (data.success && data.params) {
+          submitToPayU(data.params);
           return;
         } else {
-          throw new Error(data.message || "PayPal ऑर्डर बनाने में समस्या आई।");
+          throw new Error(data.message || "PayU भुगतान शुरू नहीं किया जा सका।");
         }
       }
 
       // ==========================================
-      // मोड 2: RAZORPAY
+      // मोड 2: Razorpay Payment
       // ==========================================
       if (paymentMode === "razorpay") {
         const orderRes = await fetch("/api/create-order", {
@@ -113,6 +142,10 @@ export default function VolunteerForm() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ amount: selectedFee }),
         });
+
+        if (!orderRes.ok) {
+          throw new Error("Razorpay ऑर्डर जनरेट नहीं हो सका।");
+        }
 
         const orderData = await orderRes.json();
         if (!orderData.success) {
@@ -122,7 +155,7 @@ export default function VolunteerForm() {
         const order = orderData.order;
         const resScript = await loadRazorpayScript();
         if (!resScript) {
-          throw new Error("Razorpay SDK failed to load.");
+          throw new Error("Razorpay SDK लोड नहीं हो सका।");
         }
 
         const options = {
@@ -151,7 +184,7 @@ export default function VolunteerForm() {
               if (finalRes.ok && finalResult.success) {
                 router.push(`/success?order_id=${order.id}`);
               } else {
-                setError(finalResult.error || "डेटा सेव करने में त्रुटि हुई।");
+                setError(finalResult.error || "डेटा सुरक्षित करने में त्रुटि हुई।");
                 setProcessingPayment(false);
                 setLoading(false);
               }
@@ -176,7 +209,7 @@ export default function VolunteerForm() {
       }
 
       // ==========================================
-      // मोड 3: QR CODE
+      // मोड 3: QR Code Mode
       // ==========================================
       if (paymentMode === "qr") {
         const orderRes = await fetch("/api/create-order", {
@@ -184,6 +217,10 @@ export default function VolunteerForm() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ amount: selectedFee }),
         });
+
+        if (!orderRes.ok) {
+          throw new Error("QR ऑर्डर जनरेट नहीं हो सका।");
+        }
 
         const orderData = await orderRes.json();
         if (!orderData.success) {
@@ -197,6 +234,7 @@ export default function VolunteerForm() {
         router.push(`/pay?order_id=${order.id}&amount=${selectedFee}`);
       }
     } catch (err) {
+      console.error(err);
       setError(err.message || "कुछ गड़बड़ी हो गई।");
       setLoading(false);
     }
@@ -210,7 +248,7 @@ export default function VolunteerForm() {
         </div>
         <h3 className="text-2xl font-bold text-orange-700">भुगतान सत्यापित हो रहा है...</h3>
         <p className="text-sm text-slate-600 leading-relaxed">
-          आपका भुगतान सफल हो गया है! आपका डेटा सुरक्षित दर्ज किया जा रहा है और ईमेल रसीद भेजी जा रही है। कृपया पेज बंद न करें...
+          आपका भुगतान प्राप्त हो गया है! आपका डेटा सुरक्षित दर्ज किया जा रहा है। कृपया इस पेज को बंद न करें...
         </p>
         <div className="text-xs text-slate-400 font-medium">यह प्रक्रिया केवल कुछ सेकंड लेगी।</div>
       </div>
@@ -274,7 +312,7 @@ export default function VolunteerForm() {
         </button>
       </form>
 
-      {/* --- ERROR POPUP MODAL --- */}
+      {/* ERROR MODAL */}
       {error && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border border-amber-200 space-y-4 animate-in fade-in zoom-in duration-200">
@@ -282,9 +320,7 @@ export default function VolunteerForm() {
               ⚠️
             </div>
             <h3 className="text-xl font-bold text-slate-900">पंजीकरण सूचना</h3>
-            <p className="text-sm text-slate-600 font-medium">
-              {error}
-            </p>
+            <p className="text-sm text-slate-600 font-medium">{error}</p>
             <button
               onClick={() => setError("")}
               className="w-full py-3 rounded-xl bg-[#c86428] hover:bg-[#b05520] text-white font-semibold transition cursor-pointer shadow-sm"
@@ -297,3 +333,5 @@ export default function VolunteerForm() {
     </>
   );
 }
+
+

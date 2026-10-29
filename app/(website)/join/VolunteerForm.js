@@ -51,7 +51,7 @@ export default function VolunteerForm() {
         const checkData = await checkRes.json();
 
         if (checkData.success && checkData.exists) {
-          setError("यह ईमेल आईडी पहले से ही पंजीकृत है। कृपया किसी अन्य ईमेल आईडी का उपयोग करें या अपने मौजूदा खाते से लॉगिन करें।");
+          setError("यह ईमेल आईडी पहले से ही पंजीकृत है। कृपया किसी अन्य ईमेल आईडी का उपयोग करें।");
           setLoading(false);
           return;
         }
