@@ -5,7 +5,7 @@ import nodemailer from "nodemailer";
 export async function POST(request) {
   try {
     const body = await request.json();
-    
+
     const full_name = body.full_name || "";
     const email = body.email || null;
     const phone = body.phone || "";
@@ -32,14 +32,19 @@ export async function POST(request) {
       if (email) {
         const [existingUsers] = await connection.execute(
           `SELECT id FROM members WHERE email = ?`,
-          [email]
+          [email],
         );
 
         if (existingUsers.length > 0) {
           await connection.end();
           return NextResponse.json(
-            { success: false, alreadyRegistered: true, error: "तुम पहले से ही इस ईमेल आईडी से रजिस्टर्ड हो!" },
-            { status: 400 }
+            {
+              success: false,
+              alreadyRegistered: true,
+              error:
+                "यह ईमेल आईडी पहले से ही पंजीकृत है। कृपया किसी अन्य ईमेल आईडी का उपयोग करें।",
+            },
+            { status: 400 },
           );
         }
       }
@@ -47,7 +52,9 @@ export async function POST(request) {
       const isQRManual = razorpay_signature === "qr_manual_verified";
       const paymentStatus = isQRManual ? "pending" : "paid";
       const memberStatus = isQRManual ? "Pending" : "Active";
-      const paymentMethodName = isQRManual ? "UPI QR (Verification Pending)" : "Razorpay Gateway";
+      const paymentMethodName = isQRManual
+        ? "UPI QR (Verification Pending)"
+        : "Razorpay Gateway";
 
       await connection.beginTransaction();
 
@@ -56,7 +63,19 @@ export async function POST(request) {
         `INSERT INTO members 
         (full_name, email, phone, address, city, state, pincode, membership_type, role, membership_fee, status) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [full_name, email, phone, address, city, state, pincode, membership_type, role, membership_fee, memberStatus]
+        [
+          full_name,
+          email,
+          phone,
+          address,
+          city,
+          state,
+          pincode,
+          membership_type,
+          role,
+          membership_fee,
+          memberStatus,
+        ],
       );
 
       const memberId = memberResult.insertId;
@@ -67,7 +86,16 @@ export async function POST(request) {
         `INSERT INTO member_payments 
         (member_id, amount, currency, razorpay_order_id, razorpay_payment_id, razorpay_signature, payment_method, payment_status, receipt_number) 
         VALUES (?, ?, 'INR', ?, ?, ?, ?, ?, ?)`,
-        [memberId, membership_fee, razorpay_order_id, razorpay_payment_id, razorpay_signature, paymentMethodName, paymentStatus, receiptNo]
+        [
+          memberId,
+          membership_fee,
+          razorpay_order_id,
+          razorpay_payment_id,
+          razorpay_signature,
+          paymentMethodName,
+          paymentStatus,
+          receiptNo,
+        ],
       );
 
       await connection.commit();
@@ -76,7 +104,9 @@ export async function POST(request) {
       // 3. Email Notifications (Bina password ke normal receipts)
       if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
         const transporter = nodemailer.createTransport({
-          service: "gmail",
+          host: process.env.SMTP_HOST,
+          port: Number(process.env.SMTP_PORT),
+          secure: Number(process.env.SMTP_PORT) === 465,
           auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS,
@@ -124,7 +154,6 @@ export async function POST(request) {
               `,
             });
           }
-
         } else {
           // --- RAZORPAY GATEWAY MODE ---
           await transporter.sendMail({
@@ -182,8 +211,9 @@ export async function POST(request) {
     }
   } catch (error) {
     console.error("API Error:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 },
+    );
   }
 }
-
-
