@@ -16,18 +16,15 @@ export async function POST(request) {
 
     await connection.execute(
       "INSERT INTO contact_messages (name, email, phone, subject, message) VALUES (?, ?, ?, ?, ?)",
-      [name, email, phone || null, subject || null, message]
+      [name, email, phone || null, subject || null, message],
     );
     await connection.end();
 
-    // 2. ईमेल भेजें (अगर ईमेल सेटअप किया है)
     if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
       const transporter = nodemailer.createTransport({
-        //   host: process.env.SMTP_HOST,
-        //   port: Number(process.env.SMTP_PORT),
-        //   secure: Number(process.env.SMTP_PORT) === 465,
-
-        service: "gmail",
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT),
+        secure: Number(process.env.SMTP_PORT) === 465,
         auth: {
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASS,
@@ -38,7 +35,9 @@ export async function POST(request) {
         from: `"Website Contact" <${process.env.EMAIL_USER}>`,
         replyTo: email,
         to: process.env.RECEIVER_EMAIL || process.env.EMAIL_USER,
-        subject: subject ? `नया संदेश: ${subject}` : `नया संपर्क संदेश: ${name}`,
+        subject: subject
+          ? `नया संदेश: ${subject}`
+          : `नया संपर्क संदेश: ${name}`,
         html: `
           <div style="font-family: sans-serif; line-height: 1.6;">
             <h2>नया संपर्क फ़ॉर्म सबमिशन</h2>
@@ -57,9 +56,7 @@ export async function POST(request) {
     console.error("Backend Error:", error);
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-
-

@@ -32,7 +32,7 @@ export async function POST(request) {
       if (generated_signature !== razorpay_signature) {
         return NextResponse.json(
           { success: false, error: "Payment verification failed!" },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -68,7 +68,7 @@ export async function POST(request) {
         paymentStatus,
         donation_purpose,
         receiptNo,
-      ]
+      ],
     );
 
     await connection.end();
@@ -76,7 +76,9 @@ export async function POST(request) {
     // 4. Email Notifications
     if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
       const transporter = nodemailer.createTransport({
-        service: "gmail",
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT),
+        secure: Number(process.env.SMTP_PORT) === 465,
         auth: {
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASS,
@@ -162,13 +164,13 @@ export async function POST(request) {
         receipt_number: receiptNo,
         payment_status: paymentStatus,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Donate API Error:", error);
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -57,7 +57,7 @@ export default function DonateForm() {
 
     // --- STRICT PAYMENT MODE VALIDATION ---
     //const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE?.trim();
-    const paymentMode = "qr";
+    const paymentMode = "razorpay"; // Hardcoded for testing; replace with env variable in production
    
     if (paymentMode !== "qr" && paymentMode !== "razorpay") {
        console.log("LIVE PAYMENT MODE:", paymentMode);
