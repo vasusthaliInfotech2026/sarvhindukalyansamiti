@@ -10,7 +10,7 @@ export default function VolunteerForm() {
   const [loading, setLoading] = useState(false);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [error, setError] = useState("");
-  const [selectedFee, setSelectedFee] = useState(1);
+  const [selectedFee, setSelectedFee] = useState(101);
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
@@ -24,23 +24,22 @@ export default function VolunteerForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
 
-    // --- STRICT PAYMENT MODE VALIDATION ---
-    //const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE?.trim();
-    const paymentMode = "qr";
-    if (paymentMode !== "qr" && paymentMode !== "razorpay") {
-      console.log("LIVE PAYMENT MODE:", paymentMode);
-      setError(`अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए हमारी टीम से संपर्क करें।`);
-      setLoading(false);
+   
+    const paymentMode =  "qr";
+
+    if (paymentMode !== "qr" && paymentMode !== "razorpay" && paymentMode !== "paypal") {
+      setError("अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए हमारी टीम से संपर्क करें।");
       return;
     }
+
+    setLoading(true);
+    setError("");
 
     const formData = new FormData(e.currentTarget);
     const emailInput = formData.get("email");
 
-    // 1. PAYMENT SE PEHLE EMAIL CHECK KAREIN
+    // 2. ईमेल डुप्लीकेट जाँच
     if (emailInput) {
       try {
         const checkRes = await fetch("/api/check-email", {
@@ -50,7 +49,7 @@ export default function VolunteerForm() {
         });
         const checkData = await checkRes.json();
 
-        if (checkData.success && checkData.exists) {
+        if (checkData?.success && checkData?.exists) {
           setError("यह ईमेल आईडी पहले से ही पंजीकृत है। कृपया किसी अन्य ईमेल आईडी का उपयोग करें।");
           setLoading(false);
           return;
@@ -74,29 +73,47 @@ export default function VolunteerForm() {
     };
 
     try {
-      const orderRes = await fetch("/api/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: selectedFee }),
-      });
+      // ==========================================
+      // मोड 1: QR कोड मोड ('qr')
+      // ==========================================
+      if (paymentMode === "qr") {
+        const qrOrderId = "MEM_QR_" + Date.now();
 
-      const orderData = await orderRes.json();
-      if (!orderData.success) {
-        throw new Error(orderData.message || "Order creation failed");
+        // सुरक्षित डेटा localStorage में सेव करें (URL में राशि नहीं जाएगी)
+        localStorage.setItem("pending_volunteer_data", JSON.stringify(formValues));
+        localStorage.setItem("pending_order_id", qrOrderId);
+        localStorage.setItem("pending_amount", selectedFee.toString());
+
+        router.push(`/pay?order_id=${qrOrderId}&type=member`);
+        return;
       }
 
-      const order = orderData.order;
-
+      // ==========================================
+      // मोड 2: Razorpay मोड ('razorpay')
+      // ==========================================
       if (paymentMode === "razorpay") {
+        const orderRes = await fetch("/api/create-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: selectedFee }),
+        });
+
+        const orderData = await orderRes.json();
+        if (!orderRes.ok || !orderData?.success || !orderData?.order) {
+          throw new Error(orderData?.message || orderData?.error || "ऑर्डर नहीं बन सका। कृपया पुनः प्रयास करें।");
+        }
+
+        const order = orderData.order;
+
         const resScript = await loadRazorpayScript();
         if (!resScript) {
-          throw new Error("Razorpay SDK failed to load.");
+          throw new Error("Razorpay SDK लोड होने में समस्या आई।");
         }
 
         const options = {
           key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
           amount: order.amount,
-          currency: order.currency,
+          currency: order.currency || "INR",
           name: "सर्व हिन्दू कल्याण समिति",
           description: "सदस्यता / सहायता शुल्क",
           order_id: order.id,
@@ -109,6 +126,7 @@ export default function VolunteerForm() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                   ...formValues,
+                  gateway: "razorpay",
                   razorpay_order_id: response.razorpay_order_id,
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_signature: response.razorpay_signature,
@@ -116,10 +134,10 @@ export default function VolunteerForm() {
               });
 
               const finalResult = await finalRes.json();
-              if (finalRes.ok && finalResult.success) {
+              if (finalRes.ok && finalResult?.success) {
                 router.push(`/success?order_id=${order.id}`);
               } else {
-                setError(finalResult.error || "डेटा सेव करने में त्रुटि हुई।");
+                setError(finalResult?.error || "डेटा सेव करने में त्रुटि हुई।");
                 setProcessingPayment(false);
                 setLoading(false);
               }
@@ -140,15 +158,37 @@ export default function VolunteerForm() {
         const paymentWindow = new window.Razorpay(options);
         paymentWindow.open();
         setLoading(false);
-      } else if (paymentMode === "qr") {
+        return;
+      }
+
+      // ==========================================
+      // मोड 3: PayPal मोड ('paypal')
+      // ==========================================
+      if (paymentMode === "paypal") {
+        const orderRes = await fetch("/api/create-paypal-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: Number(selectedFee),
+            purpose: `सदस्यता शुल्क - ${formValues.membership_type}`,
+          }),
+        });
+
+        const orderData = await orderRes.json();
+        if (!orderRes.ok || !orderData?.success || !orderData?.approvalUrl) {
+          throw new Error(orderData?.error || "PayPal ऑर्डर बनाने में विफल");
+        }
+
         localStorage.setItem("pending_volunteer_data", JSON.stringify(formValues));
-        localStorage.setItem("pending_order_id", order.id);
-        localStorage.setItem("pending_amount", selectedFee);
-        router.push(`/pay?order_id=${order.id}&amount=${selectedFee}`);
+        localStorage.setItem("pending_paypal_order_id", orderData.orderId);
+
+        window.location.href = orderData.approvalUrl;
+        return;
       }
     } catch (err) {
-      setError(err.message || "कुछ गड़बड़ी हो गई।");
+      setError(err?.message || "कुछ गड़बड़ी हो गई।");
       setLoading(false);
+      setProcessingPayment(false);
     }
   };
 
@@ -209,7 +249,9 @@ export default function VolunteerForm() {
                   type="button"
                   onClick={() => setSelectedFee(fee)}
                   className={`py-3.5 px-2 rounded-xl border text-center font-semibold transition-all ${
-                    isSelected ? "border-orange-600 bg-orange-50 text-orange-700 ring-2 ring-orange-500/20" : "border-[#e6d5b8] bg-white text-slate-800 hover:border-orange-400"
+                    isSelected
+                      ? "border-orange-600 bg-orange-50 text-orange-700 ring-2 ring-orange-500/20"
+                      : "border-[#e6d5b8] bg-white text-slate-800 hover:border-orange-400"
                   }`}
                 >
                   ₹{fee.toLocaleString("en-IN")}

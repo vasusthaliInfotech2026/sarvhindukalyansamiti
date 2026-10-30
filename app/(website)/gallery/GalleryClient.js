@@ -6,61 +6,51 @@ import { GALLERY } from "@/lib/data";
 // Sabhi categories ke liye apni alag-alag images ke path yahan dalein
 const ALBUM_IMAGES = {
   "अन्न सेवा": [
-    "/images/disaster.jpg",
-    "/images/jimmedari.png",
-    "/images/architecture.jpg",
+    "/images/gallery/food-charity.webp",
+    "/images/gallery/food-charity-2.webp",
+    "/images/gallery/food-charity-3.webp",
   ],
   "चिकित्सा शिविर": [
-    "/images/disaster.jpg",
-    "/images/jimmedari.png",
-    "/images/architecture.jpg",
+    "/images/gallery/medical.webp",
+    "/images/gallery/medical-2.webp",
+    "/images/gallery/medical-3.webp",
   ],
   "रक्तदान": [
-    "/images/disaster.jpg",
-    "/images/jimmedari.png",
-    "/images/architecture.jpg",
+    "/images/gallery/blood-donation.webp",
+    "/images/gallery/blood-donation-2.webp",
+    "/images/gallery/blood-donation-3.webp",
   ],
   "कपड़े वितरण": [
-    "/images/disaster.jpg",
-    "/images/jimmedari.png",
-    "/images/architecture.jpg",
+    "/images/gallery/clothes-donation.webp",
+    "/images/gallery/clothes-donation-2.webp",
+    "/images/gallery/clothes-donation-3.webp",
   ],
   "शिक्षा सहायता": [
-    "/images/disaster.jpg",
-    "/images/jimmedari.png",
-    "/images/architecture.jpg",
+    "/images/gallery/education.webp",
+    "/images/gallery/education-2.webp",
+    "/images/gallery/education-3.webp",
   ],
-  "अनाथ/बाल सहायता": [
-    "/images/disaster.jpg",
-    "/images/jimmedari.png",
-    "/images/architecture.jpg",
-  ],
-  "कन्या/सामूहिक विवाह": [
-    "/images/disaster.jpg",
-    "/images/jimmedari.png",
-    "/images/architecture.jpg",
-  ],
-  "बुजुर्ग सेवा": [
-    "/images/disaster.jpg",
-    "/images/jimmedari.png",
-    "/images/architecture.jpg",
+  "अनाथ बालक सहायता": [
+    "/images/gallery/orphans.webp",
+    "/images/gallery/orphans-2.webp",
+    "/images/gallery/orphans-3.webp",
   ],
   "मंदिर सेवा": [
-    "/images/disaster.jpg",
-    "/images/jimmedari.png",
-    "/images/architecture.jpg",
+    "/images/gallery/temple.webp",
+    "/images/gallery/temple-2.webp",
+    "/images/gallery/temple-3.webp",
   ],
   "आपदा राहत": [
-    "/images/disaster.jpg",
-    "/images/jimmedari.png",
-    "/images/architecture.jpg",
+    "/images/gallery/disaster.webp",
+    "/images/gallery/disaster-2.webp",
+    "/images/gallery/disaster-3.webp",
   ],
 };
 
 const DEFAULT_IMAGES = [
-  "/images/disaster.jpg",
-  "/images/jimmedari.png",
-  "/images/architecture.jpg",
+  "/images/gallery/dummy.png",
+  "/images/gallery/dummy.png",
+  "/images/gallery/dummy.png",
 ];
 
 /* ==========================================

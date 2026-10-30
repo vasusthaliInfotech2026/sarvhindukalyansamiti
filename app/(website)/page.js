@@ -20,7 +20,7 @@ export default function Home() {
           <p className="mt-4 text-lg leading-relaxed text-navy/80">सर्व हिन्दू  कल्याण समिति सामाजिक, मानवीय, स्वास्थ्य, शिक्षा,  और मंदिर सेवा से जुड़े कार्यों को एक व्यवस्थित डिजिटल मंच के माध्यम से समाज तक पहुँचाती है।</p>
           <div className="flex flex-wrap justify-center gap-3 mt-7">
             <Link href="/donate" className="btn btn-saffron">अभी सहयोग करें</Link>
-            <Link href="/social-work" className="btn btn-navy">हमारे कार्य देखें</Link>
+            <Link href="/services" className="btn btn-navy">हमारे कार्य देखें</Link>
           </div>
         </Reveal>
       </section>
@@ -68,7 +68,7 @@ export default function Home() {
               <Image src="/images/mandi.jpg" alt="मंदिर परिसर" fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover transition duration-700 hover:scale-105" style={{ objectPosition: "50% 60%" }} />
             </div>
           </Reveal>
-          <Reveal from="right">
+          <Reveal from="right" className="lg:-mt-20">
             <h2 className="text-3xl font-head text-navy sm:text-4xl">मंदिर एवं सनातन धर्म सेवा</h2>
             <ul className="mt-5 space-y-2 text-lg">
               {["मंदिर सेवा एवं रखरखाव में सहयोग", "मंदिर स्वच्छ अभियान", "धार्मिक एवं सांस्कृतिक कार्यक्रम", "धार्मिक साहित्य/सामग्री का वितरण"].map((t) => <li key={t} className="flex gap-2"><span className="text-saffron">🪔</span>{t}</li>)}

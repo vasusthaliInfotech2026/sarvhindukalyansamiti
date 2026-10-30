@@ -64,7 +64,7 @@ export default function Footer() {
                 href="/donate" 
                 className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/25 transition-all duration-300 hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0"
               >
-                🙏 सहयोग करें
+                 सहयोग करें 🙏
               </Link>
             </div>
           </div>
