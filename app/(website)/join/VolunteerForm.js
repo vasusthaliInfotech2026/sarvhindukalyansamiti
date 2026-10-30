@@ -25,8 +25,8 @@ export default function VolunteerForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 1. .env.local से पेमेंट मोड पढ़ें
-    const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE?.trim().toLowerCase();
+   
+    const paymentMode =  "qr";
 
     if (paymentMode !== "qr" && paymentMode !== "razorpay" && paymentMode !== "paypal") {
       setError("अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए हमारी टीम से संपर्क करें।");
