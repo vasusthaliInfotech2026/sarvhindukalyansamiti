@@ -20,7 +20,7 @@ export default function Home() {
           <p className="mt-4 text-lg leading-relaxed text-navy/80">सर्व हिन्दू  कल्याण समिति सामाजिक, मानवीय, स्वास्थ्य, शिक्षा,  और मंदिर सेवा से जुड़े कार्यों को एक व्यवस्थित डिजिटल मंच के माध्यम से समाज तक पहुँचाती है।</p>
           <div className="flex flex-wrap justify-center gap-3 mt-7">
             <Link href="/donate" className="btn btn-saffron">अभी सहयोग करें</Link>
-            <Link href="/social-work" className="btn btn-navy">हमारे कार्य देखें</Link>
+            <Link href="/services" className="btn btn-navy">हमारे कार्य देखें</Link>
           </div>
         </Reveal>
       </section>

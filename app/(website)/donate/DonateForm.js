@@ -85,7 +85,7 @@ export default function DonateForm() {
         localStorage.setItem("pending_order_id", qrOrderId);
 
         router.push(
-          `/pay?order_id=${qrOrderId}&amount=${Number(amount)}&type=donate`
+         `/pay?order_id=${qrOrderId}&type=donate`
         );
         return;
       }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 function QRCheckoutContent() {
@@ -8,17 +8,62 @@ function QRCheckoutContent() {
   const router = useRouter();
 
   const orderId = searchParams.get("order_id");
-  const amount = searchParams.get("amount");
   const paymentType = searchParams.get("type") || "member"; // 'donate' या 'member'
+
+  // 1. स्टेट में amount और user details रखें
+  const [amount, setAmount] = useState(0);
+  const [savedUser, setSavedUser] = useState(null);
+  const [isDonationFlow, setIsDonationFlow] = useState(false);
 
   const [status, setStatus] = useState("scanning");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [submittedInfo, setSubmittedInfo] = useState(null);
 
+  // 2. LocalStorage से सुरक्षित रूप से amount और डेटा लोड करें
+  useEffect(() => {
+    try {
+      const isDonation =
+        paymentType === "donate" ||
+        Boolean(localStorage.getItem("pending_donation_data"));
+
+      setIsDonationFlow(isDonation);
+
+      const storageKey = isDonation
+        ? "pending_donation_data"
+        : "pending_volunteer_data";
+
+      const rawData = localStorage.getItem(storageKey);
+      if (rawData) {
+        const parsed = JSON.parse(rawData);
+        setSavedUser(parsed);
+
+        // राशि: पहले फ़ील्ड चेक करें, फिर डायरेक्ट की, अंत में searchParams
+        const resolvedAmount =
+          Number(parsed.amount) ||
+          Number(parsed.membership_fee) ||
+          Number(localStorage.getItem("pending_amount")) ||
+          Number(searchParams.get("amount")) ||
+          0;
+
+        setAmount(resolvedAmount);
+      } else {
+        // फ़ॉलबैक: अगर सिर्फ pending_amount या URL में कुछ हो
+        const directAmt =
+          Number(localStorage.getItem("pending_amount")) ||
+          Number(searchParams.get("amount")) ||
+          0;
+        setAmount(directAmt);
+      }
+    } catch (err) {
+      console.error("LocalStorage से राशि लोड करने में त्रुटि:", err);
+    }
+  }, [paymentType, searchParams]);
+
   const upiId = "7275000028-10@ybl";
   const payeeName = "Sarv Hindu Kalyan Samiti";
 
+  // 3. QR कोड और UPI लिंक में डायनामिक सुरक्षित राशि
   const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(
     payeeName
   )}&am=${amount}&cu=INR&tr=${orderId}`;
@@ -32,32 +77,43 @@ function QRCheckoutContent() {
     setError("");
 
     try {
-      const isDonation =
-        paymentType === "donate" ||
-        Boolean(localStorage.getItem("pending_donation_data"));
-
-      const storageKey = isDonation
+      const storageKey = isDonationFlow
         ? "pending_donation_data"
         : "pending_volunteer_data";
 
-      const apiEndpoint = isDonation ? "/api/donate" : "/api/members";
+      const apiEndpoint = isDonationFlow ? "/api/donate" : "/api/members";
 
-      const savedData = JSON.parse(
-        localStorage.getItem(storageKey) || "{}"
-      );
+      const savedData =
+        savedUser ||
+        JSON.parse(localStorage.getItem(storageKey) || "{}");
 
       const paymentId = "UPI_QR_MANUAL";
+
+      // 4. API को पेलोड भेजते समय दोनों स्ट्रिंग्स और सही अमाउंट पास करें
+      const payload = isDonationFlow
+        ? {
+            ...savedData,
+            amount: Number(amount),
+            gateway: "qr",
+            razorpay_order_id: orderId,
+            razorpay_payment_id: paymentId,
+            razorpay_signature: "manual_qr_verified",
+            utr_number: "PENDING",
+          }
+        : {
+            ...savedData,
+            membership_fee: Number(amount),
+            gateway: "qr",
+            razorpay_order_id: orderId,
+            razorpay_payment_id: paymentId,
+            razorpay_signature: "qr_manual_verified",
+            utr_number: "PENDING",
+          };
 
       const res = await fetch(apiEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...savedData,
-          razorpay_order_id: orderId,
-          razorpay_payment_id: paymentId,
-          razorpay_signature: "manual_qr_verified",
-          utr_number: "PENDING",
-        }),
+        body: JSON.stringify(payload),
       });
 
       const result = await res.json();
@@ -65,6 +121,7 @@ function QRCheckoutContent() {
       if (res.ok && result.success) {
         localStorage.removeItem(storageKey);
         localStorage.removeItem("pending_order_id");
+        localStorage.removeItem("pending_amount");
         localStorage.removeItem("completed_donation_receipt");
 
         setSubmittedInfo({
@@ -75,7 +132,7 @@ function QRCheckoutContent() {
             "सहयोगी",
           amount: Number(amount),
           orderId: orderId,
-          isDonation,
+          isDonation: isDonationFlow,
         });
 
         setStatus("pending_verification");
@@ -131,7 +188,7 @@ function QRCheckoutContent() {
             <div className="flex justify-between">
               <span className="text-slate-500">राशि:</span>
               <span className="font-bold text-orange-700 text-base">
-                ₹{submittedInfo.amount.toLocaleString("en-IN")}
+                ₹{Number(submittedInfo.amount || 0).toLocaleString("en-IN")}
               </span>
             </div>
 
@@ -182,9 +239,12 @@ function QRCheckoutContent() {
         />
       </div>
 
+      {/* 5. अब यहाँ राशि कभी खाली नहीं रहेगी और LocalStorage से सही दिखेगी */}
       <div className="text-lg font-semibold text-slate-800 mb-1">
         भुगतान राशि:{" "}
-        <span className="text-orange-700">₹{amount}</span>
+        <span className="text-orange-700">
+          ₹{Number(amount || 0).toLocaleString("en-IN")}
+        </span>
       </div>
 
       <div className="text-xs text-slate-500 mb-6">
@@ -202,7 +262,7 @@ function QRCheckoutContent() {
 
       <button
         onClick={handlePaymentConfirmation}
-        disabled={loading}
+        disabled={loading || amount <= 0}
         className="w-full py-3 px-6 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white font-semibold rounded-xl shadow transition duration-200 cursor-pointer"
       >
         {loading
@@ -213,7 +273,7 @@ function QRCheckoutContent() {
       <button
         onClick={() => router.back()}
         disabled={loading}
-        className="mt-3 w-full py-2 px-4 text-xs text-slate-500 hover:text-slate-700"
+        className="mt-3 w-full py-2 px-4 text-xs text-slate-500 hover:text-slate-700 cursor-pointer"
       >
         ← वापस जाएं
       </button>
