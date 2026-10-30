@@ -10,6 +10,11 @@ const head = Tiro_Devanagari_Hindi({ subsets: ["devanagari", "latin"], weight: "
 export const metadata = {
   title: "सर्व हिन्दू कल्याण समिति",
   description: "सेवा से समाज का निर्माण – विश्वास, पारदर्शिता और आसान सहयोग",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({ children }) {
