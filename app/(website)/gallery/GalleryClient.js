@@ -30,7 +30,7 @@ const ALBUM_IMAGES = {
     "/images/gallery/education-2.webp",
     "/images/gallery/education-3.webp",
   ],
-  "अनाथ/बाल सहायता": [
+  "अनाथ बालक सहायता": [
     "/images/gallery/orphans.webp",
     "/images/gallery/orphans-2.webp",
     "/images/gallery/orphans-3.webp",

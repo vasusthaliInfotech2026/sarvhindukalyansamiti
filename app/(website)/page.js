@@ -68,7 +68,7 @@ export default function Home() {
               <Image src="/images/mandi.jpg" alt="मंदिर परिसर" fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover transition duration-700 hover:scale-105" style={{ objectPosition: "50% 60%" }} />
             </div>
           </Reveal>
-          <Reveal from="right">
+          <Reveal from="right" className="lg:-mt-20">
             <h2 className="text-3xl font-head text-navy sm:text-4xl">मंदिर एवं सनातन धर्म सेवा</h2>
             <ul className="mt-5 space-y-2 text-lg">
               {["मंदिर सेवा एवं रखरखाव में सहयोग", "मंदिर स्वच्छ अभियान", "धार्मिक एवं सांस्कृतिक कार्यक्रम", "धार्मिक साहित्य/सामग्री का वितरण"].map((t) => <li key={t} className="flex gap-2"><span className="text-saffron">🪔</span>{t}</li>)}
