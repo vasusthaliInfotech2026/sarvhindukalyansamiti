@@ -39,6 +39,11 @@ export default function VolunteerForm() {
     const formData = new FormData(e.currentTarget);
     const emailInput = formData.get("email");
 
+    if (!emailInput || !String(emailInput).trim()) {
+      setError("कृपया अपना ईमेल पता दर्ज करें।");
+      setLoading(false);
+      return;
+    }
     // 2. ईमेल डुप्लीकेट जाँच
     if (emailInput) {
       try {
@@ -213,7 +218,7 @@ export default function VolunteerForm() {
         <input name="full_name" required maxLength={150} placeholder="पूरा नाम" className="input" />
         <div className="grid gap-4 sm:grid-cols-2">
           <input name="phone" required type="tel" maxLength={20} placeholder="मोबाइल नंबर" className="input" />
-          <input name="email" type="email" maxLength={150} placeholder="ईमेल पता" className="input" />
+          <input name="email" type="email" required maxLength={150} autoComplete="email" placeholder="ईमेल पता" className="input"/>
         </div>
         <textarea name="address" required placeholder="पूरा पता" rows={3} className="input" />
         <div className="grid gap-4 sm:grid-cols-3">

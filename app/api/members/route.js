@@ -1,219 +1,436 @@
+
 import { NextResponse } from "next/server";
 import mysql from "mysql2/promise";
-import nodemailer from "nodemailer";
+import { createHmac, timingSafeEqual } from "node:crypto";
+import { sendEmail } from "@/lib/email";
+
+export const runtime = "nodejs";
+
+function escapeHtml(value = "") {
+  return String(value).replace(/[&<>"']/g, (char) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+    return entities[char];
+  });
+}
+
+function verifyRazorpaySignature(orderId, paymentId, receivedSignature) {
+  const secret = process.env.RAZORPAY_KEY_SECRET;
+
+  if (!secret || !orderId || !paymentId || !receivedSignature) {
+    return false;
+  }
+
+  const expectedSignature = createHmac("sha256", secret)
+    .update(`${orderId}|${paymentId}`)
+    .digest("hex");
+
+  const expected = Buffer.from(expectedSignature, "hex");
+  const received = Buffer.from(String(receivedSignature), "hex");
+
+  return (
+    expected.length === received.length &&
+    timingSafeEqual(expected, received)
+  );
+}
+
+async function sendMemberEmail({ label, to, subject, html, text }) {
+  try {
+    const result = await sendEmail({ to, subject, html, text });
+
+    if (result?.mocked === true) {
+      console.log(`[MEMBER EMAIL] MOCK MODE: ${label} email was NOT sent.`, {
+        recipient: to,
+        messageId: result?.messageId || "N/A",
+      });
+      return { sent: false, mocked: true };
+    }
+
+    console.log(`[MEMBER EMAIL] SUCCESS: ${label} email accepted by email gateway.`, {
+      recipient: to,
+      messageId: result?.messageId || "N/A",
+    });
+
+    return { sent: true, mocked: false };
+  } catch (error) {
+    console.error(`[MEMBER EMAIL] FAILED: ${label} email could not be sent.`, {
+      recipient: to,
+      message: error?.message || String(error),
+      stack: error?.stack,
+    });
+
+    return { sent: false, mocked: false };
+  }
+}
 
 export async function POST(request) {
+  let connection;
+
   try {
     const body = await request.json();
 
-    const full_name = body.full_name || "";
-    const email = body.email || null;
-    const phone = body.phone || "";
-    const address = body.address || "";
-    const city = body.city || "";
-    const state = body.state || "";
-    const pincode = body.pincode || "";
-    const membership_type = body.membership_type || "सामान्य सदस्य";
-    const role = body.role || "";
-    const membership_fee = body.membership_fee || 1;
-    const razorpay_order_id = body.razorpay_order_id || "manual_order";
-    const razorpay_payment_id = body.razorpay_payment_id || "manual_payment";
-    const razorpay_signature = body.razorpay_signature || "";
+    const full_name = String(body.full_name || "").trim();
+    const email = String(body.email || "").trim().toLowerCase();
+    const phone = String(body.phone || "").trim();
+    const address = String(body.address || "").trim();
+    const city = String(body.city || "").trim();
+    const state = String(body.state || "").trim();
+    const pincode = String(body.pincode || "").trim();
+    const membership_type = String(
+      body.membership_type || "सामान्य सदस्य"
+    ).trim();
+    const role = String(body.role || "").trim();
+    const membership_fee = Number(body.membership_fee);
 
-    const connection = await mysql.createConnection({
+    const razorpay_order_id = String(body.razorpay_order_id || "").trim();
+    const razorpay_payment_id = String(body.razorpay_payment_id || "").trim();
+    const razorpay_signature = String(body.razorpay_signature || "").trim();
+
+    console.log("[MEMBER API] New member registration request received.");
+
+    // 1. Server-side validation.
+    if (
+      !full_name ||
+      !email ||
+      !phone ||
+      !address ||
+      !city ||
+      !state ||
+      !pincode ||
+      !membership_type ||
+      !role
+    ) {
+      console.warn("[MEMBER API] Validation failed: required fields are missing.");
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: "कृपया सभी आवश्यक जानकारी भरें। ईमेल पता अनिवार्य है।",
+        },
+        { status: 400 }
+      );
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email)) {
+      console.warn("[MEMBER API] Validation failed: invalid email address.");
+
+      return NextResponse.json(
+        { success: false, error: "कृपया सही ईमेल पता दर्ज करें।" },
+        { status: 400 }
+      );
+    }
+
+    if (!Number.isFinite(membership_fee) || membership_fee <= 0) {
+      return NextResponse.json(
+        { success: false, error: "कृपया सही सदस्यता शुल्क चुनें।" },
+        { status: 400 }
+      );
+    }
+
+    // QR requests remain pending until an admin verifies payment.
+    const isQRManual = razorpay_signature === "qr_manual_verified";
+
+    let paymentStatus;
+    let memberStatus;
+    let paymentMethodName;
+
+    if (isQRManual) {
+      paymentStatus = "pending";
+      memberStatus = "Pending";
+      paymentMethodName = "UPI QR (Verification Pending)";
+    } else {
+      // All non-QR registrations must have a valid Razorpay signature.
+      const signatureValid = verifyRazorpaySignature(
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature
+      );
+
+      if (!signatureValid) {
+        console.warn(
+          "[MEMBER API] Payment verification failed: invalid Razorpay signature."
+        );
+
+        return NextResponse.json(
+          {
+            success: false,
+            error: "भुगतान सत्यापित नहीं हो सका। कृपया सहायता के लिए समिति से संपर्क करें।",
+          },
+          { status: 400 }
+        );
+      }
+
+      paymentStatus = "paid";
+      memberStatus = "Active";
+      paymentMethodName = "Razorpay Gateway";
+    }
+
+    // 2. Save member and payment records in one database transaction.
+    connection = await mysql.createConnection({
       host: process.env.DB_HOST || "127.0.0.1",
       user: process.env.DB_USER || "root",
       password: process.env.DB_PASSWORD || "",
       database: process.env.DB_NAME || "sarv_hindu_kalyan_samiti",
     });
 
-    try {
-      // 1. Email check: Pehle se registered hai ya nahi
-      if (email) {
-        const [existingUsers] = await connection.execute(
-          `SELECT id FROM members WHERE email = ?`,
-          [email],
-        );
+    await connection.beginTransaction();
 
-        if (existingUsers.length > 0) {
-          await connection.end();
-          return NextResponse.json(
-            {
-              success: false,
-              alreadyRegistered: true,
-              error:
-                "यह ईमेल आईडी पहले से ही पंजीकृत है। कृपया किसी अन्य ईमेल आईडी का उपयोग करें।",
-            },
-            { status: 400 },
-          );
-        }
-      }
+    const [existingUsers] = await connection.execute(
+      "SELECT id FROM members WHERE email = ? LIMIT 1",
+      [email]
+    );
 
-      const isQRManual = razorpay_signature === "qr_manual_verified";
-      const paymentStatus = isQRManual ? "pending" : "paid";
-      const memberStatus = isQRManual ? "Pending" : "Active";
-      const paymentMethodName = isQRManual
-        ? "UPI QR (Verification Pending)"
-        : "Razorpay Gateway";
-
-      await connection.beginTransaction();
-
-      // A. Members table mein save karein (Bina password ke)
-      const [memberResult] = await connection.execute(
-        `INSERT INTO members 
-        (full_name, email, phone, address, city, state, pincode, membership_type, role, membership_fee, status) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          full_name,
-          email,
-          phone,
-          address,
-          city,
-          state,
-          pincode,
-          membership_type,
-          role,
-          membership_fee,
-          memberStatus,
-        ],
-      );
-
-      const memberId = memberResult.insertId;
-      const receiptNo = `RCPT_${Date.now()}`;
-
-      // B. Payments table mein record save karein
-      await connection.execute(
-        `INSERT INTO member_payments 
-        (member_id, amount, currency, razorpay_order_id, razorpay_payment_id, razorpay_signature, payment_method, payment_status, receipt_number) 
-        VALUES (?, ?, 'INR', ?, ?, ?, ?, ?, ?)`,
-        [
-          memberId,
-          membership_fee,
-          razorpay_order_id,
-          razorpay_payment_id,
-          razorpay_signature,
-          paymentMethodName,
-          paymentStatus,
-          receiptNo,
-        ],
-      );
-
-      await connection.commit();
+    if (existingUsers.length > 0) {
+      await connection.rollback();
       await connection.end();
+      connection = null;
 
-      // 3. Email Notifications (Bina password ke normal receipts)
-      if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-        const transporter = nodemailer.createTransport({
-          host: process.env.SMTP_HOST,
-          port: Number(process.env.SMTP_PORT),
-          secure: Number(process.env.SMTP_PORT) === 465,
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-          },
-        });
+      console.warn("[MEMBER API] Registration rejected: email already exists.");
 
-        if (isQRManual) {
-          // --- QR MODE: Pending Verification Email ---
-          await transporter.sendMail({
-            from: `"सर्व हिन्दू कल्याण समिति" <${process.env.EMAIL_USER}>`,
-            to: process.env.RECEIVER_EMAIL || process.env.EMAIL_USER,
-            subject: `⚠️ भुगतान सत्यापन लंबित (Pending Verification): ${full_name} (₹${membership_fee})`,
-            html: `
-              <div style="font-family: sans-serif; line-height: 1.6; color: #333;">
-                <h2 style="color: #d97706;">नया QR पंजीकरण - भुगतान सत्यापन लंबित है</h2>
-                <p><strong>पूरा नाम:</strong> ${full_name}</p>
-                <p><strong>मोबाइल:</strong> ${phone}</p>
-                <p><strong>ईमेल:</strong> ${email || "N/A"}</p>
-                <p><strong>राशि:</strong> ₹${membership_fee}</p>
-                <p><strong>रसीद संख्या:</strong> ${receiptNo}</p>
-              </div>
-            `,
-          });
-
-          if (email) {
-            await transporter.sendMail({
-              from: `"सर्व हिन्दू कल्याण समिति" <${process.env.EMAIL_USER}>`,
-              to: email,
-              subject: `⏳ पंजीकरण प्राप्त हुआ - भुगतान सत्यापन लंबित (Sarv Hindu Kalyan Samiti)`,
-              html: `
-                <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e6d5b8; border-radius: 10px; background-color: #faf3e8;">
-                  <h2 style="color: #c86428; text-align: center;">जय श्री राम! 🙏</h2>
-                  <p>प्रिय <strong>${full_name} जी</strong>,</p>
-                  <p>सर्व हिन्दू कल्याण समिति में आपका पंजीकरण अनुरोध मिल गया है और आपका भुगतान <strong>सत्यापन के लिए लंबित (Verification Pending)</strong> है।</p>
-                  
-                  <div style="background: #fff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #d97706;">
-                    <p style="margin: 5px 0;"><strong>सदस्यता प्रकार:</strong> ${membership_type}</p>
-                    <p style="margin: 5px 0;"><strong>राशि:</strong> ₹${membership_fee}</p>
-                    <p style="margin: 5px 0;"><strong>रिफरेंस नंबर:</strong> ${receiptNo}</p>
-                  </div>
-                  <p style="margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
-                    <strong>सर्व हिन्दू कल्याण समिति</strong>
-                  </p>
-                </div>
-              `,
-            });
-          }
-        } else {
-          // --- RAZORPAY GATEWAY MODE ---
-          await transporter.sendMail({
-            from: `"सर्व हिन्दू कल्याण समिति" <${process.env.EMAIL_USER}>`,
-            to: process.env.RECEIVER_EMAIL || process.env.EMAIL_USER,
-            subject: `🔔 नया सदस्य पंजीकरण (भुगतान सफल): ${full_name} (₹${membership_fee})`,
-            html: `
-              <div style="font-family: sans-serif; line-height: 1.6; color: #333;">
-                <h2 style="color: #16a34a;">नया सदस्य पंजीकरण और भुगतान सफल</h2>
-                <p><strong>पूरा नाम:</strong> ${full_name}</p>
-                <p><strong>मोबाइल:</strong> ${phone}</p>
-                <p><strong>ईमेल:</strong> ${email || "N/A"}</p>
-                <p><strong>राशि:</strong> ₹${membership_fee}</p>
-                <p><strong>Payment ID:</strong> ${razorpay_payment_id}</p>
-              </div>
-            `,
-          });
-
-          if (email) {
-            await transporter.sendMail({
-              from: `"सर्व हिन्दू कल्याण समिति" <${process.env.EMAIL_USER}>`,
-              to: email,
-              subject: `🙏 भुगतान सफल एवं रसीद - सर्व हिन्दू कल्याण समिति`,
-              html: `
-                <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e6d5b8; border-radius: 10px; background-color: #faf3e8;">
-                  <h2 style="color: #c86428; text-align: center;">जय श्री राम! 🙏</h2>
-                  <p>प्रिय <strong>${full_name} जी</strong>,</p>
-                  <p>आपका भुगतान सफलतापूर्वक प्राप्त हो गया है! सर्व हिन्दू कल्याण समिति परिवार में आपका हार्दिक स्वागत है।</p>
-                  
-                  <div style="background: #fff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #16a34a;">
-                    <h3 style="margin-top: 0; color: #333;">भुगतान एवं रसीद विवरण:</h3>
-                    <p style="margin: 5px 0;"><strong>सदस्यता प्रकार:</strong> ${membership_type}</p>
-                    <p style="margin: 5px 0;"><strong>सेवा क्षेत्र:</strong> ${role}</p>
-                    <p style="margin: 5px 0;"><strong>प्राप्त राशि:</strong> ₹${membership_fee}</p>
-                    <p style="margin: 5px 0;"><strong>रसीद संख्या:</strong> ${receiptNo}</p>
-                    <p style="margin: 5px 0;"><strong>Payment ID:</strong> ${razorpay_payment_id}</p>
-                  </div>
-                  <p style="margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
-                    <strong>सर्व हिन्दू कल्याण समिति</strong>
-                  </p>
-                </div>
-              `,
-            });
-          }
-        }
-      }
-
-      return NextResponse.json({ success: true }, { status: 200 });
-    } catch (dbError) {
-      if (connection) {
-        await connection.rollback();
-        await connection.end();
-      }
-      throw dbError;
+      return NextResponse.json(
+        {
+          success: false,
+          alreadyRegistered: true,
+          error:
+            "यह ईमेल आईडी पहले से ही पंजीकृत है। कृपया किसी अन्य ईमेल आईडी का उपयोग करें।",
+        },
+        { status: 409 }
+      );
     }
-  } catch (error) {
-    console.error("API Error:", error);
+
+    const [memberResult] = await connection.execute(
+      `INSERT INTO members
+       (full_name, email, phone, address, city, state, pincode,
+        membership_type, role, membership_fee, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        full_name,
+        email,
+        phone,
+        address,
+        city,
+        state,
+        pincode,
+        membership_type,
+        role,
+        membership_fee,
+        memberStatus,
+      ]
+    );
+
+    const memberId = memberResult.insertId;
+    const receiptNo = `RCPT_${Date.now()}`;
+
+    await connection.execute(
+      `INSERT INTO member_payments
+       (member_id, amount, currency, razorpay_order_id,
+        razorpay_payment_id, razorpay_signature, payment_method,
+        payment_status, receipt_number)
+       VALUES (?, ?, 'INR', ?, ?, ?, ?, ?, ?)`,
+      [
+        memberId,
+        membership_fee,
+        razorpay_order_id || "manual_order",
+        razorpay_payment_id || "manual_payment",
+        razorpay_signature,
+        paymentMethodName,
+        paymentStatus,
+        receiptNo,
+      ]
+    );
+
+    await connection.commit();
+    await connection.end();
+    connection = null;
+
+    console.log("[MEMBER API] SUCCESS: Member and payment records saved.", {
+      memberId,
+      receiptNo,
+      paymentStatus,
+      paymentMethod: paymentMethodName,
+    });
+
+    // 3. Send emails after database commit.
+    // Email failure will not undo a saved registration.
+    const adminEmail = process.env.RECEIVER_EMAIL;
+
+    const safeName = escapeHtml(full_name);
+    const safeEmail = escapeHtml(email);
+    const safePhone = escapeHtml(phone);
+    const safeMembershipType = escapeHtml(membership_type);
+    const safeRole = escapeHtml(role);
+    const safeReceiptNo = escapeHtml(receiptNo);
+    const safeOrderId = escapeHtml(razorpay_order_id || "manual_order");
+    const safePaymentId = escapeHtml(razorpay_payment_id || "manual_payment");
+
+    const adminSubject = isQRManual
+      ? `⚠️ भुगतान सत्यापन लंबित: ${full_name} (₹${membership_fee})`
+      : `नया सदस्य पंजीकरण - भुगतान सफल: ${full_name} (₹${membership_fee})`;
+
+    const adminHeading = isQRManual
+      ? "नया QR पंजीकरण - भुगतान सत्यापन लंबित है"
+      : "नया सदस्य पंजीकरण और भुगतान सफल";
+
+    const adminText = [
+      adminHeading,
+      `नाम: ${full_name}`,
+      `मोबाइल: ${phone}`,
+      `ईमेल: ${email}`,
+      `सदस्यता प्रकार: ${membership_type}`,
+      `सेवा क्षेत्र: ${role}`,
+      `राशि: ₹${membership_fee}`,
+      `भुगतान स्थिति: ${paymentStatus}`,
+      `रसीद संख्या: ${receiptNo}`,
+      `Payment ID: ${razorpay_payment_id || "N/A"}`,
+    ].join("\n");
+
+    const adminHtml = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.7; color: #333;">
+        <h2 style="color: ${isQRManual ? "#d97706" : "#16a34a"};">
+          ${adminHeading}
+        </h2>
+        <p><strong>पूरा नाम:</strong> ${safeName}</p>
+        <p><strong>मोबाइल:</strong> ${safePhone}</p>
+        <p><strong>ईमेल:</strong> ${safeEmail}</p>
+        <p><strong>सदस्यता प्रकार:</strong> ${safeMembershipType}</p>
+        <p><strong>सेवा क्षेत्र:</strong> ${safeRole}</p>
+        <p><strong>राशि:</strong> ₹${membership_fee}</p>
+        <p><strong>भुगतान स्थिति:</strong> ${paymentStatus}</p>
+        <p><strong>रसीद संख्या:</strong> ${safeReceiptNo}</p>
+        <p><strong>Payment ID:</strong> ${safePaymentId}</p>
+        <p><strong>Order ID:</strong> ${safeOrderId}</p>
+      </div>
+    `;
+
+    if (adminEmail) {
+      await sendMemberEmail({
+        label: isQRManual ? "Admin pending-verification" : "Admin payment-success",
+        to: adminEmail,
+        subject: adminSubject,
+        text: adminText,
+        html: adminHtml,
+      });
+    } else {
+      console.error(
+        "[MEMBER EMAIL] FAILED: RECEIVER_EMAIL is not configured. Admin notification was not sent."
+      );
+    }
+
+    const memberSubject = isQRManual
+      ? "⏳ आपका सदस्यता आवेदन प्राप्त हुआ - भुगतान सत्यापन लंबित"
+      : "🙏 सदस्यता भुगतान सफल एवं रसीद - सर्व हिन्दू कल्याण समिति";
+
+    const memberStatusText = isQRManual
+      ? "आपका भुगतान सत्यापन के लिए लंबित है। समिति की टीम भुगतान की पुष्टि करने के बाद आपसे संपर्क करेगी।"
+      : "सर्व हिन्दू कल्याण समिति परिवार में आपका हार्दिक स्वागत है। आपका सदस्यता भुगतान सफल रहा है।";
+
+    const memberHtml = `
+      <div style="
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #e6d5b8;
+        border-radius: 10px;
+        background-color: #faf3e8;
+        line-height: 1.7;
+        color: #333;
+      ">
+        <h2 style="color: #c86428; text-align: center;">
+          जय श्री राम! 🙏
+        </h2>
+
+        <p>प्रिय <strong>${safeName} जी</strong>,</p>
+        <p>${memberStatusText}</p>
+
+        <div style="
+          background: #fff;
+          padding: 15px;
+          border-radius: 8px;
+          margin: 20px 0;
+          border-left: 4px solid ${isQRManual ? "#d97706" : "#16a34a"};
+        ">
+          <h3 style="margin-top: 0; color: #333;">
+            ${isQRManual ? "पंजीकरण विवरण" : "भुगतान एवं रसीद विवरण"}
+          </h3>
+          <p><strong>सदस्यता प्रकार:</strong> ${safeMembershipType}</p>
+          <p><strong>सेवा क्षेत्र:</strong> ${safeRole}</p>
+          <p><strong>राशि:</strong> ₹${membership_fee}</p>
+          <p><strong>भुगतान स्थिति:</strong> ${isQRManual ? "सत्यापन लंबित" : "सफल"}</p>
+          <p><strong>रसीद / संदर्भ संख्या:</strong> ${safeReceiptNo}</p>
+          ${
+            isQRManual
+              ? ""
+              : `<p><strong>Payment ID:</strong> ${safePaymentId}</p>`
+          }
+        </div>
+
+        <p style="margin-top: 25px; text-align: center; color: #666; font-size: 14px;">
+          <strong>सर्व हिन्दू कल्याण समिति</strong>
+        </p>
+      </div>
+    `;
+
+    await sendMemberEmail({
+      label: isQRManual ? "Member pending-confirmation" : "Member payment-receipt",
+      to: email,
+      subject: memberSubject,
+      text: [
+        "जय श्री राम!",
+        `प्रिय ${full_name} जी,`,
+        memberStatusText,
+        `सदस्यता प्रकार: ${membership_type}`,
+        `सेवा क्षेत्र: ${role}`,
+        `राशि: ₹${membership_fee}`,
+        `भुगतान स्थिति: ${isQRManual ? "सत्यापन लंबित" : "सफल"}`,
+        `रसीद / संदर्भ संख्या: ${receiptNo}`,
+      ].join("\n"),
+      html: memberHtml,
+    });
+
     return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 },
+      {
+        success: true,
+        memberId,
+        receiptNo,
+        paymentStatus,
+        message: "सदस्यता पंजीकरण सफलतापूर्वक दर्ज हो गया है।",
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("[MEMBER API] FAILED:", {
+      message: error?.message || String(error),
+      stack: error?.stack,
+    });
+
+    if (connection) {
+      try {
+        await connection.rollback();
+      } catch (rollbackError) {
+        console.error("[MEMBER API] Database rollback failed:", rollbackError);
+      }
+
+      try {
+        await connection.end();
+      } catch (closeError) {
+        console.error("[MEMBER API] Database connection close failed:", closeError);
+      }
+    }
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: "पंजीकरण पूरा नहीं हो सका। कृपया दोबारा प्रयास करें।",
+      },
+      { status: 500 }
     );
   }
 }
