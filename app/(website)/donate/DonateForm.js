@@ -258,10 +258,11 @@ export default function DonateForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-1">ईमेल पता</label>
+          <label className="block text-sm font-semibold mb-1">ईमेल पता *</label>
           <input
             name="donor_email"
             type="email"
+            required
             placeholder="अपना ईमेल दर्ज करें"
             className="input"
           />
