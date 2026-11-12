@@ -47,7 +47,7 @@ export default function DonateForm() {
 
   const handleDonate = async (e) => {
     e.preventDefault();
-    if (!amount || amount < 50 || amount > 10000) {
+    if (!amount || amount < 1 || amount > 10000) {
       setError("कृपया ₹50 से ₹10,000 के बीच की वैध राशि दर्ज करें।");
       return;
     }
@@ -55,9 +55,7 @@ export default function DonateForm() {
     setLoading(true);
     setError("");
 
-    // --- STRICT PAYMENT MODE VALIDATION ---
-    //const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE?.trim();
-    const paymentMode = "qr"; // Hardcoded for testing; replace with env variable in production
+    const paymentMode = "razorpay"; 
    
     if (paymentMode !== "qr" && paymentMode !== "razorpay") {
        console.log("LIVE PAYMENT MODE:", paymentMode);
@@ -76,9 +74,7 @@ export default function DonateForm() {
     };
 
     try {
-      // ==========================================
-      // मोड 1: अगर .env.local में QR मोड सेट है ('qr')
-      // ==========================================
+      
       if (paymentMode === "qr") {
         const qrOrderId = "DON_QR_" + Date.now();
         localStorage.setItem("pending_donation_data", JSON.stringify(donorData));
@@ -90,9 +86,7 @@ export default function DonateForm() {
         return;
       }
 
-      // ==========================================
-      // मोड 2: अगर .env.local में Razorpay मोड सेट है ('razorpay')
-      // ==========================================
+      
       if (paymentMode === "razorpay") {
         const resScript = await loadRazorpayScript();
         if (!resScript) {
@@ -258,11 +252,10 @@ export default function DonateForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold mb-1">ईमेल पता *</label>
+          <label className="block text-sm font-semibold mb-1">ईमेल पता</label>
           <input
             name="donor_email"
             type="email"
-            required
             placeholder="अपना ईमेल दर्ज करें"
             className="input"
           />
@@ -288,7 +281,7 @@ export default function DonateForm() {
           </label>
           <input
             type="number"
-            min="50"
+            min="1"
             max="10000"
             required
             value={amount}

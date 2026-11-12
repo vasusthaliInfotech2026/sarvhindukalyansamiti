@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import mysql from "mysql2/promise";
-import { sendEmail } from "@/lib/email";
+import nodemailer from "nodemailer";
 import crypto from "crypto";
 
 export async function POST(request) {
@@ -16,13 +16,6 @@ export async function POST(request) {
       razorpay_payment_id,
       razorpay_signature,
     } = body;
-
-    if (!donor_email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(donor_email)) {
-      return NextResponse.json(
-        { success: false, error: "Please enter a valid email address to receive your donation receipt." },
-        { status: 400 }
-      );
-    }
 
     // 1. चेक करें कि पेमेंट QR से हुआ है या Razorpay से
     const isQRPayment =
@@ -81,114 +74,88 @@ export async function POST(request) {
     await connection.end();
 
     // 4. Email Notifications
-    // Email errors are handled separately so a saved donation is not reported as failed.
-    const adminEmail = process.env.RECEIVER_EMAIL || process.env.EMAIL_USER;
-    const emailTasks = [];
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT),
+        secure:false,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
 
-    const escapeHtml = (value) =>
-      String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#39;");
-
-    const safeName = escapeHtml(donor_name);
-    const safeEmail = escapeHtml(donor_email || "N/A");
-    const safePhone = escapeHtml(donor_phone);
-    const safeAmount = escapeHtml(amount);
-    const safePurpose = escapeHtml(donation_purpose);
-    const safeReceipt = escapeHtml(receiptNo);
-
-    const adminEmailMissing = !adminEmail;
-    if (adminEmailMissing) {
-      console.error(
-        "Donation saved, but admin notification cannot be sent: set RECEIVER_EMAIL in the environment."
-      );
-    }
-
-    if (isQRPayment) {
-      // QR donation is pending until an admin verifies it. Notify admin only.
-      if (adminEmail) {
-        emailTasks.push(
-          sendEmail({
-            to: adminEmail,
-            subject: `⏳ वेरिफिकेशन लंबित (QR दान): ₹${amount} (${donor_name})`,
-            html: `
-              <div style="font-family: sans-serif; line-height: 1.6;">
-                <h2 style="color: #d97706;">नया QR डोनेशन (सत्यापन लंबित)</h2>
-                <p><strong>दानदाता का नाम:</strong> ${safeName}</p>
-                <p><strong>मोबाइल:</strong> ${safePhone}</p>
-                <p><strong>ईमेल:</strong> ${safeEmail}</p>
-                <p><strong>राशि:</strong> ₹${safeAmount}</p>
-                <p><strong>उद्देश्य (Purpose):</strong> ${safePurpose}</p>
-                <p><strong>रसीद संख्या:</strong> ${safeReceipt}</p>
-                <p style="color: #b45309; font-weight: bold;">कृपया एडमिन डैशबोर्ड (/admin) में जाकर भुगतान की पुष्टि करें और 'Verify Payment' पर क्लिक करें।</p>
-              </div>
-            `,
-          })
-        );
-      }
-    } else {
-      // Razorpay signature has been verified: notify admin and send donor receipt.
-      if (adminEmail) {
-        emailTasks.push(
-          sendEmail({
-            to: adminEmail,
-            subject: `💰 नया दान प्राप्त हुआ (Razorpay): ₹${amount} (${donor_name})`,
-            html: `
-              <div style="font-family: sans-serif; line-height: 1.6;">
-                <h2 style="color: #c86428;">नया डोनेशन प्राप्त हुआ</h2>
-                <p><strong>दानदाता का नाम:</strong> ${safeName}</p>
-                <p><strong>मोबाइल:</strong> ${safePhone}</p>
-                <p><strong>ईमेल:</strong> ${safeEmail}</p>
-                <p><strong>राशि:</strong> ₹${safeAmount}</p>
-                <p><strong>उद्देश्य (Purpose):</strong> ${safePurpose}</p>
-                <p><strong>माध्यम (Method):</strong> ${paymentMethod}</p>
-                <p><strong>Payment ID:</strong> ${escapeHtml(razorpay_payment_id)}</p>
-                <p><strong>रसीद संख्या:</strong> ${safeReceipt}</p>
-              </div>
-            `,
-          })
-        );
-      }
-
-      emailTasks.push(
-        sendEmail({
-          to: donor_email,
-          subject: "🙏 आपके दान के लिए धन्यवाद - सर्व हिन्दू कल्याण समिति",
+      if (isQRPayment) {
+        // QR पेमेंट होने पर केवल Admin को अलर्ट भेजें कि वेरिफिकेशन पेंडिंग है
+        await transporter.sendMail({
+          from: `"सर्व हिन्दू कल्याण समिति" <${process.env.EMAIL_USER}>`,
+          to: process.env.RECEIVER_EMAIL || process.env.EMAIL_USER,
+          subject: `⏳ वेरिफिकेशन लंबित (QR दान): ₹${amount} (${donor_name})`,
           html: `
-            <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e6d5b8; border-radius: 10px; background-color: #faf3e8;">
-              <h2 style="color: #c86428; text-align: center;">जय श्री राम! 🙏</h2>
-              <p>प्रिय <strong>${safeName} जी</strong>,</p>
-              <p>सर्व हिन्दू कल्याण समिति के <strong>"${safePurpose}"</strong> प्रकल्प में ₹${safeAmount} के आपके पवित्र सहयोग के लिए हम आपके अत्यंत आभारी हैं।</p>
-              <div style="background: #fff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #c86428;">
-                <h3 style="margin-top: 0; color: #333;">दान रसीद विवरण:</h3>
-                <p style="margin: 5px 0;"><strong>सहयोग राशि:</strong> ₹${safeAmount}</p>
-                <p style="margin: 5px 0;"><strong>उद्देश्य:</strong> ${safePurpose}</p>
-                <p style="margin: 5px 0;"><strong>माध्यम:</strong> ${paymentMethod}</p>
-                <p style="margin: 5px 0;"><strong>रसीद संख्या:</strong> ${safeReceipt}</p>
-                <p style="margin: 5px 0;"><strong>Payment ID:</strong> ${escapeHtml(razorpay_payment_id)}</p>
-              </div>
-              <p>आपका यह योगदान समाज के उत्थान और धर्म रक्षा में महत्वपूर्ण भूमिका निभाएगा।</p>
-              <p style="margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
-                <strong>सर्व हिन्दू कल्याण समिति</strong><br/>
-                राष्ट्र सेवा, धर्म रक्षा और समाज उत्थान हेतु समर्पित
-              </p>
+            <div style="font-family: sans-serif; line-height: 1.6;">
+              <h2 style="color: #d97706;">नया QR डोनेशन (सत्यापन लंबित)</h2>
+              <p><strong>दानदाता का नाम:</strong> ${donor_name}</p>
+              <p><strong>मोबाइल:</strong> ${donor_phone}</p>
+              <p><strong>ईमेल:</strong> ${donor_email || "N/A"}</p>
+              <p><strong>राशि:</strong> ₹${amount}</p>
+              <p><strong>उद्देश्य (Purpose):</strong> ${donation_purpose}</p>
+              <p><strong>रसीद संख्या:</strong> ${receiptNo}</p>
+              <p style="color: #b45309; font-weight: bold;">कृपया एडमिन डैशबोर्ड (/admin) में जाकर भुगतान की पुष्टि करें और 'Verify Payment' पर क्लिक करें।</p>
             </div>
           `,
-        })
-      );
-    }
+        });
+      } else {
+        // Razorpay पेमेंट पर Admin और Donor दोनों को तुरंत कंफर्म ईमेल भेजें
+        await transporter.sendMail({
+          from: `"सर्व हिन्दू कल्याण समिति" <${process.env.EMAIL_USER}>`,
+          to: process.env.RECEIVER_EMAIL || process.env.EMAIL_USER,
+          subject: `💰 नया दान प्राप्त हुआ (Razorpay): ₹${amount} (${donor_name})`,
+          html: `
+            <div style="font-family: sans-serif; line-height: 1.6;">
+              <h2 style="color: #c86428;">नया डोनेशन प्राप्त हुआ</h2>
+              <p><strong>दानदाता का नाम:</strong> ${donor_name}</p>
+              <p><strong>मोबाइल:</strong> ${donor_phone}</p>
+              <p><strong>ईमेल:</strong> ${donor_email || "N/A"}</p>
+              <p><strong>राशि:</strong> ₹${amount}</p>
+              <p><strong>उद्देश्य (Purpose):</strong> ${donation_purpose}</p>
+              <p><strong>माध्यम (Method):</strong> ${paymentMethod}</p>
+              <p><strong>Payment ID:</strong> ${razorpay_payment_id}</p>
+              <p><strong>रसीद संख्या:</strong> ${receiptNo}</p>
+            </div>
+          `,
+        });
 
-    const emailResults = await Promise.allSettled(emailTasks);
-    const failedEmails = emailResults.filter(
-      (result) => result.status === "rejected"
-    );
-    if (failedEmails.length > 0) {
-      failedEmails.forEach((result) =>
-        console.error("Donation email failed:", result.reason)
-      );
+        if (donor_email) {
+          await transporter.sendMail({
+            from: `"सर्व हिन्दू कल्याण समिति" <${process.env.EMAIL_USER}>`,
+            to: donor_email,
+            subject: `🙏 आपके दान के लिए धन्यवाद - सर्व हिन्दू कल्याण समिति`,
+            html: `
+              <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e6d5b8; border-radius: 10px; background-color: #faf3e8;">
+                <h2 style="color: #c86428; text-align: center;">जय श्री राम! 🙏</h2>
+                <p>प्रिय <strong>${donor_name} जी</strong>,</p>
+                <p>सर्व हिन्दू कल्याण समिति के <strong>"${donation_purpose}"</strong> प्रकल्प में ₹${amount} के आपके पवित्र सहयोग के लिए हम आपके अत्यंत आभारी हैं।</p>
+                
+                <div style="background: #fff; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #c86428;">
+                  <h3 style="margin-top: 0; color: #333;">दान रसीद विवरण:</h3>
+                  <p style="margin: 5px 0;"><strong>सहयोग राशि:</strong> ₹${amount}</p>
+                  <p style="margin: 5px 0;"><strong>उद्देश्य:</strong> ${donation_purpose}</p>
+                  <p style="margin: 5px 0;"><strong>माध्यम:</strong> ${paymentMethod}</p>
+                  <p style="margin: 5px 0;"><strong>रसीद संख्या:</strong> ${receiptNo}</p>
+                  <p style="margin: 5px 0;"><strong>Payment ID:</strong> ${razorpay_payment_id}</p>
+                </div>
+
+                <p>आपका यह योगदान समाज के उत्थान और धर्म रक्षा में महत्वपूर्ण भूमिका निभाएगा।</p>
+                
+                <p style="margin-top: 30px; text-align: center; color: #666; font-size: 14px;">
+                  <strong>सर्व हिन्दू कल्याण समिति</strong><br/>
+                  राष्ट्र सेवा, धर्म रक्षा और समाज उत्थान हेतु समर्पित
+                </p>
+              </div>
+            `,
+          });
+        }
+      }
     }
 
     return NextResponse.json(
@@ -196,7 +163,6 @@ export async function POST(request) {
         success: true,
         receipt_number: receiptNo,
         payment_status: paymentStatus,
-        email_status: !adminEmailMissing && failedEmails.length === 0 ? "processed" : "failed_or_partial",
       },
       { status: 200 },
     );
