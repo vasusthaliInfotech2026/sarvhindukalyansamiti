@@ -47,7 +47,7 @@ export default function DonateForm() {
 
   const handleDonate = async (e) => {
     e.preventDefault();
-    if (!amount || amount < 50 || amount > 10000) {
+    if (!amount || amount < 1 || amount > 10000) {
       setError("कृपया ₹50 से ₹10,000 के बीच की वैध राशि दर्ज करें।");
       return;
     }
@@ -55,9 +55,8 @@ export default function DonateForm() {
     setLoading(true);
     setError("");
 
-    // --- STRICT PAYMENT MODE VALIDATION ---
-    //const paymentMode = process.env.NEXT_PUBLIC_PAYMENT_MODE?.trim();
-    const paymentMode = "qr"; // Hardcoded for testing; replace with env variable in production
+  
+    const paymentMode = "razorpay"; 
    
     if (paymentMode !== "qr" && paymentMode !== "razorpay") {
        console.log("LIVE PAYMENT MODE:", paymentMode);
@@ -288,7 +287,7 @@ export default function DonateForm() {
           </label>
           <input
             type="number"
-            min="50"
+            min="1"
             max="10000"
             required
             value={amount}
