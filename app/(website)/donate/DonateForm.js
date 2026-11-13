@@ -17,7 +17,7 @@ export default function DonateForm() {
   const [purpose, setPurpose] = useState("सामान्य दान");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(null);
-  const [error, setError] = useState(""); // Popup ke liye error message state
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -47,7 +47,7 @@ export default function DonateForm() {
 
   const handleDonate = async (e) => {
     e.preventDefault();
-    if (!amount || amount < 1 || amount > 10000) {
+    if (!amount || amount < 50 || amount > 10000) {
       setError("कृपया ₹50 से ₹10,000 के बीच की वैध राशि दर्ज करें।");
       return;
     }
@@ -55,12 +55,12 @@ export default function DonateForm() {
     setLoading(true);
     setError("");
 
-  
-    const paymentMode = "razorpay"; 
-   
+    const paymentMode = "razorpay";
+
     if (paymentMode !== "qr" && paymentMode !== "razorpay") {
-       console.log("LIVE PAYMENT MODE:", paymentMode);
-      setError(`अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए हमारी टीम से संपर्क करें।`);
+      setError(
+        `अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए हमारी टीम से संपर्क करें।`,
+      );
       setLoading(false);
       return;
     }
@@ -75,23 +75,18 @@ export default function DonateForm() {
     };
 
     try {
-      // ==========================================
-      // मोड 1: अगर .env.local में QR मोड सेट है ('qr')
-      // ==========================================
       if (paymentMode === "qr") {
         const qrOrderId = "DON_QR_" + Date.now();
-        localStorage.setItem("pending_donation_data", JSON.stringify(donorData));
+        localStorage.setItem(
+          "pending_donation_data",
+          JSON.stringify(donorData),
+        );
         localStorage.setItem("pending_order_id", qrOrderId);
 
-        router.push(
-         `/pay?order_id=${qrOrderId}&type=donate`
-        );
+        router.push(`/pay?order_id=${qrOrderId}&type=donate`);
         return;
       }
 
-      // ==========================================
-      // मोड 2: अगर .env.local में Razorpay मोड सेट है ('razorpay')
-      // ==========================================
       if (paymentMode === "razorpay") {
         const resScript = await loadRazorpayScript();
         if (!resScript) {
@@ -183,7 +178,8 @@ export default function DonateForm() {
           धन्यवाद, {done.name}!
         </h3>
         <p className="mt-2 text-slate-600 text-sm sm:text-base">
-          आपके पवित्र सहयोग के लिए सर्व हिन्दू कल्याण समिति आपका आभार व्यक्त करती है।
+          आपके पवित्र सहयोग के लिए सर्व हिन्दू कल्याण समिति आपका आभार व्यक्त
+          करती है।
         </p>
 
         <div className="mt-6 rounded-2xl bg-[#faf3e8] p-5 text-left border border-[#e6d5b8] shadow-sm space-y-3">
@@ -287,7 +283,7 @@ export default function DonateForm() {
           </label>
           <input
             type="number"
-            min="1"
+            min="50"
             max="10000"
             required
             value={amount}
@@ -328,7 +324,6 @@ export default function DonateForm() {
         </button>
       </form>
 
-      {/* --- ERROR POPUP MODAL --- */}
       {error && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border border-amber-200 space-y-4 animate-in fade-in zoom-in duration-200">
@@ -336,9 +331,7 @@ export default function DonateForm() {
               ⚠️
             </div>
             <h3 className="text-xl font-bold text-slate-900">सहयोग सूचना</h3>
-            <p className="text-sm text-slate-600 font-medium">
-              {error}
-            </p>
+            <p className="text-sm text-slate-600 font-medium">{error}</p>
             <button
               onClick={() => setError("")}
               className="w-full py-3 rounded-xl bg-[#c86428] hover:bg-[#b05520] text-white font-semibold transition cursor-pointer shadow-sm"
@@ -351,4 +344,3 @@ export default function DonateForm() {
     </>
   );
 }
-

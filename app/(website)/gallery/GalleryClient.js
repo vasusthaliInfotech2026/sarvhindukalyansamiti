@@ -3,7 +3,6 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { GALLERY } from "@/lib/data";
 
-// Sabhi categories ke liye apni alag-alag images ke path yahan dalein
 const ALBUM_IMAGES = {
   "अन्न सेवा": [
     "/images/gallery/food-charity.webp",
@@ -15,7 +14,7 @@ const ALBUM_IMAGES = {
     "/images/gallery/medical-2.webp",
     "/images/gallery/medical-3.webp",
   ],
-  "रक्तदान": [
+  रक्तदान: [
     "/images/gallery/blood-donation.webp",
     "/images/gallery/blood-donation-2.webp",
     "/images/gallery/blood-donation-3.webp",
@@ -53,13 +52,9 @@ const DEFAULT_IMAGES = [
   "/images/gallery/dummy.png",
 ];
 
-/* ==========================================
-   1. INFINITE LOOP AUTOPLAY SLIDER COMPONENT
-========================================== */
 function AutoImageSlider({ images, title, onImageClick }) {
   const hasMultiple = images.length > 1;
 
-  // Seamless infinite loop ke liye first aur last slide ka clone banaya gaya hai
   const extendedImages = hasMultiple
     ? [images[images.length - 1], ...images, images[0]]
     : images;
@@ -68,14 +63,13 @@ function AutoImageSlider({ images, title, onImageClick }) {
   const [isTransitioning, setIsTransitioning] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Asli image ka index (0 se images.length - 1 tak)
   const realIndex = !hasMultiple
     ? 0
     : current === 0
-    ? images.length - 1
-    : current === images.length + 1
-    ? 0
-    : current - 1;
+      ? images.length - 1
+      : current === images.length + 1
+        ? 0
+        : current - 1;
 
   const nextSlide = useCallback(() => {
     if (!hasMultiple) return;
@@ -95,14 +89,12 @@ function AutoImageSlider({ images, title, onImageClick }) {
     nextSlide();
   };
 
-  // Autoplay: har 3 second mein aage slide hoga
   useEffect(() => {
     if (!hasMultiple || isPaused) return;
     const timer = setInterval(nextSlide, 3000);
     return () => clearInterval(timer);
   }, [hasMultiple, isPaused, nextSlide]);
 
-  // Jab clone slide par pahuche to bina jhatke ke asli slide par reset karein
   const handleTransitionEnd = (e) => {
     if (e.target !== e.currentTarget || !hasMultiple) return;
     if (current === images.length + 1) {
@@ -114,7 +106,6 @@ function AutoImageSlider({ images, title, onImageClick }) {
     }
   };
 
-  // Fallback reset (agar browser tab background mein ho)
   useEffect(() => {
     if (!hasMultiple) return;
     if (current === images.length + 1) {
@@ -140,7 +131,6 @@ function AutoImageSlider({ images, title, onImageClick }) {
       onMouseLeave={() => setIsPaused(false)}
       onClick={() => onImageClick(realIndex)}
     >
-      {/* Infinite Sliding Track */}
       <div
         onTransitionEnd={handleTransitionEnd}
         className={`flex h-full w-full ${
@@ -166,7 +156,6 @@ function AutoImageSlider({ images, title, onImageClick }) {
         ))}
       </div>
 
-      {/* Left / Right Buttons aur Dots */}
       {hasMultiple && (
         <>
           <button
@@ -186,7 +175,6 @@ function AutoImageSlider({ images, title, onImageClick }) {
             ❯
           </button>
 
-          {/* Bottom Dots */}
           <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 flex gap-1.5 rounded-full bg-black/35 px-2.5 py-1 backdrop-blur-sm">
             {images.map((_, idx) => (
               <span
@@ -204,19 +192,13 @@ function AutoImageSlider({ images, title, onImageClick }) {
           </div>
         </>
       )}
-
-     
     </div>
   );
 }
 
-/* ==========================================
-   2. MAIN GALLERY CLIENT COMPONENT
-========================================== */
 export default function GalleryClient() {
   const [cat, setCat] = useState("सभी");
 
-  // Fullscreen Lightbox State
   const [lightbox, setLightbox] = useState({
     isOpen: false,
     images: [],
@@ -256,7 +238,6 @@ export default function GalleryClient() {
     }));
   }, []);
 
-  // Keyboard Navigation
   useEffect(() => {
     if (!lightbox.isOpen) return;
 
@@ -274,7 +255,6 @@ export default function GalleryClient() {
     };
   }, [lightbox.isOpen, closeLightbox, nextLightboxImage, prevLightboxImage]);
 
-  // Mobile Swipe Support
   const handleTouchStart = (e) => {
     setTouchStartX(e.touches[0].clientX);
   };
@@ -289,7 +269,6 @@ export default function GalleryClient() {
 
   return (
     <>
-      {/* Category Filter Buttons */}
       <div className="mb-8 flex flex-wrap justify-center gap-2">
         {["सभी", ...GALLERY.map((g) => g.cat)].map((c) => (
           <button
@@ -306,7 +285,6 @@ export default function GalleryClient() {
         ))}
       </div>
 
-      {/* Gallery Cards Grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {list.map((g) => {
           const cardImages =
@@ -337,9 +315,6 @@ export default function GalleryClient() {
         })}
       </div>
 
-      {/* ==========================================
-          3. FULL-SCREEN ZOOM LIGHTBOX MODAL
-      ========================================== */}
       {lightbox.isOpen && (
         <div
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/95 p-2 sm:p-6 backdrop-blur-md select-none"
@@ -347,7 +322,6 @@ export default function GalleryClient() {
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          {/* Top Bar */}
           <div
             className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent px-4 py-4 text-white"
             onClick={(e) => e.stopPropagation()}
@@ -380,7 +354,6 @@ export default function GalleryClient() {
             </div>
           </div>
 
-          {/* Left Arrow Button */}
           {lightbox.images.length > 1 && (
             <button
               type="button"
@@ -392,7 +365,6 @@ export default function GalleryClient() {
             </button>
           )}
 
-          {/* Fullscreen Image */}
           <div
             className="relative flex h-[75vh] sm:h-[82vh] w-full max-w-6xl items-center justify-center overflow-hidden"
             onClick={(e) => {
@@ -418,7 +390,6 @@ export default function GalleryClient() {
             </div>
           </div>
 
-          {/* Right Arrow Button */}
           {lightbox.images.length > 1 && (
             <button
               type="button"
@@ -430,7 +401,6 @@ export default function GalleryClient() {
             </button>
           )}
 
-          {/* Bottom Dots */}
           {lightbox.images.length > 1 && (
             <div
               className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2 rounded-full bg-black/50 px-4 py-2 backdrop-blur-md"

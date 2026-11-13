@@ -27,16 +27,14 @@ const steps = [
 export default function Donate() {
   return (
     <>
-
-    <Script 
-        src="https://checkout.razorpay.com/v1/checkout.js" 
-        strategy="lazyOnload" 
+      <Script
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        strategy="lazyOnload"
       />
-      
+
       <PageBanner title="दान करें" sub="आसान, सुरक्षित और पारदर्शी सहयोग" />
 
       <section className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8 md:py-20">
-        {/* Top Section Title (Dono Boxes ke Upar) */}
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-sm font-bold text-saffron-deep">
             <span>✦</span>
@@ -53,11 +51,8 @@ export default function Donate() {
           </p>
         </div>
 
-        {/* Equal Height 12-Column Grid */}
         <div className="grid w-full grid-cols-1 items-stretch gap-8 lg:grid-cols-12">
-          {/* Left Box: 5 Columns */}
           <div className="flex w-full flex-col lg:col-span-5">
-            {/* Box ke upar ka label */}
             <div className="mb-3 flex items-center gap-2 px-1">
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-saffron/15 text-xs font-bold text-saffron">
                 01
@@ -102,7 +97,6 @@ export default function Donate() {
                   </ol>
                 </div>
 
-                {/* Bottom Trust Note */}
                 <div className="mt-6 rounded-xl border border-orange-200/60 bg-orange-50/70 p-4">
                   <div className="flex items-start gap-3">
                     <span className="text-lg">🔒</span>
@@ -119,9 +113,7 @@ export default function Donate() {
             </Reveal>
           </div>
 
-          {/* Right Box: 7 Columns */}
           <div className="flex w-full flex-col lg:col-span-7">
-            {/* Box ke upar ka label */}
             <div className="mb-3 flex items-center gap-2 px-1">
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-saffron/15 text-xs font-bold text-saffron">
                 02

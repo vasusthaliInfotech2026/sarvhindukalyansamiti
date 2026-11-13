@@ -14,9 +14,9 @@ export default function ContactForm() {
     const formData = new FormData(e.currentTarget);
     const data = {
       name: formData.get("name"),
-      phone: formData.get("phone"), // डेटाबेस कॉलम 'phone' के अनुसार
+      phone: formData.get("phone"),
       email: formData.get("email"),
-      subject: formData.get("subject"), // डेटाबेस कॉलम 'subject' के अनुसार
+      subject: formData.get("subject"),
       message: formData.get("message"),
     };
 

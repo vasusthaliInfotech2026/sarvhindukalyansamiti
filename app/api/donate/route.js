@@ -19,17 +19,19 @@ export async function POST(request) {
 
     if (!donor_email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(donor_email)) {
       return NextResponse.json(
-        { success: false, error: "Please enter a valid email address to receive your donation receipt." },
-        { status: 400 }
+        {
+          success: false,
+          error:
+            "Please enter a valid email address to receive your donation receipt.",
+        },
+        { status: 400 },
       );
     }
 
-    // 1. चेक करें कि पेमेंट QR से हुआ है या Razorpay से
     const isQRPayment =
       razorpay_signature === "manual_qr_verified" ||
       razorpay_signature === "auto_qr_verified";
 
-    // अगर Razorpay पेमेंट है, तो Signature Verify करें (QR पेमेंट के लिए UTR/Validation जाँच हटा दी गई है)
     if (!isQRPayment) {
       const generated_signature = crypto
         .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -45,10 +47,8 @@ export async function POST(request) {
     }
 
     const paymentMethod = isQRPayment ? "UPI_QR" : "Razorpay";
-    // QR पेमेंट के लिए शुरुआती स्टेटस 'pending' रहेगा (एडमिन वेरीफाई करेगा), जबकि Razorpay के लिए 'paid'
     const paymentStatus = isQRPayment ? "pending" : "paid";
 
-    // 2. MySQL Database Connection
     const connection = await mysql.createConnection({
       host: process.env.DB_HOST || "127.0.0.1",
       user: process.env.DB_USER || "root",
@@ -58,7 +58,6 @@ export async function POST(request) {
 
     const receiptNo = `RCPT_DON_${Date.now()}`;
 
-    // 3. 'donations' table में डेटा सेव करें
     await connection.execute(
       `INSERT INTO donations 
       (donor_name, donor_email, donor_phone, amount, currency, razorpay_order_id, razorpay_payment_id, razorpay_signature, payment_method, payment_status, donation_purpose, receipt_number) 
@@ -80,8 +79,6 @@ export async function POST(request) {
 
     await connection.end();
 
-    // 4. Email Notifications
-    // Email errors are handled separately so a saved donation is not reported as failed.
     const adminEmail = process.env.RECEIVER_EMAIL || process.env.EMAIL_USER;
     const emailTasks = [];
 
@@ -103,12 +100,11 @@ export async function POST(request) {
     const adminEmailMissing = !adminEmail;
     if (adminEmailMissing) {
       console.error(
-        "Donation saved, but admin notification cannot be sent: set RECEIVER_EMAIL in the environment."
+        "Donation saved, but admin notification cannot be sent: set RECEIVER_EMAIL in the environment.",
       );
     }
 
     if (isQRPayment) {
-      // QR donation is pending until an admin verifies it. Notify admin only.
       if (adminEmail) {
         emailTasks.push(
           sendEmail({
@@ -126,11 +122,10 @@ export async function POST(request) {
                 <p style="color: #b45309; font-weight: bold;">कृपया एडमिन डैशबोर्ड (/admin) में जाकर भुगतान की पुष्टि करें और 'Verify Payment' पर क्लिक करें।</p>
               </div>
             `,
-          })
+          }),
         );
       }
     } else {
-      // Razorpay signature has been verified: notify admin and send donor receipt.
       if (adminEmail) {
         emailTasks.push(
           sendEmail({
@@ -149,7 +144,7 @@ export async function POST(request) {
                 <p><strong>रसीद संख्या:</strong> ${safeReceipt}</p>
               </div>
             `,
-          })
+          }),
         );
       }
 
@@ -177,17 +172,17 @@ export async function POST(request) {
               </p>
             </div>
           `,
-        })
+        }),
       );
     }
 
     const emailResults = await Promise.allSettled(emailTasks);
     const failedEmails = emailResults.filter(
-      (result) => result.status === "rejected"
+      (result) => result.status === "rejected",
     );
     if (failedEmails.length > 0) {
       failedEmails.forEach((result) =>
-        console.error("Donation email failed:", result.reason)
+        console.error("Donation email failed:", result.reason),
       );
     }
 
@@ -196,7 +191,10 @@ export async function POST(request) {
         success: true,
         receipt_number: receiptNo,
         payment_status: paymentStatus,
-        email_status: !adminEmailMissing && failedEmails.length === 0 ? "processed" : "failed_or_partial",
+        email_status:
+          !adminEmailMissing && failedEmails.length === 0
+            ? "processed"
+            : "failed_or_partial",
       },
       { status: 200 },
     );

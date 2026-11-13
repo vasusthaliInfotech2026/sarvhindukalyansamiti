@@ -8,9 +8,8 @@ function QRCheckoutContent() {
   const router = useRouter();
 
   const orderId = searchParams.get("order_id");
-  const paymentType = searchParams.get("type") || "member"; // 'donate' या 'member'
+  const paymentType = searchParams.get("type") || "member";
 
-  // 1. स्टेट में amount और user details रखें
   const [amount, setAmount] = useState(0);
   const [savedUser, setSavedUser] = useState(null);
   const [isDonationFlow, setIsDonationFlow] = useState(false);
@@ -20,7 +19,6 @@ function QRCheckoutContent() {
   const [error, setError] = useState("");
   const [submittedInfo, setSubmittedInfo] = useState(null);
 
-  // 2. LocalStorage से सुरक्षित रूप से amount और डेटा लोड करें
   useEffect(() => {
     try {
       const isDonation =
@@ -38,7 +36,6 @@ function QRCheckoutContent() {
         const parsed = JSON.parse(rawData);
         setSavedUser(parsed);
 
-        // राशि: पहले फ़ील्ड चेक करें, फिर डायरेक्ट की, अंत में searchParams
         const resolvedAmount =
           Number(parsed.amount) ||
           Number(parsed.membership_fee) ||
@@ -48,7 +45,6 @@ function QRCheckoutContent() {
 
         setAmount(resolvedAmount);
       } else {
-        // फ़ॉलबैक: अगर सिर्फ pending_amount या URL में कुछ हो
         const directAmt =
           Number(localStorage.getItem("pending_amount")) ||
           Number(searchParams.get("amount")) ||
@@ -63,13 +59,12 @@ function QRCheckoutContent() {
   const upiId = "7275000028-10@ybl";
   const payeeName = "Sarv Hindu Kalyan Samiti";
 
-  // 3. QR कोड और UPI लिंक में डायनामिक सुरक्षित राशि
   const upiUrl = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(
-    payeeName
+    payeeName,
   )}&am=${amount}&cu=INR&tr=${orderId}`;
 
   const qrCodeImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(
-    upiUrl
+    upiUrl,
   )}`;
 
   const handlePaymentConfirmation = async () => {
@@ -84,12 +79,10 @@ function QRCheckoutContent() {
       const apiEndpoint = isDonationFlow ? "/api/donate" : "/api/members";
 
       const savedData =
-        savedUser ||
-        JSON.parse(localStorage.getItem(storageKey) || "{}");
+        savedUser || JSON.parse(localStorage.getItem(storageKey) || "{}");
 
       const paymentId = "UPI_QR_MANUAL";
 
-      // 4. API को पेलोड भेजते समय दोनों स्ट्रिंग्स और सही अमाउंट पास करें
       const payload = isDonationFlow
         ? {
             ...savedData,
@@ -147,7 +140,6 @@ function QRCheckoutContent() {
     }
   };
 
-  // पेमेंट सबमिट होने के बाद थैंक यू और वेरिफिकेशन स्क्रीन
   if (status === "pending_verification" && submittedInfo) {
     return (
       <div className="card animate-rise max-w-lg mx-auto mt-10 text-center p-8 bg-white rounded-3xl border border-amber-200 shadow-lg">
@@ -162,10 +154,10 @@ function QRCheckoutContent() {
         <p className="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">
           धन्यवाद <strong>{submittedInfo.name}</strong>! आपका भुगतान अनुरोध दर्ज
           कर लिया गया है। जैसे ही एडमिन द्वारा आपके भुगतान की पुष्टि (Verify) हो
-          जाएगी, <strong>आपको ईमेल पर आधिकारिक रसीद (Receipt) भेज दी जाएगी।</strong>
+          जाएगी,{" "}
+          <strong>आपको ईमेल पर आधिकारिक रसीद (Receipt) भेज दी जाएगी।</strong>
         </p>
 
-        {/* Submitted Details Box */}
         <div className="mt-6 rounded-2xl bg-[#faf3e8] p-5 text-left border border-[#e6d5b8] shadow-sm space-y-3">
           <div className="border-b border-[#e6d5b8] pb-3 flex justify-between items-center">
             <span className="text-xs font-bold uppercase tracking-wider text-orange-800">
@@ -239,7 +231,6 @@ function QRCheckoutContent() {
         />
       </div>
 
-      {/* 5. अब यहाँ राशि कभी खाली नहीं रहेगी और LocalStorage से सही दिखेगी */}
       <div className="text-lg font-semibold text-slate-800 mb-1">
         भुगतान राशि:{" "}
         <span className="text-orange-700">
@@ -249,9 +240,7 @@ function QRCheckoutContent() {
 
       <div className="text-xs text-slate-500 mb-6">
         UPI ID:{" "}
-        <span className="font-mono font-medium text-slate-700">
-          {upiId}
-        </span>
+        <span className="font-mono font-medium text-slate-700">{upiId}</span>
       </div>
 
       {error && (
@@ -265,9 +254,7 @@ function QRCheckoutContent() {
         disabled={loading || amount <= 0}
         className="w-full py-3 px-6 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white font-semibold rounded-xl shadow transition duration-200 cursor-pointer"
       >
-        {loading
-          ? "प्रोसेस हो रहा है..."
-          : "✅ मैंने भुगतान कर दिया है"}
+        {loading ? "प्रोसेस हो रहा है..." : "✅ मैंने भुगतान कर दिया है"}
       </button>
 
       <button
@@ -283,7 +270,9 @@ function QRCheckoutContent() {
 
 export default function QRCheckoutPage() {
   return (
-    <Suspense fallback={<div className="text-center mt-10">लोड हो रहा है...</div>}>
+    <Suspense
+      fallback={<div className="text-center mt-10">लोड हो रहा है...</div>}
+    >
       <QRCheckoutContent />
     </Suspense>
   );

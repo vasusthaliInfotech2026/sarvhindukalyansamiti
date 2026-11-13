@@ -18,7 +18,7 @@ export async function POST(request) {
 
     const [rows] = await connection.execute(
       `SELECT id FROM members WHERE email = ?`,
-      [email]
+      [email],
     );
 
     await connection.end();
@@ -30,6 +30,9 @@ export async function POST(request) {
     return NextResponse.json({ success: true, exists: false });
   } catch (error) {
     console.error("Email check error:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: error.message },
+      { status: 500 },
+    );
   }
 }

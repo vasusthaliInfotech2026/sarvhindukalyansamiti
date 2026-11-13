@@ -6,7 +6,6 @@ export async function POST() {
     message: "सफलतापूर्वक लॉगआउट हो गया।",
   });
 
-  // Clear the admin_token cookie
   response.cookies.set("admin_token", "", {
     httpOnly: true,
     expires: new Date(0),
@@ -15,5 +14,3 @@ export async function POST() {
 
   return response;
 }
-
-

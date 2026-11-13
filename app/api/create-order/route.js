@@ -16,7 +16,7 @@ export async function POST(request) {
           success: false,
           message: "Razorpay configuration is missing",
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -27,10 +27,10 @@ export async function POST(request) {
 
     const { amount } = await request.json();
 
-    if (!amount || amount < 1) {  
+    if (!amount || amount <= 50) {
       return NextResponse.json(
         { success: false, message: "Invalid amount! Please enter at least 50" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -49,8 +49,11 @@ export async function POST(request) {
   } catch (error) {
     console.error("Razorpay order error:", error);
     return NextResponse.json(
-      { success: false, message: error?.message || "Unable to create Razorpay order" },
-      { status: 500 }
+      {
+        success: false,
+        message: error?.message || "Unable to create Razorpay order",
+      },
+      { status: 500 },
     );
   }
 }
