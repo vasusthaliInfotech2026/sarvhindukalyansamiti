@@ -9,7 +9,6 @@ const dbConfig = {
   database: process.env.DB_NAME || "sarv_hindu_kalyan_samiti",
 };
 
-// Safe query helper
 async function safeQuery(connection, sql, fallbackSql = null) {
   try {
     const [rows] = await connection.execute(sql);
@@ -27,7 +26,6 @@ async function safeQuery(connection, sql, fallbackSql = null) {
   }
 }
 
-// 1. GET: सभी Members, Donations और Contact Form का डेटा लाएं
 export async function GET() {
   let connection;
   try {
@@ -35,19 +33,19 @@ export async function GET() {
 
     const donations = await safeQuery(
       connection,
-      "SELECT * FROM donations ORDER BY id DESC"
+      "SELECT * FROM donations ORDER BY id DESC",
     );
 
     const members = await safeQuery(
       connection,
       "SELECT * FROM members ORDER BY id DESC",
-      "SELECT * FROM volunteers ORDER BY id DESC"
+      "SELECT * FROM volunteers ORDER BY id DESC",
     );
 
     const contacts = await safeQuery(
       connection,
       "SELECT * FROM contacts ORDER BY id DESC",
-      "SELECT * FROM contact_messages ORDER BY id DESC"
+      "SELECT * FROM contact_messages ORDER BY id DESC",
     );
 
     await connection.end();
@@ -62,42 +60,39 @@ export async function GET() {
     if (connection) await connection.end();
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
-// 2. POST: Admin द्वारा Payment Verify या Reject करना और तदनुसार ईमेल भेजना
 export async function POST(request) {
   let connection;
   try {
     const body = await request.json();
-    const { type, id, action } = body; // type: 'donation' | 'member', action: 'verify' | 'reject'
+    const { type, id, action } = body;
 
     if (!type || !id) {
       return NextResponse.json(
         { success: false, error: "Type और ID आवश्यक हैं।" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    // डिफ़ॉल्ट एक्शन 'verify' मान लें यदि न भेजा गया हो
     const currentAction = action || "verify";
 
     connection = await mysql.createConnection(dbConfig);
 
     if (type === "donation") {
-      // 1. डोनेशन रिकॉर्ड निकालें
       const [rows] = await connection.execute(
         "SELECT * FROM donations WHERE id = ? LIMIT 1",
-        [id]
+        [id],
       );
 
       if (!rows || rows.length === 0) {
         await connection.end();
         return NextResponse.json(
           { success: false, error: "डोनेशन रिकॉर्ड नहीं मिला।" },
-          { status: 404 }
+          { status: 404 },
         );
       }
 
@@ -119,13 +114,10 @@ export async function POST(request) {
             })
           : null;
 
-      // -------------------------------------------------------------
-      // CASE A: PAYMENT NOT RECEIVED (REJECT)
-      // -------------------------------------------------------------
       if (currentAction === "reject") {
         await connection.execute(
           "UPDATE donations SET payment_status = 'failed' WHERE id = ?",
-          [id]
+          [id],
         );
         await connection.end();
 
@@ -162,15 +154,11 @@ export async function POST(request) {
         });
       }
 
-      // -------------------------------------------------------------
-      // CASE B: VERIFY PAYMENT (SUCCESS)
-      // -------------------------------------------------------------
-      const receiptNo =
-        donation.receipt_number || `RCPT_DON_${Date.now()}`;
+      const receiptNo = donation.receipt_number || `RCPT_DON_${Date.now()}`;
 
       await connection.execute(
         "UPDATE donations SET payment_status = 'paid', receipt_number = ? WHERE id = ?",
-        [receiptNo, id]
+        [receiptNo, id],
       );
 
       await connection.end();
@@ -209,22 +197,22 @@ export async function POST(request) {
 
       return NextResponse.json({
         success: true,
-        message: "डोनेशन पेमेंट वेरीफाई हो गया और यूजर को ईमेल रसीद भेज दी गई है!",
+        message:
+          "डोनेशन पेमेंट वेरीफाई हो गया और यूजर को ईमेल रसीद भेज दी गई है!",
       });
     }
 
     if (type === "member") {
-      // 1. मेंबर रिकॉर्ड निकालें
       const [rows] = await connection.execute(
         "SELECT * FROM members WHERE id = ? LIMIT 1",
-        [id]
+        [id],
       );
 
       if (!rows || rows.length === 0) {
         await connection.end();
         return NextResponse.json(
           { success: false, error: "सदस्य रिकॉर्ड नहीं मिला।" },
-          { status: 404 }
+          { status: 404 },
         );
       }
 
@@ -249,19 +237,16 @@ export async function POST(request) {
             })
           : null;
 
-      // -------------------------------------------------------------
-      // CASE A: MEMBER PAYMENT NOT RECEIVED (REJECT)
-      // -------------------------------------------------------------
       if (currentAction === "reject") {
         try {
           await connection.execute(
             "UPDATE members SET payment_status = 'failed' WHERE id = ?",
-            [id]
+            [id],
           );
         } catch (e) {
           await connection.execute(
             "UPDATE members SET status = 'rejected' WHERE id = ?",
-            [id]
+            [id],
           );
         }
         await connection.end();
@@ -298,18 +283,15 @@ export async function POST(request) {
         });
       }
 
-      // -------------------------------------------------------------
-      // CASE B: VERIFY MEMBER PAYMENT (SUCCESS)
-      // -------------------------------------------------------------
       try {
         await connection.execute(
           "UPDATE members SET payment_status = 'paid' WHERE id = ?",
-          [id]
+          [id],
         );
       } catch (e) {
         await connection.execute(
           "UPDATE members SET status = 'verified' WHERE id = ?",
-          [id]
+          [id],
         );
       }
 
@@ -348,23 +330,22 @@ export async function POST(request) {
 
       return NextResponse.json({
         success: true,
-        message: "सदस्य का पेमेंट वेरीफाई हो गया और कन्फर्मेशन ईमेल भेज दिया गया है!",
+        message:
+          "सदस्य का पेमेंट वेरीफाई हो गया और कन्फर्मेशन ईमेल भेज दिया गया है!",
       });
     }
 
     await connection.end();
     return NextResponse.json(
       { success: false, error: "Invalid verification type" },
-      { status: 400 }
+      { status: 400 },
     );
   } catch (error) {
     if (connection) await connection.end();
     console.error("Admin Verify API Error:", error);
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-
-

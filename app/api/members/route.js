@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import mysql from "mysql2/promise";
 import { createHmac, timingSafeEqual } from "node:crypto";
@@ -34,8 +33,7 @@ function verifyRazorpaySignature(orderId, paymentId, receivedSignature) {
   const received = Buffer.from(String(receivedSignature), "hex");
 
   return (
-    expected.length === received.length &&
-    timingSafeEqual(expected, received)
+    expected.length === received.length && timingSafeEqual(expected, received)
   );
 }
 
@@ -44,17 +42,8 @@ async function sendMemberEmail({ label, to, subject, html, text }) {
     const result = await sendEmail({ to, subject, html, text });
 
     if (result?.mocked === true) {
-      console.log(`[MEMBER EMAIL] MOCK MODE: ${label} email was NOT sent.`, {
-        recipient: to,
-        messageId: result?.messageId || "N/A",
-      });
       return { sent: false, mocked: true };
     }
-
-    console.log(`[MEMBER EMAIL] SUCCESS: ${label} email accepted by email gateway.`, {
-      recipient: to,
-      messageId: result?.messageId || "N/A",
-    });
 
     return { sent: true, mocked: false };
   } catch (error) {
@@ -75,14 +64,16 @@ export async function POST(request) {
     const body = await request.json();
 
     const full_name = String(body.full_name || "").trim();
-    const email = String(body.email || "").trim().toLowerCase();
+    const email = String(body.email || "")
+      .trim()
+      .toLowerCase();
     const phone = String(body.phone || "").trim();
     const address = String(body.address || "").trim();
     const city = String(body.city || "").trim();
     const state = String(body.state || "").trim();
     const pincode = String(body.pincode || "").trim();
     const membership_type = String(
-      body.membership_type || "सामान्य सदस्य"
+      body.membership_type || "सामान्य सदस्य",
     ).trim();
     const role = String(body.role || "").trim();
     const membership_fee = Number(body.membership_fee);
@@ -91,9 +82,6 @@ export async function POST(request) {
     const razorpay_payment_id = String(body.razorpay_payment_id || "").trim();
     const razorpay_signature = String(body.razorpay_signature || "").trim();
 
-    console.log("[MEMBER API] New member registration request received.");
-
-    // 1. Server-side validation.
     if (
       !full_name ||
       !email ||
@@ -105,36 +93,31 @@ export async function POST(request) {
       !membership_type ||
       !role
     ) {
-      console.warn("[MEMBER API] Validation failed: required fields are missing.");
-
       return NextResponse.json(
         {
           success: false,
           error: "कृपया सभी आवश्यक जानकारी भरें। ईमेल पता अनिवार्य है।",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailPattern.test(email)) {
-      console.warn("[MEMBER API] Validation failed: invalid email address.");
-
       return NextResponse.json(
         { success: false, error: "कृपया सही ईमेल पता दर्ज करें।" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!Number.isFinite(membership_fee) || membership_fee <= 0) {
       return NextResponse.json(
         { success: false, error: "कृपया सही सदस्यता शुल्क चुनें।" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    // QR requests remain pending until an admin verifies payment.
     const isQRManual = razorpay_signature === "qr_manual_verified";
 
     let paymentStatus;
@@ -146,24 +129,20 @@ export async function POST(request) {
       memberStatus = "Pending";
       paymentMethodName = "UPI QR (Verification Pending)";
     } else {
-      // All non-QR registrations must have a valid Razorpay signature.
       const signatureValid = verifyRazorpaySignature(
         razorpay_order_id,
         razorpay_payment_id,
-        razorpay_signature
+        razorpay_signature,
       );
 
       if (!signatureValid) {
-        console.warn(
-          "[MEMBER API] Payment verification failed: invalid Razorpay signature."
-        );
-
         return NextResponse.json(
           {
             success: false,
-            error: "भुगतान सत्यापित नहीं हो सका। कृपया सहायता के लिए समिति से संपर्क करें।",
+            error:
+              "भुगतान सत्यापित नहीं हो सका। कृपया सहायता के लिए समिति से संपर्क करें।",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -172,7 +151,6 @@ export async function POST(request) {
       paymentMethodName = "Razorpay Gateway";
     }
 
-    // 2. Save member and payment records in one database transaction.
     connection = await mysql.createConnection({
       host: process.env.DB_HOST || "127.0.0.1",
       user: process.env.DB_USER || "root",
@@ -184,15 +162,13 @@ export async function POST(request) {
 
     const [existingUsers] = await connection.execute(
       "SELECT id FROM members WHERE email = ? LIMIT 1",
-      [email]
+      [email],
     );
 
     if (existingUsers.length > 0) {
       await connection.rollback();
       await connection.end();
       connection = null;
-
-      console.warn("[MEMBER API] Registration rejected: email already exists.");
 
       return NextResponse.json(
         {
@@ -201,7 +177,7 @@ export async function POST(request) {
           error:
             "यह ईमेल आईडी पहले से ही पंजीकृत है। कृपया किसी अन्य ईमेल आईडी का उपयोग करें।",
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -222,7 +198,7 @@ export async function POST(request) {
         role,
         membership_fee,
         memberStatus,
-      ]
+      ],
     );
 
     const memberId = memberResult.insertId;
@@ -243,22 +219,13 @@ export async function POST(request) {
         paymentMethodName,
         paymentStatus,
         receiptNo,
-      ]
+      ],
     );
 
     await connection.commit();
     await connection.end();
     connection = null;
 
-    console.log("[MEMBER API] SUCCESS: Member and payment records saved.", {
-      memberId,
-      receiptNo,
-      paymentStatus,
-      paymentMethod: paymentMethodName,
-    });
-
-    // 3. Send emails after database commit.
-    // Email failure will not undo a saved registration.
     const adminEmail = process.env.RECEIVER_EMAIL;
 
     const safeName = escapeHtml(full_name);
@@ -311,7 +278,9 @@ export async function POST(request) {
 
     if (adminEmail) {
       await sendMemberEmail({
-        label: isQRManual ? "Admin pending-verification" : "Admin payment-success",
+        label: isQRManual
+          ? "Admin pending-verification"
+          : "Admin payment-success",
         to: adminEmail,
         subject: adminSubject,
         text: adminText,
@@ -319,7 +288,7 @@ export async function POST(request) {
       });
     } else {
       console.error(
-        "[MEMBER EMAIL] FAILED: RECEIVER_EMAIL is not configured. Admin notification was not sent."
+        "[MEMBER EMAIL] FAILED: RECEIVER_EMAIL is not configured. Admin notification was not sent.",
       );
     }
 
@@ -379,7 +348,9 @@ export async function POST(request) {
     `;
 
     await sendMemberEmail({
-      label: isQRManual ? "Member pending-confirmation" : "Member payment-receipt",
+      label: isQRManual
+        ? "Member pending-confirmation"
+        : "Member payment-receipt",
       to: email,
       subject: memberSubject,
       text: [
@@ -403,7 +374,7 @@ export async function POST(request) {
         paymentStatus,
         message: "सदस्यता पंजीकरण सफलतापूर्वक दर्ज हो गया है।",
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("[MEMBER API] FAILED:", {
@@ -421,7 +392,10 @@ export async function POST(request) {
       try {
         await connection.end();
       } catch (closeError) {
-        console.error("[MEMBER API] Database connection close failed:", closeError);
+        console.error(
+          "[MEMBER API] Database connection close failed:",
+          closeError,
+        );
       }
     }
 
@@ -430,7 +404,7 @@ export async function POST(request) {
         success: false,
         error: "पंजीकरण पूरा नहीं हो सका। कृपया दोबारा प्रयास करें।",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

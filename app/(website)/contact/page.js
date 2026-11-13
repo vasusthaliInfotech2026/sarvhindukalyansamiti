@@ -5,7 +5,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import EmailIcon from "@mui/icons-material/Email";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import PlaceIcon from '@mui/icons-material/Place';
+import PlaceIcon from "@mui/icons-material/Place";
 
 export const metadata = { title: "संपर्क करें | सर्व समाज कल्याण समिति" };
 
@@ -49,7 +49,6 @@ export default function Contact() {
       />
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
-        {/* Section Intro Header */}
         <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
           <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-sm font-bold text-saffron-deep">
             <span>✦</span>
@@ -60,16 +59,14 @@ export default function Contact() {
             हमसे सीधे संवाद करें
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-navy/70 sm:text-base">
-            किसी भी सेवा प्रकल्प की जानकारी, सहायता निवेदन या अपने बहुमूल्य सुझाव साझा करने के लिए नीचे दिए गए माध्यमों से जुड़ें।
+            किसी भी सेवा प्रकल्प की जानकारी, सहायता निवेदन या अपने बहुमूल्य
+            सुझाव साझा करने के लिए नीचे दिए गए माध्यमों से जुड़ें।
           </p>
         </div>
 
-        {/* Balanced 2-Column Main Grid */}
         <div className="grid items-stretch gap-8 lg:grid-cols-12">
-          {/* Left Column: Structured Contact Info Panel (6 Cols) */}
           <Reveal from="left" className="lg:col-span-6">
             <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-amber-500/80 rangoli bg-saffron-100 p-6 text-white shadow-lg sm:p-8">
-              {/* Subtle Om Watermark */}
               <div className="pointer-events-none absolute -bottom-10 -right-6 select-none text-[140px] font-bold leading-none text-white/10">
                 ॐ
               </div>
@@ -83,11 +80,10 @@ export default function Contact() {
                   संपर्क सूत्र एवं पता
                 </h3>
                 <p className="mt-1.5 text-xs leading-relaxed text-black/90 sm:text-sm">
-आप कार्यालय आकर या फोन अथवा व्हाट्सएप के जरिए हमसे संपर्क कर सकते हैं। </p>
+                  आप कार्यालय आकर या फोन अथवा व्हाट्सएप के जरिए हमसे संपर्क कर
+                  सकते हैं।{" "}
+                </p>
 
-               
-
-                {/* 2x2 Compact Contact Grid */}
                 <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
                   {CONTACT_ITEMS.map((item) => {
                     const CardContent = (
@@ -113,8 +109,14 @@ export default function Contact() {
                       <a
                         key={item.label}
                         href={item.href}
-                        target={item.href.startsWith("http") ? "_blank" : undefined}
-                        rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                        target={
+                          item.href.startsWith("http") ? "_blank" : undefined
+                        }
+                        rel={
+                          item.href.startsWith("http")
+                            ? "noopener noreferrer"
+                            : undefined
+                        }
                         className="block"
                       >
                         {CardContent}
@@ -125,7 +127,6 @@ export default function Contact() {
                   })}
                 </div>
 
-                 {/* Main Address Card */}
                 <div className="mt-5 rounded-2xl border border-saffron/15 bg-white/10 p-4 backdrop-blur-sm">
                   <div className="flex items-start gap-3.5">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
@@ -136,16 +137,13 @@ export default function Contact() {
                         प्रधान कार्यालय का पता
                       </p>
                       <p className="mt-1 font-head text-base font-bold text-black sm:text-base">
-                       616/111 के विहार कॉलोनी, मड़ियाव, सीतापुर रोड, लखनऊ
+                        616/111 के विहार कॉलोनी, मड़ियाव, सीतापुर रोड, लखनऊ
                       </p>
-                     
                     </div>
                   </div>
                 </div>
-
               </div>
 
-              {/* Bottom Note Strip */}
               <div className="relative z-10 mt-6 flex items-center justify-between gap-3 rounded-2xl border border-saffron/10 bg-saffron-light/20 px-4 py-3 text-xs text-black/80">
                 <span>जनसेवा एवं सहायता हेतु सदैव तत्पर 🙏</span>
                 <span className="font-bold text-black">लखनऊ, उ.प्र.</span>
@@ -153,10 +151,8 @@ export default function Contact() {
             </div>
           </Reveal>
 
-          {/* Right Column: Contact Form Container (6 Cols) */}
           <Reveal from="right" className="lg:col-span-6">
             <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-amber-200/80 bg-white p-6 shadow-md sm:p-8">
-              {/* Top Saffron Accent Bar */}
               <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-amber-600 via-saffron to-amber-500" />
 
               <div>
@@ -168,26 +164,17 @@ export default function Contact() {
                     अपनी जिज्ञासा या सुझाव भेजें
                   </h3>
                   <p className="mt-1 text-xs text-navy/70 sm:text-sm">
-                    कृपया नीचे दिए गए फॉर्म में अपना विवरण भरें, हमारी टीम शीघ्र ही आपसे संपर्क करेगी।
+                    कृपया नीचे दिए गए फॉर्म में अपना विवरण भरें, हमारी टीम शीघ्र
+                    ही आपसे संपर्क करेगी।
                   </p>
                 </div>
 
-                {/* Existing ContactForm Component */}
                 <ContactForm />
               </div>
-
-              {/* Subtle Bottom Trust Footer inside Form Card to keep height balanced */}
-              {/* <div className="mt-5 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-amber-50/70 px-4 py-2.5 text-xs text-navy/75 border border-amber-100">
-                <span>🔒 आपकी व्यक्तिगत जानकारी पूर्णतः सुरक्षित रहेगी।</span>
-                <span className="font-semibold text-saffron-deep">
-                  त्वरित प्रतिक्रिया
-                </span>
-              </div> */}
             </div>
           </Reveal>
         </div>
 
-        {/* Full-Width Map Section Below to Eliminate Empty Vertical Space */}
         <Reveal from="bottom" className="mt-8 sm:mt-10">
           <div className="overflow-hidden rounded-3xl border border-amber-200/80 bg-white p-3 shadow-sm sm:p-4">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-2">
@@ -209,9 +196,9 @@ export default function Contact() {
               </a>
             </div>
 
-           
-
-            <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3559.0650535063683!2d81.01276777543795!3d26.86967417667295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjbCsDUyJzEwLjgiTiA4McKwMDAnNTUuMiJF!5e0!3m2!1sen!2sin!4v1792656759178!5m2!1sen!2sin" className="h-64 w-full rounded-2xl border border-stone-200/80 sm:h-72"
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3559.0650535063683!2d81.01276777543795!3d26.86967417667295!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjbCsDUyJzEwLjgiTiA4McKwMDAnNTUuMiJF!5e0!3m2!1sen!2sin!4v1792656759178!5m2!1sen!2sin"
+              className="h-64 w-full rounded-2xl border border-stone-200/80 sm:h-72"
               loading="lazy"
             />
           </div>
@@ -220,5 +207,3 @@ export default function Contact() {
     </>
   );
 }
-
-

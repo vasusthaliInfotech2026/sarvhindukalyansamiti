@@ -15,13 +15,12 @@ export async function POST(req) {
         message: "लॉगिन सफल रहा!",
       });
 
-      // Set HTTP-Only Cookie for 7 days
       response.cookies.set("admin_token", sessionToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 60 * 24 * 7, // 7 Days
+        maxAge: 60 * 60 * 24 * 7,
       });
 
       return response;
@@ -29,13 +28,12 @@ export async function POST(req) {
 
     return NextResponse.json(
       { success: false, error: "ईमेल/यूजरनेम या पासवर्ड गलत है।" },
-      { status: 401 }
+      { status: 401 },
     );
   } catch (error) {
     return NextResponse.json(
       { success: false, error: "लॉगिन प्रोसेस करने में सर्वर एरर आया।" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-

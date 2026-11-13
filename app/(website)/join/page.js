@@ -79,18 +79,17 @@ const WHY_JOIN = [
 export default function Join() {
   return (
     <>
-    <Script 
-        src="https://checkout.razorpay.com/v1/checkout.js" 
-        strategy="lazyOnload" 
+      <Script
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        strategy="lazyOnload"
       />
-      
+
       <PageBanner
         title="हमारे साथ जुड़ें"
         sub="सेवा के कई तरीके – अपने लिए चुनें"
       />
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16">
-        {/* Section Intro Header */}
         <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
           <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-sm font-bold text-saffron-deep">
             <span>✦</span>
@@ -101,11 +100,11 @@ export default function Join() {
             सेवा के पथ पर अपना माध्यम चुनें
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-navy/70 sm:text-base">
-            आप अपने समय, कौशल, रक्तदान या अर्थ सहयोग के माध्यम से समाज उत्थान के इस महायज्ञ में सहभागी बन सकते हैं।
+            आप अपने समय, कौशल, रक्तदान या अर्थ सहयोग के माध्यम से समाज उत्थान के
+            इस महायज्ञ में सहभागी बन सकते हैं।
           </p>
         </div>
 
-        {/* 5 Service Options Cards - Redesigned for Hindu Charity Trust Look */}
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {OPTS.map((item, k) => (
             <Reveal key={item.title} delay={k * 80} from="bottom">
@@ -113,11 +112,9 @@ export default function Join() {
                 href={item.href}
                 className="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-amber-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-saffron hover:shadow-md"
               >
-                {/* Top Saffron Accent Bar */}
                 <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-amber-600 via-saffron to-amber-500" />
 
                 <div>
-                  {/* Icon Badge & Subtle Om Accent */}
                   <div className="flex items-center justify-between">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-amber-200/60 bg-amber-50/80 text-2xl shadow-inner transition-transform duration-300 group-hover:scale-110">
                       {item.icon}
@@ -127,7 +124,6 @@ export default function Join() {
                     </span>
                   </div>
 
-                  {/* Title & Subtitle */}
                   <h3 className="mt-4 font-head text-lg font-bold text-navy group-hover:text-saffron-deep">
                     {item.title}
                   </h3>
@@ -135,16 +131,13 @@ export default function Join() {
                     {item.sub}
                   </p> */}
 
-                  {/* Divider */}
                   <div className="my-3 h-px w-full bg-amber-100" />
 
-                  {/* Description */}
                   <p className="text-xs leading-relaxed text-navy/75 sm:text-[13px]">
                     {item.desc}
                   </p>
                 </div>
 
-                {/* Bottom Action Text */}
                 {/* <div className="mt-4 pt-2 text-xs font-bold text-saffron-deep transition-transform duration-200 group-hover:translate-x-1">
                   {item.cta}
                 </div> */}
@@ -153,16 +146,10 @@ export default function Join() {
           ))}
         </div>
 
-        {/* Balanced 2-Column Volunteer & Blood Donor Section */}
-        <div
-          id="volunteer"
-          className="mt-14 scroll-mt-24 sm:mt-20"
-        >
+        <div id="volunteer" className="mt-14 scroll-mt-24 sm:mt-20">
           <div className="grid items-stretch gap-8 lg:grid-cols-12">
-            {/* Left Column: Trust Info & Spiritual Motivation (5 Cols) */}
             <Reveal className="lg:col-span-5" from="bottom">
               <div className="border border-amber-500/80 rangoli bg-saffron-100 relative flex h-full flex-col justify-between overflow-hidden rounded-3xl p-6 shadow-lg sm:p-8">
-                {/* Decorative Om Watermark */}
                 <div className="pointer-events-none absolute -bottom-10 -right-8 select-none text-[150px] font-bold leading-none text-white/10">
                   ॐ
                 </div>
@@ -176,10 +163,10 @@ export default function Join() {
                     समिति परिवार का हिस्सा क्यों बनें?
                   </h2>
                   <p className="mt-2.5 text-sm leading-relaxed text-black/90">
-                    आपका थोड़ा सा समय या एक यूनिट रक्त किसी असहाय परिवार के चेहरे पर मुस्कान और जीवन की नई किरण ला सकता है।
+                    आपका थोड़ा सा समय या एक यूनिट रक्त किसी असहाय परिवार के
+                    चेहरे पर मुस्कान और जीवन की नई किरण ला सकता है।
                   </p>
 
-                  {/* Key Points */}
                   <div className="mt-6 space-y-4">
                     {WHY_JOIN.map((point) => (
                       <div
@@ -199,17 +186,11 @@ export default function Join() {
                     ))}
                   </div>
                 </div>
-
-          
-
-
               </div>
             </Reveal>
 
-            {/* Right Column: Volunteer Form Container (7 Cols) */}
             <Reveal className="lg:col-span-7" from="bottom">
               <div className="relative h-full overflow-hidden rounded-3xl border border-amber-200/80 bg-white p-6 shadow-md sm:p-8">
-                {/* Top Saffron Strip */}
                 <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-amber-600 via-saffron to-amber-500" />
 
                 <div className="mb-6 border-b border-stone-100 pb-4">
@@ -220,11 +201,11 @@ export default function Join() {
                     स्वयंसेवक बनने के लिए आवेदन
                   </h2>
                   <p className="mt-1 text-xs text-navy/70 sm:text-sm">
-                    कृपया नीचे अपनी जानकारी भरें, हमारी टीम जल्द ही आपसे संपर्क करेगी।
+                    कृपया नीचे अपनी जानकारी भरें, हमारी टीम जल्द ही आपसे संपर्क
+                    करेगी।
                   </p>
                 </div>
 
-                {/* Existing Form Component */}
                 <VolunteerForm />
               </div>
             </Reveal>
@@ -234,4 +215,3 @@ export default function Join() {
     </>
   );
 }
-

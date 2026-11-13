@@ -61,19 +61,15 @@ export default function About() {
         sub="समिति का परिचय, उद्देश्य और सेवा के सिद्धांत"
       />
 
-      {/* Section 1: Modern UI Image Box + Content Box */}
       <section className="px-4 mx-auto max-w-7xl py-16 md:py-24">
         <div className="rounded-3xl border border-amber-200/60 bg-gradient-to-br from-white via-amber-50/30 to-white p-6 shadow-xl sm:p-10 lg:p-12">
           <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
-            {/* Left Image Box UI (Layered Frame, Zero Text on Image) */}
             <div className="lg:col-span-5">
               <Reveal from="left">
                 <div className="relative mx-auto max-w-md lg:max-w-none">
-                  {/* Decorative Background Accent Layer */}
                   <div className="absolute -bottom-3 -right-3 h-full w-full rounded-2xl bg-gradient-to-br from-saffron/25 to-amber-300/40" />
                   <div className="absolute -left-3 -top-3 h-24 w-24 rounded-tl-2xl border-l-4 border-t-4 border-saffron/60" />
 
-                  {/* Main Clean Image Frame */}
                   <div className="relative overflow-hidden rounded-2xl border-2 border-white bg-white p-2 shadow-lg">
                     <div className="aspect-[4/5] w-full overflow-hidden rounded-xl bg-amber-50">
                       <img
@@ -87,7 +83,6 @@ export default function About() {
               </Reveal>
             </div>
 
-            {/* Right Content Box UI */}
             <div className="lg:col-span-7">
               <Reveal from="right">
                 <div className="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-100/50 px-3.5 py-1 text-sm font-bold text-saffron-deep">
@@ -110,7 +105,6 @@ export default function About() {
                   </p>
                 </div>
 
-                {/* सेवा के सिद्धांत UI Box */}
                 <div className="mt-7">
                   <h3 className="flex items-center gap-2 font-head text-xl font-bold text-navy sm:text-2xl">
                     <span className="text-saffron">✦</span>
@@ -137,26 +131,15 @@ export default function About() {
         </div>
       </section>
 
-      {/* Section 2: हमारा विजन, हमारा मिशन with Background Images & हमारे मूल्य */}
       <section className="rangoli bg-sandal py-16">
         <div className="mx-auto px-4 max-w-7xl">
-          {/* विजन & मिशन Cards with Background Images */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {/* Vision Card */}
             <Reveal from="left">
               <div className="group relative h-full overflow-hidden rounded-2xl border border-amber-200/60 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                {/* Background Image with Dark Overlay */}
                 <div className="absolute inset-0">
-                  {/* <img
-                    src="/images/architecture.jpg"
-                    alt="Vision"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  /> */}
-                  {/* Light/Clean Gradient Overlay so text is clearly readable */}
                   <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/90 to-white/70" />
                 </div>
 
-                {/* Content Box */}
                 <div className="relative z-10 p-7 sm:p-8">
                   <div className="flex items-center gap-3">
                     <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-saffron/15 text-2xl text-saffron-deep">
@@ -185,21 +168,12 @@ export default function About() {
               </div>
             </Reveal>
 
-            {/* Mission Card */}
             <Reveal from="right">
               <div className="group relative h-full overflow-hidden rounded-2xl border border-amber-200/60 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                {/* Background Image with Dark Overlay */}
                 <div className="absolute inset-0">
-                  {/* <img
-                    src="/images/architecture.jpg"
-                    alt="Mission"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  /> */}
-                  {/* Light/Clean Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-white/95 via-white/90 to-white/70" />
                 </div>
 
-                {/* Content Box */}
                 <div className="relative z-10 p-7 sm:p-8">
                   <div className="flex items-center gap-3">
                     <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-navy/10 text-2xl text-navy">
@@ -229,7 +203,6 @@ export default function About() {
 
           <div className="rangoli bg-sandal py-16">
             <div className="mx-auto max-w-7xl">
-              {/* Section Heading */}
               <div className="text-center">
                 <span className="inline-block rounded-full bg-amber-100/80 px-4 py-1 text-sm font-bold uppercase tracking-widest text-saffron-deep">
                   ✦ हमारे आदर्श ✦
@@ -244,12 +217,10 @@ export default function About() {
                 </div>
               </div>
 
-              {/* 2 Rows & 3 Columns Grid with Full-Width Image Cards */}
               <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {valuesData.map((item, index) => (
                   <Reveal key={item.title} delay={index * 80}>
                     <div className="group relative h-full overflow-hidden rounded-2xl border border-amber-200/70 bg-white shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-saffron hover:shadow-xl">
-                      {/* Upar Full-Width Image Container */}
                       <div className="relative h-48 w-full overflow-hidden bg-amber-50">
                         <img
                           src={item.image}
@@ -259,7 +230,6 @@ export default function About() {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                       </div>
 
-                      {/* Content Container (Title + Description) */}
                       <div className="p-6 text-center">
                         <h3 className="font-head text-2xl font-bold text-navy">
                           {item.title}
@@ -276,7 +246,6 @@ export default function About() {
             </div>
           </div>
 
-          {/* CTA Button */}
           <div className="mt-0 text-center">
             <Link href="/donate" className="btn btn-saffron">
               हमारे मिशन में सहयोग करें
@@ -288,7 +257,6 @@ export default function About() {
       <section className="mx-auto my-12">
         <Reveal className="mx-auto max-w-7xl px-4">
           <div className=" relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-700 via-saffron-deep to-saffron px-6 py-12 text-center shadow-xl sm:px-12 md:py-12">
-            {/* Decorative Background Watermark / Elements */}
             <div className="absolute -left-10 -top-10 text-9xl font-bold text-white/10 select-none pointer-events-none">
               ॐ
             </div>
@@ -309,15 +277,18 @@ export default function About() {
               </div>
 
               <div>
-                 <Link href="/donate" className="btn text-saffron-deep bg-white ml-1 animate-ring !px-4 !py-2 text-sm xl:ml-2 xl:!px-6 xl:text-base">दान करें</Link>
-
+                <Link
+                  href="/donate"
+                  className="btn text-saffron-deep bg-white ml-1 animate-ring !px-4 !py-2 text-sm xl:ml-2 xl:!px-6 xl:text-base"
+                >
+                  दान करें
+                </Link>
               </div>
             </div>
           </div>
         </Reveal>
       </section>
 
-      {/* Section 3: Bottom CTA Banner above Footer */}
       <section className="mx-auto my-12">
         <Reveal className="mx-auto max-w-7xl px-4">
           <div className="h-full card bg-gradient-to-br from-white to-sandal ctaBlock shadow-xl relative overflow-hidden max-w-7xl mx-auto rounded-3xl px-6 py-12">
@@ -327,12 +298,18 @@ export default function About() {
                   हमारे सेवा कार्यों से जुड़ें
                 </h2>
                 <p className="mt-2 text-sm text-black/85 sm:text-base">
-                 समाज सेवा, सनातन संस्कृति के संरक्षण और जनकल्याण के कार्यों में हमारा साथ दें।
+                  समाज सेवा, सनातन संस्कृति के संरक्षण और जनकल्याण के कार्यों
+                  में हमारा साथ दें।
                 </p>
               </div>
 
               <div className="btnDiv flex flex-col gap-3 sm:flex-row sm:gap-4">
-                 <Link href="/join" className="btn btn-saffron ml-1 animate-ring !px-4 !py-2 text-sm xl:ml-2 xl:!px-6 xl:text-base">सदस्य बनें</Link>
+                <Link
+                  href="/join"
+                  className="btn btn-saffron ml-1 animate-ring !px-4 !py-2 text-sm xl:ml-2 xl:!px-6 xl:text-base"
+                >
+                  सदस्य बनें
+                </Link>
               </div>
             </div>
           </div>

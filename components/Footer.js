@@ -1,11 +1,11 @@
 import Link from "next/link";
 
 const CONTACT = {
-  phone: "+91 7275000028",        
-  phoneRaw: "917275000028",        
+  phone: "+91 7275000028",
+  phoneRaw: "917275000028",
   email: "info@sarvhindukalyansamiti.org",
   address: "616/111 के विहार कॉलोनी, मड़ियाव, सीतापुर रोड, लखनऊ",
-  mapQuery: "616/111 K VIHAR COLONY, MADIYAON, SITAPUR ROAD, LUCKNOW", 
+  mapQuery: "616/111 K VIHAR COLONY, MADIYAON, SITAPUR ROAD, LUCKNOW",
   instagram: "https://www.instagram.com/yourpage",
   facebook: "https://www.facebook.com/yourpage",
   waText: "नमस्ते, मुझे सर्व हिन्दू कल्याण समिति के बारे में जानकारी चाहिए।",
@@ -23,53 +23,63 @@ const LINKS = [
 const ext = { target: "_blank", rel: "noopener noreferrer" };
 
 const Ico = ({ children }) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="mt-1 h-5 w-5 shrink-0 text-amber-400 group-hover:scale-110 transition-transform" aria-hidden="true">{children}</svg>
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="mt-1 h-5 w-5 shrink-0 text-amber-400 group-hover:scale-110 transition-transform"
+    aria-hidden="true"
+  >
+    {children}
+  </svg>
 );
 
 export default function Footer() {
   const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT.mapQuery)}`;
   const waUrl = `https://wa.me/${CONTACT.phoneRaw}?text=${encodeURIComponent(CONTACT.waText)}`;
-  const rowCls = "group flex items-start gap-3 transition-all duration-200 hover:translate-x-1 hover:text-amber-300";
-  const socialCls = "grid h-10 w-10 place-items-center rounded-full bg-white/10 text-amber-200 border border-white/10 transition-all duration-300 hover:-translate-y-1.5 hover:bg-gradient-to-tr hover:from-amber-500 hover:to-orange-500 hover:text-white hover:shadow-lg hover:shadow-orange-500/30";
+  const rowCls =
+    "group flex items-start gap-3 transition-all duration-200 hover:translate-x-1 hover:text-amber-300";
+  const socialCls =
+    "grid h-10 w-10 place-items-center rounded-full bg-white/10 text-amber-200 border border-white/10 transition-all duration-300 hover:-translate-y-1.5 hover:bg-gradient-to-tr hover:from-amber-500 hover:to-orange-500 hover:text-white hover:shadow-lg hover:shadow-orange-500/30";
 
   return (
     <footer className="relative mt-16 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-slate-300 overflow-hidden border-t border-amber-500/20">
-      {/* Top Saffron/Gold Vibrant Border Line */}
       <div className="h-1.5 bg-gradient-to-r from-amber-500 via-orange-400 to-amber-500 shadow-sm shadow-amber-500/50" />
 
-      {/* Decorative background ambient glow */}
       <div className="absolute top-0 left-1/4 -z-10 h-96 w-96 rounded-full bg-amber-600/10 blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 -z-10 h-96 w-96 rounded-full bg-orange-600/10 blur-3xl pointer-events-none" />
 
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1.4fr]">
-          
-          {/* Section 1: Logo, Tagline & CTA */}
           <div className="space-y-5">
             <Link href="/" className="inline-flex items-center gap-3.5 group">
               <span className="grid text-2xl bg-gradient-to-tr from-amber-500 to-orange-500 border-2 rounded-full shadow-md h-12 w-12 place-items-center border-amber-300 font-head text-white group-hover:rotate-12 transition-transform duration-300">
                 ॐ
               </span>
               <span className="text-xl font-bold tracking-wide font-head text-white leading-tight lg:text-lg xl:text-2xl">
-                सर्व हिन्दू <br className="sm:hidden" /> <span className="text-amber-400 font-normal">कल्याण समिति</span>
+                सर्व हिन्दू <br className="sm:hidden" />{" "}
+                <span className="text-amber-400 font-normal">कल्याण समिति</span>
               </span>
             </Link>
 
             <p className="max-w-sm text-sm leading-relaxed text-slate-300 sm:text-base border-l-2 border-amber-500/50 pl-3 py-0.5">
-              सेवा, समर्पण और विश्वास — समाज कल्याण और उत्थान के लिए हमारा संकल्प।
+              सेवा, समर्पण और विश्वास — समाज कल्याण और उत्थान के लिए हमारा
+              संकल्प।
             </p>
 
             <div>
-              <Link 
-                href="/donate" 
+              <Link
+                href="/donate"
                 className="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-500/25 transition-all duration-300 hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0"
               >
-                 सहयोग करें 🙏
+                सहयोग करें 🙏
               </Link>
             </div>
           </div>
 
-          {/* Section 2: Quick Links */}
           <div className="lg:pl-6">
             <p className="mb-4 font-semibold text-white tracking-wider text-xs sm:text-sm border-b border-white/10 pb-2">
               महत्वपूर्ण पृष्ठ
@@ -77,8 +87,8 @@ export default function Footer() {
             <ul className="space-y-2.5 text-sm sm:text-base">
               {LINKS.map(([label, href]) => (
                 <li key={href}>
-                  <Link 
-                    href={href} 
+                  <Link
+                    href={href}
                     className="inline-block transition-all duration-200 hover:text-amber-300 hover:translate-x-1 text-slate-300"
                   >
                     <span className="text-amber-500 mr-2">›</span> {label}
@@ -88,36 +98,42 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Section 3: Contact & Social Media */}
           <div className="space-y-4 text-sm sm:text-base">
             <p className="mb-4 font-semibold text-white tracking-wider text-xs sm:text-sm border-b border-white/10 pb-2">
               संपर्क करें
             </p>
-            
+
             <div className="space-y-3">
               <a href={mapUrl} {...ext} className={rowCls}>
                 <Ico>
-                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" />
+                  <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+                  <circle cx="12" cy="10" r="3" />
                 </Ico>
-                <span className="text-slate-300 leading-snug">{CONTACT.address}</span>
+                <span className="text-slate-300 leading-snug">
+                  {CONTACT.address}
+                </span>
               </a>
 
               <a href={`mailto:${CONTACT.email}`} className={rowCls}>
                 <Ico>
-                  <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-10 6L2 7" />
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="m22 7-10 6L2 7" />
                 </Ico>
-                <span className="break-all text-slate-300">{CONTACT.email}</span>
+                <span className="break-all text-slate-300">
+                  {CONTACT.email}
+                </span>
               </a>
 
               <a href={`tel:+${CONTACT.phoneRaw}`} className={rowCls}>
                 <Ico>
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                 </Ico>
-                <span className="text-slate-300 font-medium">{CONTACT.phone}</span>
+                <span className="text-slate-300 font-medium">
+                  {CONTACT.phone}
+                </span>
               </a>
             </div>
 
-            {/* Social Media Icons */}
             {/* <div className="pt-2">
               <p className="text-xs text-slate-400 mb-2">हमसे सोशल मीडिया पर जुड़ें:</p>
               <div className="flex gap-3">
@@ -132,15 +148,15 @@ export default function Footer() {
                 </a>
               </div>
             </div> */}
-
           </div>
-
         </div>
       </div>
 
-      {/* Copyright Bar */}
       <div className="border-t border-white/10 bg-black/30 py-3 text-center text-xs sm:text-sm text-slate-400">
-        <p>© 2026 &nbsp; &nbsp; सर्व हिन्दू कल्याण समिति। &nbsp; &nbsp; सर्वाधिकार सुरक्षित।</p>
+        <p>
+          © 2026 &nbsp; &nbsp; सर्व हिन्दू कल्याण समिति। &nbsp; &nbsp;
+          सर्वाधिकार सुरक्षित।
+        </p>
       </div>
     </footer>
   );

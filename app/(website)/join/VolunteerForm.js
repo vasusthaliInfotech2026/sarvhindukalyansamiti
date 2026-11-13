@@ -25,11 +25,16 @@ export default function VolunteerForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-   
-    const paymentMode =  "razorpay";
+    const paymentMode = "razorpay";
 
-    if (paymentMode !== "qr" && paymentMode !== "razorpay" && paymentMode !== "paypal") {
-      setError("अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए हमारी टीम से संपर्क करें।");
+    if (
+      paymentMode !== "qr" &&
+      paymentMode !== "razorpay" &&
+      paymentMode !== "paypal"
+    ) {
+      setError(
+        "अभी भुगतान की सुविधा उपलब्ध नहीं है। कृपया बाद में दोबारा कोशिश करें या सहायता के लिए हमारी टीम से संपर्क करें।",
+      );
       return;
     }
 
@@ -44,7 +49,6 @@ export default function VolunteerForm() {
       setLoading(false);
       return;
     }
-    // 2. ईमेल डुप्लीकेट जाँच
     if (emailInput) {
       try {
         const checkRes = await fetch("/api/check-email", {
@@ -55,7 +59,9 @@ export default function VolunteerForm() {
         const checkData = await checkRes.json();
 
         if (checkData?.success && checkData?.exists) {
-          setError("यह ईमेल आईडी पहले से ही पंजीकृत है। कृपया किसी अन्य ईमेल आईडी का उपयोग करें।");
+          setError(
+            "यह ईमेल आईडी पहले से ही पंजीकृत है। कृपया किसी अन्य ईमेल आईडी का उपयोग करें।",
+          );
           setLoading(false);
           return;
         }
@@ -78,14 +84,13 @@ export default function VolunteerForm() {
     };
 
     try {
-      // ==========================================
-      // मोड 1: QR कोड मोड ('qr')
-      // ==========================================
       if (paymentMode === "qr") {
         const qrOrderId = "MEM_QR_" + Date.now();
 
-        // सुरक्षित डेटा localStorage में सेव करें (URL में राशि नहीं जाएगी)
-        localStorage.setItem("pending_volunteer_data", JSON.stringify(formValues));
+        localStorage.setItem(
+          "pending_volunteer_data",
+          JSON.stringify(formValues),
+        );
         localStorage.setItem("pending_order_id", qrOrderId);
         localStorage.setItem("pending_amount", selectedFee.toString());
 
@@ -93,9 +98,6 @@ export default function VolunteerForm() {
         return;
       }
 
-      // ==========================================
-      // मोड 2: Razorpay मोड ('razorpay')
-      // ==========================================
       if (paymentMode === "razorpay") {
         const orderRes = await fetch("/api/create-order", {
           method: "POST",
@@ -105,7 +107,11 @@ export default function VolunteerForm() {
 
         const orderData = await orderRes.json();
         if (!orderRes.ok || !orderData?.success || !orderData?.order) {
-          throw new Error(orderData?.message || orderData?.error || "ऑर्डर नहीं बन सका। कृपया पुनः प्रयास करें।");
+          throw new Error(
+            orderData?.message ||
+              orderData?.error ||
+              "ऑर्डर नहीं बन सका। कृपया पुनः प्रयास करें।",
+          );
         }
 
         const order = orderData.order;
@@ -166,9 +172,6 @@ export default function VolunteerForm() {
         return;
       }
 
-      // ==========================================
-      // मोड 3: PayPal मोड ('paypal')
-      // ==========================================
       if (paymentMode === "paypal") {
         const orderRes = await fetch("/api/create-paypal-order", {
           method: "POST",
@@ -184,7 +187,10 @@ export default function VolunteerForm() {
           throw new Error(orderData?.error || "PayPal ऑर्डर बनाने में विफल");
         }
 
-        localStorage.setItem("pending_volunteer_data", JSON.stringify(formValues));
+        localStorage.setItem(
+          "pending_volunteer_data",
+          JSON.stringify(formValues),
+        );
         localStorage.setItem("pending_paypal_order_id", orderData.orderId);
 
         window.location.href = orderData.approvalUrl;
@@ -203,11 +209,16 @@ export default function VolunteerForm() {
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 text-orange-600 animate-spin">
           ⏳
         </div>
-        <h3 className="text-2xl font-bold text-orange-700">भुगतान सत्यापित हो रहा है...</h3>
+        <h3 className="text-2xl font-bold text-orange-700">
+          भुगतान सत्यापित हो रहा है...
+        </h3>
         <p className="text-sm text-slate-600 leading-relaxed">
-          आपका भुगतान सफल हो गया है! आपका डेटा सुरक्षित दर्ज किया जा रहा है और ईमेल रसीद भेजी जा रही है। कृपया पेज बंद न करें...
+          आपका भुगतान सफल हो गया है! आपका डेटा सुरक्षित दर्ज किया जा रहा है और
+          ईमेल रसीद भेजी जा रही है। कृपया पेज बंद न करें...
         </p>
-        <div className="text-xs text-slate-400 font-medium">यह प्रक्रिया केवल कुछ सेकंड लेगी।</div>
+        <div className="text-xs text-slate-400 font-medium">
+          यह प्रक्रिया केवल कुछ सेकंड लेगी।
+        </div>
       </div>
     );
   }
@@ -215,19 +226,73 @@ export default function VolunteerForm() {
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input name="full_name" required maxLength={150} placeholder="पूरा नाम" className="input" />
+        <input
+          name="full_name"
+          required
+          maxLength={150}
+          placeholder="पूरा नाम"
+          className="input"
+        />
         <div className="grid gap-4 sm:grid-cols-2">
-          <input name="phone" required type="tel" maxLength={20} placeholder="मोबाइल नंबर" className="input" />
-          <input name="email" type="email" required maxLength={150} autoComplete="email" placeholder="ईमेल पता" className="input"/>
+          <input
+            name="phone"
+            required
+            type="tel"
+            maxLength={20}
+            placeholder="मोबाइल नंबर"
+            className="input"
+          />
+          <input
+            name="email"
+            type="email"
+            required
+            maxLength={150}
+            autoComplete="email"
+            placeholder="ईमेल पता"
+            className="input"
+          />
         </div>
-        <textarea name="address" required placeholder="पूरा पता" rows={3} className="input" />
+        <textarea
+          name="address"
+          required
+          placeholder="पूरा पता"
+          rows={3}
+          className="input"
+        />
         <div className="grid gap-4 sm:grid-cols-3">
-          <input name="city" required maxLength={100} placeholder="शहर" className="input" />
-          <input name="state" required maxLength={100} placeholder="राज्य" className="input" />
-          <input name="pincode" required type="text" inputMode="numeric" maxLength={6} placeholder="पिन कोड" className="input" />
+          <input
+            name="city"
+            required
+            maxLength={100}
+            placeholder="शहर"
+            className="input"
+          />
+          <input
+            name="state"
+            required
+            maxLength={100}
+            placeholder="राज्य"
+            className="input"
+          />
+          <input
+            name="pincode"
+            required
+            type="text"
+            inputMode="numeric"
+            maxLength={6}
+            placeholder="पिन कोड"
+            className="input"
+          />
         </div>
-        <select name="membership_type" required defaultValue="" className="input">
-          <option value="" disabled>सदस्यता का प्रकार चुनें</option>
+        <select
+          name="membership_type"
+          required
+          defaultValue=""
+          className="input"
+        >
+          <option value="" disabled>
+            सदस्यता का प्रकार चुनें
+          </option>
           <option value="सामान्य सदस्य">सामान्य सदस्य</option>
           <option value="आजीवन सदस्य">आजीवन सदस्य</option>
           <option value="सक्रिय स्वयंसेवक">सक्रिय स्वयंसेवक</option>
@@ -236,15 +301,26 @@ export default function VolunteerForm() {
           <p className="mb-2 font-semibold">सेवा क्षेत्रों में रुचि *</p>
           <div className="flex flex-wrap gap-4">
             {AREAS.map((a) => (
-              <label key={a} className="flex items-center gap-1.5 cursor-pointer">
-                <input type="radio" name="role" value={a} required className="accent-saffron" />
+              <label
+                key={a}
+                className="flex items-center gap-1.5 cursor-pointer"
+              >
+                <input
+                  type="radio"
+                  name="role"
+                  value={a}
+                  required
+                  className="accent-saffron"
+                />
                 {a}
               </label>
             ))}
           </div>
         </div>
         <div className="space-y-4 pt-2">
-          <p className="font-semibold text-slate-800">सदस्यता / सहायता शुल्क *</p>
+          <p className="font-semibold text-slate-800">
+            सदस्यता / सहायता शुल्क *
+          </p>
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
             {FEE_OPTIONS.map((fee) => {
               const isSelected = selectedFee === fee;
@@ -266,12 +342,15 @@ export default function VolunteerForm() {
           </div>
         </div>
 
-        <button type="submit" disabled={loading} className="btn btn-saffron w-fit block mx-auto text-lg py-3 mt-10">
+        <button
+          type="submit"
+          disabled={loading}
+          className="btn btn-saffron w-fit block mx-auto text-lg py-3 mt-10"
+        >
           {loading ? "प्रतीक्षा करें..." : "पंजीकरण और भुगतान करें"}
         </button>
       </form>
 
-      {/* --- ERROR POPUP MODAL --- */}
       {error && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 text-center shadow-2xl border border-amber-200 space-y-4 animate-in fade-in zoom-in duration-200">
@@ -279,9 +358,7 @@ export default function VolunteerForm() {
               ⚠️
             </div>
             <h3 className="text-xl font-bold text-slate-900">पंजीकरण सूचना</h3>
-            <p className="text-sm text-slate-600 font-medium">
-              {error}
-            </p>
+            <p className="text-sm text-slate-600 font-medium">{error}</p>
             <button
               onClick={() => setError("")}
               className="w-full py-3 rounded-xl bg-[#c86428] hover:bg-[#b05520] text-white font-semibold transition cursor-pointer shadow-sm"
@@ -294,5 +371,3 @@ export default function VolunteerForm() {
     </>
   );
 }
-
-

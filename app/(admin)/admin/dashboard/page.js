@@ -6,13 +6,11 @@ import Link from "next/link";
 export default function AdminDashboardPage() {
   const router = useRouter();
 
-  // Navigation & UI States
   const [activeTab, setActiveTab] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Data States
   const [donations, setDonations] = useState([]);
   const [members, setMembers] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -21,16 +19,12 @@ export default function AdminDashboardPage() {
   const [message, setMessage] = useState(null);
   const [loggingOut, setLoggingOut] = useState(false);
 
-  // Modal State for User & Payment Details Popup
   const [selectedUserModal, setSelectedUserModal] = useState(null);
 
-  // Custom Confirm Modal State
-  const [confirmModal, setConfirmModal] = useState(null); // { type, id, name, utr }
+  const [confirmModal, setConfirmModal] = useState(null);
 
-  // Delete confirmation modal state for contacts
-  const [deleteContactModal, setDeleteContactModal] = useState(null); // stores contact object
+  const [deleteContactModal, setDeleteContactModal] = useState(null);
 
-  // Helper: Check if payment/status is verified or active
   const isVerifiedStatus = (row) => {
     if (!row) return false;
     const st = (row.payment_status || row.status || "").toLowerCase();
@@ -50,14 +44,12 @@ export default function AdminDashboardPage() {
     return false;
   };
 
-  // Helper: Clean UTR / Payment ID
   const getCleanUtr = (row) => {
     if (!row) return "N/A";
     const raw = row.razorpay_payment_id || row.payment_id || row.utr || "";
     return raw ? raw.replace("UPI_UTR_", "") : "N/A";
   };
 
-  // Fetch Dashboard Data with Auth Check
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
@@ -96,7 +88,6 @@ export default function AdminDashboardPage() {
     fetchDashboardData();
   }, []);
 
-  // Proper Logout Functionality
   const handleLogout = async () => {
     const confirmed = window.confirm("Are you sure you want to logout?");
     if (!confirmed) return;
@@ -121,12 +112,10 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Custom Confirm Trigger
   const promptVerifyPayment = (type, id, name, utr) => {
     setConfirmModal({ type, id, name, utr });
   };
 
-  // Actual Verify Payment & Send Email Receipt
   const handleConfirmVerify = async () => {
     if (!confirmModal) return;
     const { type, id } = confirmModal;
@@ -179,7 +168,6 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Handle Contact Delete
   const handleDeleteContact = async () => {
     if (!deleteContactModal) return;
     const contactId = deleteContactModal.id;
@@ -211,7 +199,6 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Analytics & Chart Calculations
   const analytics = useMemo(() => {
     const verifiedDonations = donations.filter((d) => isVerifiedStatus(d));
     const pendingDonations = donations.filter((d) => !isVerifiedStatus(d));
@@ -261,7 +248,6 @@ export default function AdminDashboardPage() {
     };
   }, [donations, members]);
 
-  // Filter rows by Search Query & Verification Status
   const filterRows = (rows, isPaymentTable = true) => {
     return rows.filter((r) => {
       if (isPaymentTable && statusFilter !== "all") {
@@ -277,7 +263,6 @@ export default function AdminDashboardPage() {
     });
   };
 
-  // Sidebar Menu Items
   const navItems = [
     {
       id: "overview",
@@ -319,7 +304,6 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 flex font-sans text-slate-100">
-      {/* Mobile Sidebar Backdrop */}
       {sidebarOpen && (
         <div
           onClick={() => setSidebarOpen(false)}
@@ -327,7 +311,6 @@ export default function AdminDashboardPage() {
         />
       )}
 
-      {/* ================= FIXED SIDEBAR WITH INTERNAL SCROLLING ================= */}
       <aside
         className={`fixed lg:sticky top-0 inset-y-0 left-0 z-50 w-72 h-screen bg-slate-900 border-r border-slate-800 flex flex-col justify-between transition-transform duration-200 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
@@ -424,7 +407,6 @@ export default function AdminDashboardPage() {
         </div>
       </aside>
 
-      {/* ================= MAIN CONTENT AREA ================= */}
       <div className="flex-1 flex flex-col min-w-0 bg-slate-950">
         <header className="bg-slate-900 border-b border-slate-800 px-4 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 sticky top-0 z-30">
           <div className="flex items-center gap-3">
@@ -499,7 +481,6 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
-          {/* ================= 1. OVERVIEW & ANALYTICS TAB ================= */}
           {activeTab === "overview" && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -757,7 +738,6 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
-          {/* ================= 2. FILTER & SEARCH BAR ================= */}
           {activeTab !== "overview" && (
             <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800 shadow-xs flex flex-col sm:flex-row justify-between items-center gap-4">
               {activeTab !== "contacts" ? (
@@ -819,7 +799,6 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
-          {/* ================= 3. DONATIONS TAB ================= */}
           {activeTab === "donations" && (
             <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-xs overflow-hidden">
               {loading ? (
@@ -974,7 +953,6 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
-          {/* ================= 4. MEMBERS TAB ================= */}
           {activeTab === "members" && (
             <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-xs overflow-hidden">
               {loading ? (
@@ -1140,7 +1118,6 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
-          {/* ================= 5. CONTACTS TAB ================= */}
           {activeTab === "contacts" && (
             <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-xs overflow-hidden">
               {loading ? (
@@ -1229,7 +1206,6 @@ export default function AdminDashboardPage() {
         </main>
       </div>
 
-      {/* ================= LIGHT THEME & SIMPLE USER DETAILS POPUP MODAL ================= */}
       {selectedUserModal && (
         <div
           onClick={() => setSelectedUserModal(null)}
@@ -1239,7 +1215,6 @@ export default function AdminDashboardPage() {
             onClick={(e) => e.stopPropagation()}
             className="bg-white rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden my-8 text-slate-800"
           >
-            {/* Header */}
             <div className="bg-slate-100 p-5 flex items-center justify-between border-b border-slate-200">
               <div>
                 <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase tracking-wider bg-blue-100 text-blue-700 mb-1">
@@ -1262,9 +1237,7 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
-            {/* Body */}
             <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-              {/* Simple Clean View */}
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
                   <span className="text-slate-500 font-medium">Full Name:</span>
@@ -1324,7 +1297,6 @@ export default function AdminDashboardPage() {
                 )}
               </div>
 
-              {/* Edit Details Section */}
               <details className="group pt-2">
                 <summary className="list-none flex items-center justify-center gap-1.5 w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold cursor-pointer transition">
                   <span>✏️ Edit Details (Name, Email, Phone & More)</span>
@@ -1434,7 +1406,6 @@ export default function AdminDashboardPage() {
               </details>
             </div>
 
-            {/* Footer */}
             <div className="p-4 bg-slate-100 border-t border-slate-200 flex items-center justify-between">
               <button
                 onClick={() => setSelectedUserModal(null)}
@@ -1472,7 +1443,6 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* ================= CUSTOM CONFIRM VERIFY MODAL ================= */}
       {confirmModal && (
         <div
           onClick={() => setConfirmModal(null)}
@@ -1532,7 +1502,6 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* ================= DELETE CONTACT CONFIRMATION MODAL ================= */}
       {deleteContactModal && (
         <div
           onClick={() => setDeleteContactModal(null)}
