@@ -27,7 +27,7 @@ export async function POST(request) {
 
     const { amount } = await request.json();
 
-    if (!amount || amount <= 50) {
+    if (!amount || amount < 50) {
       return NextResponse.json(
         { success: false, message: "Invalid amount! Please enter at least 50" },
         { status: 400 },
