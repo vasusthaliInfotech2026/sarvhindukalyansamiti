@@ -5,12 +5,6 @@ export const runtime = "nodejs";
 
 export async function POST(request) {
 
-  console.log("=== LOCAL ENV TEST ===");
-  console.log("RAZORPAY_KEY_ID:", process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID);
-  console.log("RAZORPAY_KEY_SECRET:", process.env.RAZORPAY_KEY_SECRET);
-  console.log("======================");
-
-
   try {
     const razorpayKeyId = process.env.RAZORPAY_KEY_ID;
     const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET;
@@ -34,7 +28,7 @@ export async function POST(request) {
 
     const { amount } = await request.json();
 
-    if (!amount || amount < 1) {
+    if (!amount || amount < 50) {
       return NextResponse.json(
         { success: false, message: "Invalid amount! Please enter at least 50" },
         { status: 400 },
