@@ -47,7 +47,7 @@ export default function DonateForm() {
 
   const handleDonate = async (e) => {
     e.preventDefault();
-    if (!amount || amount < 1 || amount > 10000) {
+    if (!amount || amount < 50 || amount > 10000) {
       setError("कृपया ₹50 से ₹10,000 के बीच की वैध राशि दर्ज करें।");
       return;
     }
@@ -283,7 +283,7 @@ export default function DonateForm() {
           </label>
           <input
             type="number"
-            min="1"
+            min="50"
             max="10000"
             required
             value={amount}

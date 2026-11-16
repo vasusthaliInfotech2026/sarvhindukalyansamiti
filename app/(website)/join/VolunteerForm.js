@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 const AREAS = ["अन्न सेवा", "स्वास्थ्य", "शिक्षा", "रक्तदान", "मंदिर सेवा"];
-const FEE_OPTIONS = [1, 51, 101, 201, 501, 1001, 1100, 2100, 2500, 5100];
+const FEE_OPTIONS = [51, 101, 201, 501, 1001, 1100, 2100, 2500, 5100];
 
 export default function VolunteerForm() {
   const router = useRouter();
